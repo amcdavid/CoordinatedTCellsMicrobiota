@@ -1,0 +1,39 @@
+---
+title: "CoordinatedTCellsMicrobiota"
+output: github_document
+---
+
+Data and analysis supporting "Newborn T Cell and Microbiota Developmental Trajectories and Their Inter-related Roles in Health and Diseases."  [Preprint](https://www.biorxiv.org/content/10.1101/736090v2)
+
+## Contents
+
+* data: minimally processed data -- microbiome OTU counts, T cell subpopulation abundances, subject covariates, etc
+* intermediates: derived tables and output from scripts
+
+To reproduce some results, data will need to be downloaded
+(from
+dbGAP)[https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001347.v2.p1],
+as some data posted here has been jittered, quantized or redacted to reduce the risk of reidentification of subjects.  The `Alias`
+key will join subject-level tables to data in dbGAP.
+
+## Scripts
+
+* 01_make_cst: Run DMN model on OTU and flowsom metaclusters and find best-fitting model
+* 02_network_modeling: Test for pairwise associations between CST, IST and flowsom metacluster
+* 02_ist_cst_results: Heatmaps of IST/CST composition, associations with gestational age and postmenstrual age
+* 03_development_index: prediction of PMA from microbiome and T cell subpopulations.  Developmental index.  Prediction of PRD.  Associations of T cells subpopulation with PMA.  Broken stick regression models.  IST associations with perinatal exposures.
+* flowcytometry: scripts for processing T cell flow cytometry (TPHE/ICS) to produce flowsom "metacluster" populations.  FCS files would need to be [downloaded from IMMPORT]( https://browser.immport.org/browser?path=SDY1302) to run these scripts.
+
+These don't necessarily need to be run in order, as their inputs hve been saved under `intermediates`.
+
+To install all dependencies run `devtools::install(CoordinatedTDeps, lib = <some new directory>)` where you may wish to set `<some new directory>` to be a path besides your default `.libPaths()` to keep these packages separated.
+
+Run using R 3.5.1 and Bioconductor 3.7, and YMMV otherwise.
+
+
+# Colophone
+
+```{r}
+devtools::load_all('CoordinatedTDeps')
+devtools::session_info()
+```

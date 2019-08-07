@@ -1,0 +1,405 @@
+SampleID	Subject	Visit	IST	Renamed_IST	Sex	Cohort	MOD	GAB	BirthCohort	DOL	CGA
+C266E_1	C266E	Birth	ICS_5	ICS_3	Female	Full-Term	Caesarean Section	39.29	FullTerm	1	39.29
+C266E_7	C266E	Discharge	ICS_2	ICS_6	Female	Full-Term	Caesarean Section	39.29	FullTerm	4	39.71
+C59E6_1	C59E6	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	37	FullTerm	2	37.14
+C59E6_7	C59E6	Discharge	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	37	FullTerm	4	37.43
+C6F73_1	C6F73	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.71	FullTerm	1	39.71
+C6F73_7	C6F73	Discharge	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	39.71	FullTerm	3	40
+C0C1C_1	C0C1C	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	39	FullTerm	1	39
+C0C1C_19	C0C1C	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	39	FullTerm	374	92.29
+C0C1C_7	C0C1C	Discharge	ICS_6	ICS_1	Female	Full-Term	Vaginal Vertex	39	FullTerm	3	39.29
+C0E4F_1	C0E4F	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	41.57	FullTerm	1	41.57
+C0E4F_19	C0E4F	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	41.57	FullTerm	353	91.86
+C0E4F_7	C0E4F	Discharge	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	41.57	FullTerm	4	42
+CF4B8_1	CF4B8	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	39.14	FullTerm	1	39.14
+CF4B8_7	CF4B8	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57
+CE240_1	CE240	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	40.43	FullTerm	1	40.43
+CE240_19	CE240	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	40.43	FullTerm	386	95.43
+CE240_7	CE240	Discharge	ICS_6	ICS_1	Female	Full-Term	Vaginal Vertex	40.43	FullTerm	3	40.71
+C7049_1	C7049	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.86	FullTerm	1	39.86
+CA3C7_1	CA3C7	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.29	FullTerm	1	39.29
+CA3C7_7	CA3C7	Discharge	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	39.29	FullTerm	3	39.57
+C83E3_1	C83E3	Birth	ICS_1	ICS_8	Female	Full-Term	Vaginal Vertex	39.29	FullTerm	1	39.29
+C83E3_19	C83E3	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	39.29	FullTerm	373	92.43
+C83E3_7	C83E3	Discharge	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	39.29	FullTerm	3	39.57
+C9B72_1	C9B72	Birth	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	1	40.14
+C9B72_19	C9B72	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	383	94.71
+C9B72_7	C9B72	Discharge	ICS_2	ICS_6	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	3	40.43
+C999D_1	C999D	Birth	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40	FullTerm	1	40
+C999D_7	C999D	Discharge	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40	FullTerm	3	40.29
+C2ED8_1	C2ED8	Birth	ICS_5	ICS_3	Female	Full-Term	Caesarean Section	39	FullTerm	1	39
+C2ED8_7	C2ED8	Discharge	ICS_5	ICS_3	Female	Full-Term	Caesarean Section	39	FullTerm	4	39.43
+C45F4_1	C45F4	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	41.29	FullTerm	1	41.29
+C45F4_19	C45F4	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	41.29	FullTerm	341	89.86
+C45F4_7	C45F4	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	41.29	FullTerm	4	41.71
+C7BA1_1	C7BA1	Birth	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	39.29	FullTerm	1	39.29
+C7BA1_19	C7BA1	OneYear	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	39.29	FullTerm	374	92.57
+C7BA1_7	C7BA1	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	39.29	FullTerm	3	39.57
+C3AED_19	C3AED	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	40.43	FullTerm	373	93.57
+C3AED_7	C3AED	Discharge	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	40.43	FullTerm	4	40.86
+C1877_1	C1877	Birth	ICS_5	ICS_3	Female	Full-Term	Caesarean Section	39.57	FullTerm	1	39.57
+C84BC_1	C84BC	Birth	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	39.14	FullTerm	1	39.14
+C84BC_19	C84BC	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	39.14	FullTerm	429	100.29
+C84BC_7	C84BC	Discharge	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.14	FullTerm	3	39.43
+CE2E7_1	CE2E7	Birth	ICS_5	ICS_3	Male	Full-Term	Caesarean Section	39.57	FullTerm	1	39.57
+CE2E7_7	CE2E7	Discharge	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	39.57	FullTerm	4	40
+CE068_1	CE068	Birth	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	39.14	FullTerm	1	39.14
+CE068_19	CE068	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	39.14	FullTerm	389	94.57
+CE068_7	CE068	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57
+C36B6_1	C36B6	Birth	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	37.86	FullTerm	1	37.86
+C36B6_19	C36B6	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	37.86	FullTerm	386	92.86
+C36B6_7	C36B6	Discharge	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	37.86	FullTerm	4	38.29
+CA122_1	CA122	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	40.71	FullTerm	1	40.71
+CA122_7	CA122	Discharge	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.71	FullTerm	3	41
+CEE43_1	CEE43	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	39.14	FullTerm	1	39.14
+CEE43_7	CEE43	Discharge	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57
+C5E1F_1	C5E1F	Birth	ICS_5	ICS_3	Female	Full-Term	Caesarean Section	37.86	FullTerm	1	37.86
+C5E1F_19	C5E1F	OneYear	ICS_3	ICS_4	Female	Full-Term	Caesarean Section	37.86	FullTerm	373	91
+C5E1F_7	C5E1F	Discharge	ICS_2	ICS_6	Female	Full-Term	Caesarean Section	37.86	FullTerm	4	38.29
+C572C_1	C572C	Birth	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.86	FullTerm	1	40.86
+C572C_19	C572C	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	40.86	FullTerm	366	93
+C572C_7	C572C	Discharge	ICS_1	ICS_8	Female	Full-Term	Vaginal Vertex	40.86	FullTerm	6	41.57
+CB504_1	CB504	Birth	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.29	FullTerm	1	40.29
+CB504_7	CB504	Discharge	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.29	FullTerm	3	40.57
+C79BB_1	C79BB	Birth	ICS_4	ICS_2	Female	Full-Term	Caesarean Section	39.43	FullTerm	1	39.43
+C19E5_1	C19E5	Birth	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	37.14	FullTerm	1	37.14
+C19E5_19	C19E5	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	37.14	FullTerm	391	92.86
+C19E5_7	C19E5	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	37.14	FullTerm	4	37.57
+CEF3C_1	CEF3C	Birth	ICS_5	ICS_3	Male	Full-Term	Caesarean Section	38	FullTerm	1	38
+CEF3C_19	CEF3C	OneYear	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	38	FullTerm	442	101
+CF3A8_1	CF3A8	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	38.29	FullTerm	1	38.29
+CF3A8_19	CF3A8	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	38.29	FullTerm	437	100.57
+C6732_1	C6732	Birth	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.71	FullTerm	1	39.71
+C6732_19	C6732	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	39.71	FullTerm	402	97
+C4692_1	C4692	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	40.43	FullTerm	1	40.43
+C4692_7	C4692	Discharge	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	40.43	FullTerm	3	40.71
+CFB76_1	CFB76	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	38.86	FullTerm	2	39
+C98F2_1	C98F2	Birth	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	40.29	FullTerm	1	40.29
+C98F2_7	C98F2	Discharge	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	40.29	FullTerm	3	40.57
+C72BB_1	C72BB	Birth	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.43	FullTerm	1	40.43
+C72BB_7	C72BB	Discharge	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.43	FullTerm	2	40.57
+CD34B_1	CD34B	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	40.71	FullTerm	1	40.71
+C1ED2_1	C1ED2	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.29	FullTerm	1	39.29
+C1ED2_7	C1ED2	Discharge	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.29	FullTerm	3	39.57
+C94D1_1	C94D1	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.43	FullTerm	1	39.43
+C94D1_7	C94D1	Discharge	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.43	FullTerm	2	39.57
+C7D88_1	C7D88	Birth	ICS_5	ICS_3	Male	Full-Term	Caesarean Section	38.57	FullTerm	1	38.57
+C7D88_19	C7D88	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	38.57	FullTerm	396	95
+C7D88_7	C7D88	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	38.57	FullTerm	4	39
+C9D1D_1	C9D1D	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	38.57	FullTerm	1	38.57
+C9D1D_19	C9D1D	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	38.57	FullTerm	396	95
+CD47D_1	CD47D	Birth	ICS_4	ICS_2	Female	Full-Term	Caesarean Section	39	FullTerm	1	39
+CD47D_7	CD47D	Discharge	ICS_1	ICS_8	Female	Full-Term	Caesarean Section	39	FullTerm	4	39.43
+CE827_1	CE827	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.86	FullTerm	1	39.86
+CE827_19	CE827	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	39.86	FullTerm	368	92.29
+CE827_7	CE827	Discharge	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	39.86	FullTerm	3	40.14
+C68E5_1	C68E5	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	41.14	FullTerm	1	41.14
+C68E5_7	C68E5	Discharge	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	41.14	FullTerm	3	41.43
+CA3B4_1	CA3B4	Birth	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	41	FullTerm	1	41
+CA3B4_19	CA3B4	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	41	FullTerm	359	92.14
+CA3B4_7	CA3B4	Discharge	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	41	FullTerm	3	41.29
+CAF49_1	CAF49	Birth	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	39.57	FullTerm	1	39.57
+CAF49_7	CAF49	Discharge	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	39.57	FullTerm	2	39.71
+CD4E3_1	CD4E3	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	39	FullTerm	1	39
+CD4E3_19	CD4E3	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	39	FullTerm	363	90.71
+CE93B_1	CE93B	Birth	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	41	FullTerm	1	41
+CE93B_7	CE93B	Discharge	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	41	FullTerm	3	41.29
+C94DD_1	C94DD	Birth	ICS_1	ICS_8	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	1	40.14
+C94DD_19	C94DD	OneYear	ICS_2	ICS_6	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	375	93.57
+C94DD_7	C94DD	Discharge	ICS_2	ICS_6	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	3	40.43
+C01D8_1	C01D8	Birth	ICS_4	ICS_2	Female	Full-Term	Caesarean Section	39.14	FullTerm	1	39.14
+C01D8_19	C01D8	OneYear	ICS_3	ICS_4	Female	Full-Term	Caesarean Section	39.14	FullTerm	429	100.29
+C01D8_7	C01D8	Discharge	ICS_2	ICS_6	Female	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57
+C1497_1	C1497	Birth	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	39.14	FullTerm	1	39.14
+C1497_19	C1497	OneYear	ICS_6	ICS_1	Male	Full-Term	Vaginal Vertex	39.14	FullTerm	402	96.43
+C1497_7	C1497	Discharge	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.14	FullTerm	3	39.43
+C09C2_1	C09C2	Birth	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	38.86	FullTerm	1	38.86
+C09C2_19	C09C2	OneYear	ICS_6	ICS_1	Female	Full-Term	Vaginal Vertex	38.86	FullTerm	388	94.14
+C09C2_7	C09C2	Discharge	ICS_6	ICS_1	Female	Full-Term	Vaginal Vertex	38.86	FullTerm	3	39.14
+C0522_1	C0522	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	1	39.57
+C0522_19	C0522	OneYear	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	375	93
+C0522_7	C0522	Discharge	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	3	39.86
+C4D1A_1	C4D1A	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39	FullTerm	1	39
+C4D1A_7	C4D1A	Discharge	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39	FullTerm	2	39.14
+CE002_1	CE002	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	40.71	FullTerm	1	40.71
+CE002_7	CE002	Discharge	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	40.71	FullTerm	3	41
+CCA49_1	CCA49	Birth	ICS_4	ICS_2	Female	Full-Term	Caesarean Section	39.14	FullTerm	1	39.14
+CCA49_19	CCA49	OneYear	ICS_3	ICS_4	Female	Full-Term	Caesarean Section	39.14	FullTerm	401	96.29
+CCA49_7	CCA49	Discharge	ICS_5	ICS_3	Female	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57
+CB127_1	CB127	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	40	FullTerm	1	40
+C2CFE_1	C2CFE	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	1	40.14
+C2CFE_7	C2CFE	Discharge	ICS_2	ICS_6	Female	Full-Term	Vaginal Vertex	40.14	FullTerm	3	40.43
+C36AD_1	C36AD	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	38.57	FullTerm	1	38.57
+C36AD_19	C36AD	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	38.57	FullTerm	459	104
+C36AD_7	C36AD	Discharge	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	38.57	FullTerm	3	38.86
+CDDA8_1	CDDA8	Birth	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	39.57	FullTerm	1	39.57
+CDDA8_7	CDDA8	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	39.57	FullTerm	3	39.86
+C4EAC_1	C4EAC	Birth	ICS_5	ICS_3	Male	Full-Term	Caesarean Section	39.43	FullTerm	1	39.43
+C4EAC_7	C4EAC	Discharge	ICS_6	ICS_1	Male	Full-Term	Caesarean Section	39.43	FullTerm	4	39.86
+C7E1B_1	C7E1B	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	41.14	FullTerm	1	41.14
+C7E1B_19	C7E1B	OneYear	ICS_2	ICS_6	Female	Full-Term	Vaginal Vertex	41.14	FullTerm	365	93.14
+C7E1B_7	C7E1B	Discharge	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	41.14	FullTerm	2	41.29
+C99C0_1	C99C0	Birth	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	39	FullTerm	1	39
+C99C0_19	C99C0	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	39	FullTerm	385	93.86
+C99C0_7	C99C0	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	39	FullTerm	4	39.43
+C53CC_1	C53CC	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	40.43	FullTerm	1	40.43
+C53CC_19	C53CC	OneYear	ICS_6	ICS_1	Male	Full-Term	Vaginal Vertex	40.43	FullTerm	508	112.86000000000001
+C53CC_7	C53CC	Discharge	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	40.43	FullTerm	3	40.71
+C5C91_1	C5C91	Birth	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	1	39.57
+CE935_1	CE935	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	39	FullTerm	1	39
+CE935_7	CE935	Discharge	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	39	FullTerm	4	39.43
+CC909_1	CC909	Birth	ICS_5	ICS_3	Male	Full-Term	Caesarean Section	39.14	FullTerm	0	39
+CC909_7	CC909	Discharge	ICS_2	ICS_6	Male	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57
+C3AB2_1	C3AB2	Birth	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	1	39.57
+C3AB2_19	C3AB2	OneYear	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	431	101
+C3AB2_7	C3AB2	Discharge	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	3	39.86
+CB1FF_1	CB1FF	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	38.86	FullTerm	1	38.86
+CB1FF_19	CB1FF	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	38.86	FullTerm	390	94.43
+CB1FF_7	CB1FF	Discharge	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	38.86	FullTerm	3	39.14
+C91A9_1	C91A9	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	38.71	FullTerm	0	38.57
+C91A9_7	C91A9	Discharge	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	38.71	FullTerm	3	39
+CC7D5_1	CC7D5	Birth	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	39.43	FullTerm	1	39.43
+CC7D5_19	CC7D5	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	39.43	FullTerm	455	104.29000000000002
+CC7D5_7	CC7D5	Discharge	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.43	FullTerm	3	39.71
+CAEBF_1	CAEBF	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	41.86	FullTerm	1	41.86
+CAEBF_19	CAEBF	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	41.86	FullTerm	399	98.71
+CAEBF_7	CAEBF	Discharge	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	41.86	FullTerm	3	42.14
+CA55D_1	CA55D	Birth	ICS_4	ICS_2	Male	Full-Term	Caesarean Section	41.86	FullTerm	1	41.86
+CA55D_7	CA55D	Discharge	ICS_1	ICS_8	Male	Full-Term	Caesarean Section	41.86	FullTerm	4	42.29
+C3D7C_1	C3D7C	Birth	ICS_4	ICS_2	Female	Full-Term	Caesarean Section	38.86	FullTerm	1	38.86
+C3D7C_19	C3D7C	OneYear	ICS_3	ICS_4	Female	Full-Term	Caesarean Section	38.86	FullTerm	404	96.43
+C8226_1	C8226	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	1	39.57
+C8226_7	C8226	Discharge	ICS_6	ICS_1	Male	Full-Term	Vaginal Vertex	39.57	FullTerm	3	39.86
+CD406_1	CD406	Birth	ICS_1	ICS_8	Female	Full-Term	Caesarean Section	39.43	FullTerm	1	39.43
+CD406_7	CD406	Discharge	ICS_2	ICS_6	Female	Full-Term	Caesarean Section	39.43	FullTerm	4	39.86
+CF47A_1	CF47A	Birth	ICS_4	ICS_2	Female	Full-Term	Caesarean Section	39.14	FullTerm	1	39.14
+CF47A_19	CF47A	OneYear	ICS_6	ICS_1	Female	Full-Term	Caesarean Section	39.14	FullTerm	385	94
+CF47A_7	CF47A	Discharge	ICS_2	ICS_6	Female	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57
+CD93C_19	CD93C	OneYear	ICS_3	ICS_4	Male	Full-Term	Vaginal Vertex	40	FullTerm	360	91.29
+CD93C_7	CD93C	Discharge	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	40	FullTerm	3	40.29
+C94F1_1	C94F1	Birth	ICS_4	ICS_2	Female	Full-Term	Vaginal Vertex	37.86	FullTerm	1	37.86
+C94F1_19	C94F1	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	37.86	FullTerm	398	94.57
+C94F1_7	C94F1	Discharge	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	37.86	FullTerm	3	38.14
+CC5BA_1	CC5BA	Birth	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.29	FullTerm	1	40.29
+CC5BA_19	CC5BA	OneYear	ICS_3	ICS_4	Female	Full-Term	Vaginal Vertex	40.29	FullTerm	375	93.71
+CC5BA_7	CC5BA	Discharge	ICS_5	ICS_3	Female	Full-Term	Vaginal Vertex	40.29	FullTerm	2	40.43
+C7308_7	C7308	Discharge	ICS_1	ICS_8	Male	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	8	36.57
+CC034_19	CC034	OneYear	ICS_3	ICS_4	Female	PT 26-27 6/7 wks	Caesarean Section	27.29	PreTerm	446	90.86
+CC034_7	CC034	Discharge	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Caesarean Section	27.29	PreTerm	65	36.43
+CDF47_19	CDF47	OneYear	ICS_3	ICS_4	Male	PT 28-29 6/7 wks	Vaginal Vertex	28.29	PreTerm	454	93
+CDF47_7	CDF47	Discharge	ICS_1	ICS_8	Male	PT 28-29 6/7 wks	Vaginal Vertex	28.29	PreTerm	53	35.71
+C92BF_1	C92BF	Birth	ICS_2	ICS_6	Female	PT 32-33 6/7 wks	Caesarean Section	33	PreTerm	1	33
+C43FE_7	C43FE	Discharge	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	101	38.29
+C0D35_7	C0D35	Discharge	ICS_1	ICS_8	Female	PT 28-29 6/7 wks	Vaginal Vertex	28.71	PreTerm	36	33.71
+C86B4_1	C86B4	Birth	ICS_6	ICS_1	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	1	30
+C86B4_19	C86B4	OneYear	ICS_3	ICS_4	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	468	96.71
+C86B4_7	C86B4	Discharge	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	42	35.86
+C4324_1	C4324	Birth	ICS_5	ICS_3	Female	PT 34-35 6/7 wks	Caesarean Section	35	PreTerm	1	35
+C4324_7	C4324	Discharge	ICS_1	ICS_8	Female	PT 34-35 6/7 wks	Caesarean Section	35	PreTerm	4	35.43
+CABA7_1	CABA7	Birth	ICS_4	ICS_2	Female	PT 30-31 6/7 wks	Caesarean Section	30.86	PreTerm	1	30.86
+CABA7_7	CABA7	Discharge	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Caesarean Section	30.86	PreTerm	71	40.86
+C519E_1	C519E	Birth	ICS_4	ICS_2	Female	PT 32-33 6/7 wks	Caesarean Section	33.57	PreTerm	1	33.57
+C519E_19	C519E	OneYear	ICS_6	ICS_1	Female	PT 32-33 6/7 wks	Caesarean Section	33.57	PreTerm	447	97.29
+C519E_7	C519E	Discharge	ICS_2	ICS_6	Female	PT 32-33 6/7 wks	Caesarean Section	33.57	PreTerm	19	36.14
+CDD85_1	CDD85	Birth	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	1	24
+CDD85_7	CDD85	Discharge	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	80	35.29
+C12E4_1	C12E4	Birth	ICS_4	ICS_2	Male	PT 26-27 6/7 wks	Caesarean Section	26.86	PreTerm	1	26.86
+C12E4_7	C12E4	Discharge	ICS_2	ICS_6	Male	PT 26-27 6/7 wks	Caesarean Section	26.86	PreTerm	70	36.71
+C3C3E_1	C3C3E	Birth	ICS_1	ICS_8	Male	PT 30-31 6/7 wks	Caesarean Section	31.86	PreTerm	1	31.86
+C3C3E_19	C3C3E	OneYear	ICS_2	ICS_6	Male	PT 30-31 6/7 wks	Caesarean Section	31.86	PreTerm	453	96.43
+C3C3E_7	C3C3E	Discharge	ICS_1	ICS_8	Male	PT 30-31 6/7 wks	Caesarean Section	31.86	PreTerm	33	36.43
+C786E_19	C786E	OneYear	ICS_3	ICS_4	Female	PT 23-25 6/7 wks	Caesarean Section	25.14	PreTerm	471	92.29
+C786E_7	C786E	Discharge	ICS_6	ICS_1	Female	PT 23-25 6/7 wks	Caesarean Section	25.14	PreTerm	80	36.43
+CAC86_19	CAC86	OneYear	ICS_3	ICS_4	Female	PT 23-25 6/7 wks	Caesarean Section	25.14	PreTerm	467	91.71
+CAC86_7	CAC86	Discharge	ICS_1	ICS_8	Female	PT 23-25 6/7 wks	Caesarean Section	25.14	PreTerm	80	36.43
+CCE7E_1	CCE7E	Birth	ICS_2	ICS_6	Male	PT 30-31 6/7 wks	Caesarean Section	30.57	PreTerm	1	30.57
+CCE7E_7	CCE7E	Discharge	ICS_2	ICS_6	Male	PT 30-31 6/7 wks	Caesarean Section	30.57	PreTerm	28	34.43
+CECCF_1	CECCF	Birth	ICS_4	ICS_2	Male	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	1	35.57
+CECCF_7	CECCF	Discharge	ICS_1	ICS_8	Male	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	6	36.29
+CAEE0_1	CAEE0	Birth	ICS_4	ICS_2	Male	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	1	35.57
+CAEE0_7	CAEE0	Discharge	ICS_2	ICS_6	Male	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	6	36.29
+CD044_1	CD044	Birth	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	25.57	PreTerm	1	25.57
+CD044_7	CD044	Discharge	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	25.57	PreTerm	108	40.86
+CFE49_1	CFE49	Birth	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	25.57	PreTerm	1	25.57
+CFE49_7	CFE49	Discharge	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Caesarean Section	25.57	PreTerm	108	40.86
+CC798_1	CC798	Birth	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	1	30
+CA0D9_1	CA0D9	Birth	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	1	30
+CA0D9_7	CA0D9	Discharge	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	42	35.86
+CFF9E_1	CFF9E	Birth	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	1	30
+CFF9E_7	CFF9E	Discharge	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Caesarean Section	30	PreTerm	42	35.86
+C789B_1	C789B	Birth	ICS_6	ICS_1	Male	PT 34-35 6/7 wks	Vaginal Breech	34.71	PreTerm	1	34.71
+C789B_19	C789B	OneYear	ICS_6	ICS_1	Male	PT 34-35 6/7 wks	Vaginal Breech	34.71	PreTerm	433	96.43
+C8C33_7	C8C33	Discharge	ICS_2	ICS_6	Female	PT 28-29 6/7 wks	Caesarean Section	28.71	PreTerm	93	41.86
+CF966_19	CF966	OneYear	ICS_6	ICS_1	Female	PT 26-27 6/7 wks	Caesarean Section	26.71	PreTerm	489	96.43
+CF966_7	CF966	Discharge	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Caesarean Section	26.71	PreTerm	69	36.43
+C1BCD_1	C1BCD	Birth	ICS_4	ICS_2	Female	PT 32-33 6/7 wks	Caesarean Section	32.57	PreTerm	1	32.57
+C1BCD_7	C1BCD	Discharge	ICS_2	ICS_6	Female	PT 32-33 6/7 wks	Caesarean Section	32.57	PreTerm	19	35.14
+C5BB5_1	C5BB5	Birth	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	1	30.29
+C5BB5_7	C5BB5	Discharge	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	65	39.43
+C5E3F_19	C5E3F	OneYear	ICS_3	ICS_4	Female	PT 28-29 6/7 wks	Caesarean Section	29.57	PreTerm	470	96.57
+C5E3F_7	C5E3F	Discharge	ICS_1	ICS_8	Female	PT 28-29 6/7 wks	Caesarean Section	29.57	PreTerm	40	35.14
+C31F8_1	C31F8	Birth	ICS_1	ICS_8	Female	PT 26-27 6/7 wks	Vaginal Vertex	26.43	PreTerm	2	26.57
+C31F8_19	C31F8	OneYear	ICS_3	ICS_4	Female	PT 26-27 6/7 wks	Vaginal Vertex	26.43	PreTerm	465	92.71000000000001
+C31F8_7	C31F8	Discharge	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Vaginal Vertex	26.43	PreTerm	53	33.86
+C121D_1	C121D	Birth	ICS_4	ICS_2	Male	PT 34-35 6/7 wks	Caesarean Section	35.14	PreTerm	1	35.14
+C121D_19	C121D	OneYear	ICS_3	ICS_4	Male	PT 34-35 6/7 wks	Caesarean Section	35.14	PreTerm	387	90.29
+C121D_7	C121D	Discharge	ICS_2	ICS_6	Male	PT 34-35 6/7 wks	Caesarean Section	35.14	PreTerm	26	38.71
+CA709_1	CA709	Birth	ICS_5	ICS_3	Female	PT 23-25 6/7 wks	Caesarean Section	25.14	PreTerm	2	25.29
+CA709_19	CA709	OneYear	ICS_3	ICS_4	Female	PT 23-25 6/7 wks	Caesarean Section	25.14	PreTerm	498	96.14
+CA709_7	CA709	Discharge	ICS_2	ICS_6	Female	PT 23-25 6/7 wks	Caesarean Section	25.14	PreTerm	107	40.29
+C8AE6_1	C8AE6	Birth	ICS_5	ICS_3	Male	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	1	30.29
+C8AE6_7	C8AE6	Discharge	ICS_2	ICS_6	Male	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	38	35.57
+CEA09_1	CEA09	Birth	ICS_4	ICS_2	Male	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	1	30.29
+CEA09_7	CEA09	Discharge	ICS_5	ICS_3	Male	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	38	35.57
+C8088_19	C8088	OneYear	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	512	97
+C8088_7	C8088	Discharge	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	125	41.72
+C1114_1	C1114	Birth	ICS_5	ICS_3	Female	PT 34-35 6/7 wks	Caesarean Section	35.29	PreTerm	1	35.29
+C1114_19	C1114	OneYear	ICS_2	ICS_6	Female	PT 34-35 6/7 wks	Caesarean Section	35.29	PreTerm	397	91.86
+CF15A_1	CF15A	Birth	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Vaginal Vertex	32.43	PreTerm	1	32.43
+CF15A_7	CF15A	Discharge	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Vaginal Vertex	32.43	PreTerm	31	36.71
+CEAF1_1	CEAF1	Birth	ICS_2	ICS_6	Male	PT 28-29 6/7 wks	Caesarean Section	29.14	PreTerm	1	29.14
+CEAF1_19	CEAF1	OneYear	ICS_3	ICS_4	Male	PT 28-29 6/7 wks	Caesarean Section	29.14	PreTerm	488	98.71
+CEAF1_7	CEAF1	Discharge	ICS_5	ICS_3	Male	PT 28-29 6/7 wks	Caesarean Section	29.14	PreTerm	66	38.43
+CFE6D_1	CFE6D	Birth	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Caesarean Section	31.71	PreTerm	1	31.71
+CFE6D_19	CFE6D	OneYear	ICS_3	ICS_4	Female	PT 30-31 6/7 wks	Caesarean Section	31.71	PreTerm	424	92.14
+CFE6D_7	CFE6D	Discharge	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Caesarean Section	31.71	PreTerm	17	34
+CFD47_1	CFD47	Birth	ICS_2	ICS_6	Female	PT 32-33 6/7 wks	Vaginal Vertex	32.86	PreTerm	1	32.86
+CFD47_7	CFD47	Discharge	ICS_6	ICS_1	Female	PT 32-33 6/7 wks	Vaginal Vertex	32.86	PreTerm	10	34.14
+C2FEF_1	C2FEF	Birth	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Caesarean Section	26.86	PreTerm	1	26.86
+C2FEF_7	C2FEF	Discharge	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Caesarean Section	26.86	PreTerm	68	36.43
+C121E_1	C121E	Birth	ICS_4	ICS_2	Male	PT 30-31 6/7 wks	Caesarean Section	31.71	PreTerm	1	31.71
+C121E_19	C121E	OneYear	ICS_3	ICS_4	Male	PT 30-31 6/7 wks	Caesarean Section	31.71	PreTerm	476	99.57
+C121E_7	C121E	Discharge	ICS_1	ICS_8	Male	PT 30-31 6/7 wks	Caesarean Section	31.71	PreTerm	26	35.29
+C7D1D_19	C7D1D	OneYear	ICS_3	ICS_4	Female	PT 26-27 6/7 wks	Vaginal Vertex	27.14	PreTerm	485	96.29
+C7D1D_7	C7D1D	Discharge	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Vaginal Vertex	27.14	PreTerm	59	35.43
+CFA20_19	CFA20	OneYear	ICS_3	ICS_4	Male	PT 23-25 6/7 wks	Caesarean Section	25	PreTerm	475	92.71
+CFA20_7	CFA20	Discharge	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Caesarean Section	25	PreTerm	98	38.86
+C1571_1	C1571	Birth	ICS_6	ICS_1	Male	PT 34-35 6/7 wks	Caesarean Section	34.57	PreTerm	1	34.57
+C1571_19	C1571	OneYear	ICS_3	ICS_4	Male	PT 34-35 6/7 wks	Caesarean Section	34.57	PreTerm	441	97.43
+C1571_7	C1571	Discharge	ICS_1	ICS_8	Male	PT 34-35 6/7 wks	Caesarean Section	34.57	PreTerm	16	36.71
+C911C_1	C911C	Birth	ICS_1	ICS_8	Female	PT 34-35 6/7 wks	Caesarean Section	34.57	PreTerm	1	34.57
+C911C_19	C911C	OneYear	ICS_4	ICS_2	Female	PT 34-35 6/7 wks	Caesarean Section	34.57	PreTerm	441	97.43
+C911C_7	C911C	Discharge	ICS_1	ICS_8	Female	PT 34-35 6/7 wks	Caesarean Section	34.57	PreTerm	10	35.86
+CB69C_1	CB69C	Birth	ICS_5	ICS_3	Female	PT 30-31 6/7 wks	Caesarean Section	31	PreTerm	2	31.14
+CB69C_19	CB69C	OneYear	ICS_3	ICS_4	Female	PT 30-31 6/7 wks	Caesarean Section	31	PreTerm	409	89.29
+CB69C_7	CB69C	Discharge	ICS_6	ICS_1	Female	PT 30-31 6/7 wks	Caesarean Section	31	PreTerm	74	41.43
+C1E3F_1	C1E3F	Birth	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	1	24
+C1E3F_7	C1E3F	Discharge	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	94	37.29
+CB655_1	CB655	Birth	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Vaginal Vertex	32.86	PreTerm	1	32.86
+CB655_19	CB655	OneYear	ICS_3	ICS_4	Male	PT 32-33 6/7 wks	Vaginal Vertex	32.86	PreTerm	451	97.14
+CB655_7	CB655	Discharge	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Vaginal Vertex	32.86	PreTerm	14	34.71
+C999A_1	C999A	Birth	ICS_4	ICS_2	Female	PT 32-33 6/7 wks	Vaginal Vertex	32.86	PreTerm	1	32.86
+C999A_7	C999A	Discharge	ICS_4	ICS_2	Female	PT 32-33 6/7 wks	Vaginal Vertex	32.86	PreTerm	14	34.71
+C24F3_1	C24F3	Birth	ICS_4	ICS_2	Male	PT 32-33 6/7 wks	Vaginal Breech	32.86	PreTerm	1	32.86
+C24F3_19	C24F3	OneYear	ICS_3	ICS_4	Male	PT 32-33 6/7 wks	Vaginal Breech	32.86	PreTerm	451	97.14
+C24F3_7	C24F3	Discharge	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Vaginal Breech	32.86	PreTerm	21	35.71
+C63EE_19	C63EE	OneYear	ICS_3	ICS_4	Female	PT 28-29 6/7 wks	Vaginal Breech	28.86	PreTerm	457	94
+C63EE_7	C63EE	Discharge	ICS_6	ICS_1	Female	PT 28-29 6/7 wks	Vaginal Breech	28.86	PreTerm	50	35.86
+CF291_7	CF291	Discharge	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	87	36.29
+C6804_1	C6804	Birth	ICS_1	ICS_8	Female	PT 32-33 6/7 wks	Vaginal Vertex	33.43	PreTerm	1	33.43
+C6804_19	C6804	OneYear	ICS_3	ICS_4	Female	PT 32-33 6/7 wks	Vaginal Vertex	33.43	PreTerm	406	91.29
+C6804_7	C6804	Discharge	ICS_6	ICS_1	Female	PT 32-33 6/7 wks	Vaginal Vertex	33.43	PreTerm	9	34.57
+C5D9D_1	C5D9D	Birth	ICS_5	ICS_3	Female	PT 32-33 6/7 wks	Vaginal Vertex	33.71	PreTerm	1	33.71
+C5D9D_19	C5D9D	OneYear	ICS_3	ICS_4	Female	PT 32-33 6/7 wks	Vaginal Vertex	33.71	PreTerm	495	104.29000000000002
+C5D9D_7	C5D9D	Discharge	ICS_2	ICS_6	Female	PT 32-33 6/7 wks	Vaginal Vertex	33.71	PreTerm	14	35.57
+C4AF3_1	C4AF3	Birth	ICS_1	ICS_8	Male	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	1	30.86
+C4AF3_19	C4AF3	OneYear	ICS_3	ICS_4	Male	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	484	99.86
+C4AF3_7	C4AF3	Discharge	ICS_1	ICS_8	Male	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	39	36.29
+C04D3_1	C04D3	Birth	ICS_2	ICS_6	Female	PT 32-33 6/7 wks	Vaginal Vertex	32	PreTerm	1	32
+C04D3_19	C04D3	OneYear	ICS_3	ICS_4	Female	PT 32-33 6/7 wks	Vaginal Vertex	32	PreTerm	456	97
+C04D3_7	C04D3	Discharge	ICS_2	ICS_6	Female	PT 32-33 6/7 wks	Vaginal Vertex	32	PreTerm	37	37.14
+CA132_1	CA132	Birth	ICS_1	ICS_8	Male	PT 26-27 6/7 wks	Vaginal Vertex	27.14	PreTerm	1	27.14
+CA132_19	CA132	OneYear	ICS_3	ICS_4	Male	PT 26-27 6/7 wks	Vaginal Vertex	27.14	PreTerm	499	98.29
+CA132_7	CA132	Discharge	ICS_1	ICS_8	Male	PT 26-27 6/7 wks	Vaginal Vertex	27.14	PreTerm	79	38.29
+CBE2E_1	CBE2E	Birth	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	1	30.86
+CBE2E_19	CBE2E	OneYear	ICS_6	ICS_1	Female	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	439	93.43
+CBE2E_7	CBE2E	Discharge	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	30	35
+CBA2E_1	CBA2E	Birth	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	1	30.86
+CBA2E_19	CBA2E	OneYear	ICS_3	ICS_4	Female	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	439	93.43
+CBA2E_7	CBA2E	Discharge	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Vaginal Vertex	30.86	PreTerm	30	35
+C1CE4_1	C1CE4	Birth	ICS_6	ICS_1	Male	PT 32-33 6/7 wks	Vaginal Vertex	33.57	PreTerm	1	33.57
+C1CE4_19	C1CE4	OneYear	ICS_2	ICS_6	Male	PT 32-33 6/7 wks	Vaginal Vertex	33.57	PreTerm	492	103.70999999999998
+C1CE4_7	C1CE4	Discharge	ICS_6	ICS_1	Male	PT 32-33 6/7 wks	Vaginal Vertex	33.57	PreTerm	9	34.71
+CEEA5_1	CEEA5	Birth	ICS_1	ICS_8	Female	PT 26-27 6/7 wks	Vaginal Vertex	26	PreTerm	1	26
+CEEA5_19	CEEA5	OneYear	ICS_3	ICS_4	Female	PT 26-27 6/7 wks	Vaginal Vertex	26	PreTerm	484	95
+CEEA5_7	CEEA5	Discharge	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Vaginal Vertex	26	PreTerm	110	41.57
+C48B6_1	C48B6	Birth	ICS_1	ICS_8	Male	PT 34-35 6/7 wks	Caesarean Section	35	PreTerm	1	35
+C48B6_7	C48B6	Discharge	ICS_1	ICS_8	Male	PT 34-35 6/7 wks	Caesarean Section	35	PreTerm	9	36.14
+CBC29_1	CBC29	Birth	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Caesarean Section	33.71	PreTerm	1	33.71
+CBC29_19	CBC29	OneYear	ICS_2	ICS_6	Male	PT 32-33 6/7 wks	Caesarean Section	33.71	PreTerm	449	97.71
+CBC29_7	CBC29	Discharge	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Caesarean Section	33.71	PreTerm	23	36.86
+C659E_19	C659E	OneYear	ICS_3	ICS_4	Male	PT 28-29 6/7 wks	Vaginal Vertex	28.14	PreTerm	446	91.71
+C659E_7	C659E	Discharge	ICS_2	ICS_6	Male	PT 28-29 6/7 wks	Vaginal Vertex	28.14	PreTerm	72	38.29
+C16C6_1	C16C6	Birth	ICS_1	ICS_8	Male	PT 26-27 6/7 wks	Caesarean Section	27	PreTerm	1	27
+C16C6_19	C16C6	OneYear	ICS_3	ICS_4	Male	PT 26-27 6/7 wks	Caesarean Section	27	PreTerm	496	97.71
+C16C6_7	C16C6	Discharge	ICS_2	ICS_6	Male	PT 26-27 6/7 wks	Caesarean Section	27	PreTerm	102	41.43
+CC9DC_1	CC9DC	Birth	ICS_1	ICS_8	Male	PT 26-27 6/7 wks	Caesarean Section	27	PreTerm	1	27
+CC9DC_19	CC9DC	OneYear	ICS_3	ICS_4	Male	PT 26-27 6/7 wks	Caesarean Section	27	PreTerm	496	97.71
+CC9DC_7	CC9DC	Discharge	ICS_1	ICS_8	Male	PT 26-27 6/7 wks	Caesarean Section	27	PreTerm	74	37.43
+C3C51_19	C3C51	OneYear	ICS_3	ICS_4	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	493	94.28
+C3C51_7	C3C51	Discharge	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	132	42.71
+C138B_19	C138B	OneYear	ICS_3	ICS_4	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	493	94.28
+C138B_7	C138B	Discharge	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	132	42.71
+C14DA_1	C14DA	Birth	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	1	24
+C14DA_19	C14DA	OneYear	ICS_3	ICS_4	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	477	92
+C14DA_7	C14DA	Discharge	ICS_1	ICS_8	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	114	40.14
+C9A7D_1	C9A7D	Birth	ICS_1	ICS_8	Female	PT 26-27 6/7 wks	Vaginal Vertex	26.29	PreTerm	1	26.29
+C9A7D_7	C9A7D	Discharge	ICS_2	ICS_6	Female	PT 26-27 6/7 wks	Vaginal Vertex	26.29	PreTerm	80	37.57
+C1EE6_19	C1EE6	OneYear	ICS_3	ICS_4	Female	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	496	94.72
+C1EE6_7	C1EE6	Discharge	ICS_1	ICS_8	Female	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	80	35.29
+CCA69_1	CCA69	Birth	ICS_1	ICS_8	Male	PT 26-27 6/7 wks	Caesarean Section	27.29	PreTerm	1	27.29
+CCA69_19	CCA69	OneYear	ICS_3	ICS_4	Male	PT 26-27 6/7 wks	Caesarean Section	27.29	PreTerm	457	92.43
+CCA69_7	CCA69	Discharge	ICS_2	ICS_6	Male	PT 26-27 6/7 wks	Caesarean Section	27.29	PreTerm	95	40.71
+C7ABD_1	C7ABD	Birth	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Vaginal Vertex	31.57	PreTerm	1	31.57
+C7ABD_7	C7ABD	Discharge	ICS_1	ICS_8	Female	PT 30-31 6/7 wks	Vaginal Vertex	31.57	PreTerm	18	34
+CE529_7	CE529	Discharge	ICS_5	ICS_3	Female	PT 28-29 6/7 wks	Vaginal Breech	28	PreTerm	80	39.29
+C4C56_1	C4C56	Birth	ICS_1	ICS_8	Male	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	1	30.29
+C4C56_19	C4C56	OneYear	ICS_3	ICS_4	Male	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	463	96.28999999999999
+C4C56_7	C4C56	Discharge	ICS_4	ICS_2	Male	PT 30-31 6/7 wks	Caesarean Section	30.29	PreTerm	37	35.43
+C8EC5_1	C8EC5	Birth	ICS_5	ICS_3	Male	PT 32-33 6/7 wks	Caesarean Section	32.71	PreTerm	1	32.71
+C8EC5_19	C8EC5	OneYear	ICS_3	ICS_4	Male	PT 32-33 6/7 wks	Caesarean Section	32.71	PreTerm	441	95.57
+C8EC5_7	C8EC5	Discharge	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Caesarean Section	32.71	PreTerm	14	34.57
+CEC03_1	CEC03	Birth	ICS_1	ICS_8	Male	PT 26-27 6/7 wks	Vaginal Vertex	26.14	PreTerm	1	26.14
+C3300_1	C3300	Birth	ICS_1	ICS_8	Male	PT 30-31 6/7 wks	Vaginal Vertex	30.71	PreTerm	1	30.71
+CBFE6_1	CBFE6	Birth	ICS_6	ICS_1	Male	Full-Term	Caesarean Section	39	FullTerm	1	39
+CBFE6_19	CBFE6	OneYear	ICS_6	ICS_1	Male	Full-Term	Caesarean Section	39	FullTerm	408	97.14
+CBFE6_7	CBFE6	Discharge	ICS_6	ICS_1	Male	Full-Term	Caesarean Section	39	FullTerm	3	39.29
+C4FB5_1	C4FB5	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	38.14	FullTerm	1	38.14
+C4FB5_19	C4FB5	OneYear	ICS_6	ICS_1	Male	Full-Term	Vaginal Vertex	38.14	FullTerm	387	93.29
+C4FB5_7	C4FB5	Discharge	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	38.14	FullTerm	3	38.43
+CB641_1	CB641	Birth	ICS_6	ICS_1	Female	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	1	35.57
+CB641_7	CB641	Discharge	ICS_5	ICS_3	Female	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	8	36.57
+C8AF1_1	C8AF1	Birth	ICS_6	ICS_1	Female	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	1	35.57
+C8AF1_7	C8AF1	Discharge	ICS_6	ICS_1	Female	PT 34-35 6/7 wks	Caesarean Section	35.57	PreTerm	10	36.86
+C5E05_19	C5E05	OneYear	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Caesarean Section	25.57	PreTerm	473	93
+C5E05_7	C5E05	Discharge	ICS_2	ICS_6	Male	PT 23-25 6/7 wks	Caesarean Section	25.57	PreTerm	88	38
+C0427_19	C0427	OneYear	ICS_3	ICS_4	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	478	92.15
+C0427_7	C0427	Discharge	ICS_6	ICS_1	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	78	35
+C4DCC_19	C4DCC	OneYear	ICS_6	ICS_1	Male	PT 23-25 6/7 wks	Vaginal Vertex	24	PreTerm	485	93.15
+CF2AC_1	CF2AC	Birth	ICS_4	ICS_2	Male	Full-Term	Vaginal Vertex	40.29	FullTerm	1	40.29
+CF2AC_19	CF2AC	OneYear	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	40.29	FullTerm	373	93.43
+CF2AC_7	CF2AC	Discharge	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	40.29	FullTerm	2	40.43
+C09B7_1	C09B7	Birth	ICS_5	ICS_3	Male	Full-Term	Vaginal Vertex	39.71	FullTerm	1	39.71
+C09B7_19	C09B7	OneYear	ICS_2	ICS_6	Male	Full-Term	Vaginal Vertex	39.71	FullTerm	393	95.71
+C09B7_7	C09B7	Discharge	ICS_1	ICS_8	Male	Full-Term	Vaginal Vertex	39.71	FullTerm	3	40
+C5BFA_1	C5BFA	Birth	ICS_1	ICS_8	Male	PT 32-33 6/7 wks	Caesarean Section	33	PreTerm	1	33
+C5BFA_7	C5BFA	Discharge	ICS_2	ICS_6	Male	PT 32-33 6/7 wks	Caesarean Section	33	PreTerm	15	35
+C3B77_19	C3B77	OneYear	ICS_3	ICS_4	Male	PT 26-27 6/7 wks	Vaginal Vertex	26.14	PreTerm	463	92.14
+C3B77_7	C3B77	Discharge	ICS_2	ICS_6	Male	PT 26-27 6/7 wks	Vaginal Vertex	26.14	PreTerm	97	39.86
+C5658_19	C5658	OneYear	ICS_3	ICS_4	Female	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	475	91.71
+CD99E_1	CD99E	Birth	ICS_1	ICS_8	Male	PT 34-35 6/7 wks	Vaginal Vertex	34.71	PreTerm	1	34.71
+CD99E_19	CD99E	OneYear	ICS_3	ICS_4	Male	PT 34-35 6/7 wks	Vaginal Vertex	34.71	PreTerm	433	96.43
+CD99E_7	CD99E	Discharge	ICS_1	ICS_8	Male	PT 34-35 6/7 wks	Vaginal Vertex	34.71	PreTerm	17	37
+N2158_19	N2158	OneYear	ICS_3	ICS_4	Female	PT 30-31 6/7 wks	Vaginal Vertex	31.57	PreTerm	469	98.43
+N2158_7	N2158	Discharge	ICS_2	ICS_6	Female	PT 30-31 6/7 wks	Vaginal Vertex	31.57	PreTerm	25	35
+N724D_19	N724D	OneYear	ICS_3	ICS_4	Male	PT 30-31 6/7 wks	Vaginal Vertex	30.71	PreTerm	424	91.14
+N724D_7	N724D	Discharge	ICS_5	ICS_3	Male	PT 30-31 6/7 wks	Vaginal Vertex	30.71	PreTerm	52	38
+N174C_19	N174C	OneYear	ICS_3	ICS_4	Female	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	476	91.85
+N174C_7	N174C	Discharge	ICS_5	ICS_3	Female	PT 23-25 6/7 wks	Caesarean Section	24	PreTerm	111	39.71
+N5436_1	N5436	Birth	ICS_1	ICS_8	Male	PT 28-29 6/7 wks	Caesarean Section	28.29	PreTerm	1	28.29
+N5436_7	N5436	Discharge	ICS_2	ICS_6	Male	PT 28-29 6/7 wks	Caesarean Section	28.29	PreTerm	60	36.71
+CE001_1	CE001	Birth	ICS_5	ICS_3	Male	Full-Term	Caesarean Section	37.71	FullTerm	1	37.71
+CE001_19	CE001	OneYear	ICS_3	ICS_4	Male	Full-Term	Caesarean Section	37.71	FullTerm	378	91.57
+C29F5_1	C29F5	Birth	ICS_5	ICS_3	Female	Full-Term	Caesarean Section	39.14	FullTerm	1	39.14
+C29F5_19	C29F5	OneYear	ICS_3	ICS_4	Female	Full-Term	Caesarean Section	39.14	FullTerm	404	96.71
+C29F5_7	C29F5	Discharge	ICS_2	ICS_6	Female	Full-Term	Caesarean Section	39.14	FullTerm	4	39.57

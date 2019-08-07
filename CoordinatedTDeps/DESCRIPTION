@@ -1,0 +1,49 @@
+Package: CoordinatedTDeps
+Title: Metapackage for dependencies
+Version: 0.0.0.9000
+Authors@R: person(given = "Andrew",
+             family = "McDavid",
+             role = c('aut', 'cre'),
+             email = "Andrew_McDavid@urmc.rochester.edu")
+Description: Library dependencies needed for "Coordinated Postnatal Trajectories of T Cells and Microbiota in Preterm and Full-term Newborns."
+Depends: R (>= 3.5)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: tidyverse,
+  survival,
+  icenReg,
+  lme4,
+  geepack,
+  xtable,
+  parallel,
+  DirichletMultinomial,
+  slam,
+  scales,
+  igraph,
+  ggbeeswarm,
+  mlr,
+  lattice,
+  RColorBrewer,
+  pheatmap,
+  viridis,
+  survminer,
+  broom,
+  parallelMap,
+  car,
+  zoo,
+  mgcv,
+  shiny,
+  data.table,
+  FlowSOM,
+  viridis,
+  pheatmap,
+  gridExtra,
+  flowCore,
+  flowStats,
+  flowViz,
+  ggrepel,
+  Rtsne,
+  plotly,
+  gganimate
+RoxygenNote: 6.1.0

@@ -1,0 +1,268 @@
+Gender,Race,Birth Season,preterm_weeks,auc14,PRD,preg_antibiotics,mode_delivery,cchorio,preg_membrane_18hr,birth_wt_gms,cmv test,Subject
+Male,White,Apr-Jun,-1.5700000000000003,0,No,Yes,Caesarean Section,No,No,3014,cmv-,C7D88
+Male,White,July-Sep,2.289999999999999,0,No,Yes,Vaginal Breech,No,No,1579,cmv-,C789B
+Female,White,Apr-Jun,-1.8599999999999994,0,No,No,Caesarean Section,Yes,No,3184,cmv-,C3D7C
+Male,White,Apr-Jun,-4.57,0,No,Yes,Vaginal Vertex,No,No,3904,cmv+lab+,CA4A7
+Female,Unknown or Not Reported,Apr-Jun,-2.289999999999999,0,No,Yes,Vaginal Vertex,No,No,3609,cmv-,CEC43
+Male,White,Jan-Mar,10.86,6837.5,Yes,Yes,Vaginal Vertex,No,No,825,cmv-,C3B77
+Female,White,July-Sep,10.29,1463,No,No,Caesarean Section,No,No,955,cmv-,CF966
+Female,White,Jan-Mar,8.29,142.5,NA,Yes,Vaginal Vertex,No,Yes,1445,NA,C0D35
+Male,White,Oct-Dec,-4.289999999999999,0,Yes,Yes,Caesarean Section,No,No,4130,cmv-,C45F4
+Female,White,Jan-Mar,10.86,7693.5,Yes,Yes,Caesarean Section,No,No,745,cmv-,C16C7
+Female,Unknown or Not Reported,Oct-Dec,-1.7100000000000009,0,No,No,Vaginal Vertex,No,No,2571,cmv-,C27DA
+Male,White,Apr-Jun,-1.5700000000000003,0,No,Yes,Caesarean Section,No,No,2971,cmv-,C9D1D
+Male,White,Apr-Jun,3.4299999999999997,0,Yes,Yes,Vaginal Vertex,No,Yes,2140,NA,C1CE4
+Male,White,Apr-Jun,1.4299999999999997,0,NA,Yes,Caesarean Section,No,No,2770,NA,CAEE0
+Female,Black/AA,July-Sep,-3.5700000000000003,0,NA,No,Vaginal Vertex,No,No,3099,cmv-,C4DD6
+Male,White,Jan-Mar,8.86,22,No,No,Vaginal Vertex,No,No,1220,cmv-,C1ECA
+Male,White,Jan-Mar,1.5700000000000003,1438,No,No,Caesarean Section,No,No,2430,cmv-,CF8EA
+Female,Black/AA,Oct-Dec,-2.1400000000000006,0,Yes,No,Caesarean Section,No,No,2775,NA,CCA49
+Male,More than 1 race,Apr-Jun,13,3277.5,No,Yes,Vaginal Vertex,No,Yes,590,NA,C14DA
+Female,White,Jan-Mar,3.1400000000000006,0,No,Yes,Vaginal Vertex,No,No,2240,cmv-,C054B
+Female,White,Oct-Dec,1.4299999999999997,0,No,Yes,Caesarean Section,No,No,1970,cmv-,CB641
+Male,Black/AA,Jan-Mar,13,5359.5,Yes,Yes,Vaginal Vertex,Yes,No,745,cmv-,C0427
+Female,Black/AA,Oct-Dec,13,2434.5,NA,Yes,Caesarean Section,No,No,550,NA,C1A7B
+Female,Black/AA,Apr-Jun,-2.710000000000001,0,Yes,No,Caesarean Section,No,No,2675,cmv-,C59B1
+Female,White,Jan-Mar,8.14,26,No,Yes,Vaginal Vertex,Yes,Yes,1247,cmv-,C08F3
+Female,More than 1 race,Jan-Mar,2,0,NA,No,Caesarean Section,No,No,2325,NA,C4324
+Female,White,Apr-Jun,4,0,No,Yes,Caesarean Section,No,No,2200,cmv-,N5FE4
+Male,Asian,Jan-Mar,-2.1400000000000006,0,NA,Yes,Caesarean Section,No,No,3600,NA,CEE43
+Male,More than 1 race,Apr-Jun,-2.4299999999999997,0,NA,No,Vaginal Vertex,No,Yes,3705,NA,C94D1
+Male,White,Apr-Jun,9.86,2521,Yes,Yes,Vaginal Vertex,No,No,1140,cmv-,CA132
+Male,Unknown or Not Reported,Apr-Jun,-2.4299999999999997,0,Yes,Yes,Caesarean Section,No,No,3345,cmv-,CD730
+Female,White,July-Sep,-2.710000000000001,0,Yes,No,Caesarean Section,Yes,No,2740,cmv-,CFE39
+Female,White,July-Sep,-2.1400000000000006,0,No,No,Caesarean Section,No,No,3731,cmv-,C01D8
+Female,White,Apr-Jun,-3.4299999999999997,0,NA,No,Vaginal Vertex,No,No,2995,NA,C72BB
+Male,White,Jan-Mar,1.8599999999999994,0,No,Yes,Caesarean Section,No,No,1939,cmv-,C3D0E
+Female,Black/AA,Oct-Dec,11.86,7072.5,Yes,No,Caesarean Section,No,No,640,cmv-,CA709
+Male,Other Race,Jan-Mar,2,1365,No,Yes,Caesarean Section,Yes,Yes,2310,cmv-,N069F
+Female,Black/AA,Jan-Mar,-1.8599999999999994,0,NA,Yes,Caesarean Section,No,No,2995,NA,C5DF7
+Male,Black/AA,Apr-Jun,6.43,136.5,NA,No,Caesarean Section,No,No,2010,NA,CCE7E
+Female,Black/AA,Jan-Mar,4,129.5,NA,Yes,Caesarean Section,No,No,2010,cmv-,C92BF
+Female,Black/AA,Oct-Dec,5.289999999999999,0,No,No,Caesarean Section,No,No,1466,cmv-,CFE6D
+Female,Unknown or Not Reported,Oct-Dec,4.43,8,No,Yes,Caesarean Section,No,No,2090,cmv-,C8A1F
+Female,More than 1 race,Jan-Mar,-3.289999999999999,0,No,Yes,Vaginal Vertex,No,No,3714,cmv-,C8083
+Male,More than 1 race,July-Sep,-1.4299999999999997,0,Yes,No,Vaginal Vertex,No,No,2381,cmv-,CE255
+Male,White,Jan-Mar,-2,0,No,No,Caesarean Section,No,No,3099,cmv-,C99C0
+Male,More than 1 race,Apr-Jun,13,8053,Yes,Yes,Caesarean Section,No,No,570,cmv-,C3C51
+Female,Black/AA,July-Sep,13,12501.5,NA,No,Caesarean Section,No,No,510,"NA",N174C
+Male,White,Apr-Jun,-2.4299999999999997,0,No,No,Vaginal Vertex,No,No,3850,cmv-,CC7D5
+Male,Black/AA,Oct-Dec,-3.710000000000001,0,NA,No,Caesarean Section,No,No,4584,NA,CE002
+Male,White,Jan-Mar,-2.1400000000000006,0,No,No,Caesarean Section,No,No,3164,cmv+,CC909
+Male,White,Oct-Dec,-2.5700000000000003,0,No,No,Vaginal Vertex,No,No,3856,cmv-,C0522
+Female,White,Oct-Dec,1.4299999999999997,0,No,Yes,Caesarean Section,No,No,2325,cmv-,C8AF1
+Male,Black/AA,Oct-Dec,6.710000000000001,0,NA,Yes,Caesarean Section,No,No,1349,NA,C8AE6
+Female,Unknown or Not Reported,Oct-Dec,-2,0,No,Yes,Caesarean Section,No,No,3124,cmv-,C1D75
+Female,Black/AA,Apr-Jun,8.86,1412.5,No,Yes,Caesarean Section,No,No,760,cmv-,C4596
+Male,White,Apr-Jun,-0.14000000000000057,0,No,Yes,Caesarean Section,No,No,2665,cmv-,C19E5
+Female,Other Race,Jan-Mar,-1.8599999999999994,0,No,No,Vaginal Vertex,No,No,3050,cmv+lab+,CB1FF
+Female,Black/AA,July-Sep,10.14,1080,Yes,Yes,Caesarean Section,No,No,650,cmv-,N52A3
+Female,White,July-Sep,4.43,0,No,No,Caesarean Section,No,No,1570,cmv-,C1BCD
+Female,Unknown or Not Reported,Jan-Mar,-2.5700000000000003,0,NA,Yes,Caesarean Section,No,No,3941,NA,C1877
+Female,White,Oct-Dec,-3,0,NA,No,Vaginal Vertex,No,No,3260,NA,C999D
+Female,White,July-Sep,-2.1400000000000006,0,No,Yes,Caesarean Section,No,No,3459,cmv-,C29F5
+Male,More than 1 race,July-Sep,0,0,NA,No,Vaginal Vertex,No,No,2680,NA,C59E6
+Female,White,Apr-Jun,-1.8599999999999994,0,NA,No,Vaginal Vertex,No,No,3929,cmv-,CFB76
+Female,Black/AA,Oct-Dec,7.43,0,No,Yes,Caesarean Section,No,No,1130,cmv+lab+,C5E3F
+Female,Unknown or Not Reported,July-Sep,-3.289999999999999,0,No,No,Vaginal Vertex,No,No,3365,NA,CC5BA
+Female,Other Race,July-Sep,-2.5700000000000003,0,NA,No,Vaginal Vertex,No,Yes,2838,NA,CAF49
+Male,More than 1 race,Oct-Dec,-1.5700000000000003,0,No,No,Vaginal Vertex,No,No,3140,NA,C36AD
+Male,White,Jan-Mar,8.86,3102.5,Yes,No,Vaginal Vertex,No,No,990,cmv-,CF111
+Female,White,July-Sep,-3.1400000000000006,0,No,No,Vaginal Vertex,No,No,3269,cmv-,C11F2
+Male,Black/AA,July-Sep,-4.140000000000001,0,NA,No,Vaginal Vertex,No,No,3785,NA,C68E5
+Female,White,Jan-Mar,4.140000000000001,0,No,Yes,Vaginal Vertex,No,No,1950,cmv-,C999A
+Female,Black/AA,Oct-Dec,10.57,1036.5,No,Yes,Vaginal Vertex,No,Yes,1160,cmv-,C31F8
+Male,More than 1 race,Apr-Jun,-4.859999999999999,0,No,No,Vaginal Vertex,No,No,3543,cmv-,CAEBF
+Female,Black/AA,Jan-Mar,10.14,287,NA,Yes,Caesarean Section,No,No,1130,NA,C2FEF
+Female,White,Apr-Jun,-2.1400000000000006,0,No,No,Caesarean Section,No,No,3555,cmv-,CF47A
+Male,White,Oct-Dec,1.4299999999999997,50.41666667,No,Yes,Caesarean Section,No,No,2450,cmv-,C7308
+Female,Black/AA,Jan-Mar,10.57,4520,NA,Yes,Vaginal Vertex,No,Yes,850,NA,C500E
+Male,Black/AA,July-Sep,-4,0,No,No,Vaginal Vertex,No,No,3549,cmv-,CA3B4
+Female,White,July-Sep,7,850,No,Yes,Caesarean Section,No,No,1400,cmv-,CFF9E
+Male,White,Apr-Jun,10.86,2367,No,No,Caesarean Section,No,No,980,cmv-,C46FB
+Male,White,July-Sep,-0.7100000000000009,0,Yes,No,Caesarean Section,No,No,3580,cmv-,CE001
+Female,Black/AA,Oct-Dec,13,4234,NA,Yes,Caesarean Section,No,Yes,620,NA,CD4D4
+Male,White,Jan-Mar,6.43,323.5,Yes,Yes,Caesarean Section,No,Yes,970,cmv-,N431B
+Female,Black/AA,Apr-Jun,13,2914.5,Yes,Yes,Caesarean Section,No,No,785,cmv-,C5658
+Male,Black/AA,Oct-Dec,1.8599999999999994,0,No,No,Caesarean Section,No,No,2625,cmv-,C121D
+Male,Black/AA,Apr-Jun,9.71,687,No,No,Caesarean Section,No,No,811,cmv-,CCA69
+Male,White,July-Sep,2.289999999999999,73.5,No,Yes,Vaginal Vertex,No,No,1530,cmv-,CD99E
+Male,White,Jan-Mar,4.57,0,No,Yes,Vaginal Vertex,No,No,2090,cmv-,C04F0
+Female,White,Jan-Mar,-0.8599999999999994,0,Yes,Yes,Caesarean Section,No,No,3586,NA,C5E1F
+Male,White,Jan-Mar,5.289999999999999,0,Yes,Yes,Caesarean Section,No,No,1250,lab+,C121E
+Male,More than 1 race,Apr-Jun,13,6503,Yes,Yes,Caesarean Section,No,No,650,cmv-,C138B
+Male,Black/AA,Apr-Jun,-1.7100000000000009,0,NA,No,Vaginal Vertex,No,No,3651,NA,C91A9
+Male,Black/AA,Jan-Mar,-2,0,No,No,Caesarean Section,No,No,2725,cmv-,CE935
+Female,Black/AA,Apr-Jun,3.4299999999999997,0,No,No,Caesarean Section,No,No,1641,cmv-,C519E
+Male,White,Oct-Dec,-2.5700000000000003,0,NA,No,Caesarean Section,No,No,3255,NA,CDDA8
+Male,White,Apr-Jun,10,1432,Yes,Yes,Caesarean Section,No,No,1e3,NA,CC9DC
+Male,Black/AA,Oct-Dec,13,4752.5,NA,Yes,Caesarean Section,No,No,660,NA,C2005
+Male,White,July-Sep,8.71,740,Yes,Yes,Caesarean Section,No,No,1420,cmv-,NDDAF
+Female,White,Jan-Mar,9.86,187.5,No,Yes,Vaginal Vertex,No,No,850,cmv-,C7D1D
+Female,Asian,Jan-Mar,2.5700000000000003,0,Yes,Yes,Caesarean Section,No,No,1960,cmv-,CC323
+Female,Black/AA,July-Sep,8.29,1505.5,Yes,Yes,Caesarean Section,No,No,940,cmv-,C8C33
+Female,White,Jan-Mar,4.57,0,Yes,Yes,Vaginal Vertex,No,No,2041,cmv-,CB75E
+Male,White,Apr-Jun,6.140000000000001,26.5,Yes,Yes,Vaginal Vertex,No,No,1630,cmv-,C4AF3
+Female,Black/AA,Apr-Jun,10.71,751,No,Yes,Vaginal Vertex,No,No,880,cmv+,C9A7D
+Female,White,Jan-Mar,8,150,No,No,Vaginal Vertex,No,Unknown,1120,cmv-,C464C
+Female,Unknown or Not Reported,July-Sep,6.710000000000001,0,No,No,Caesarean Section,No,No,830,cmv-,C5BB5
+Male,Black/AA,Apr-Jun,-1.5700000000000003,0,NA,No,Vaginal Vertex,No,Yes,2775,NA,C4AC3
+Male,White,July-Sep,8.71,774,Yes,Yes,Caesarean Section,No,No,1225,cmv-,N5436
+Female,White,Apr-Jun,5,0,No,Yes,Vaginal Vertex,No,No,1420,NA,C04D3
+Male,White,Jan-Mar,6.140000000000001,49.5,Yes,Yes,Caesarean Section,No,No,1450,cmv-,CA234
+Female,White,Oct-Dec,-2,0,No,No,Vaginal Vertex,No,No,3060,cmv-,C0C1C
+Male,More than 1 race,Jan-Mar,6.710000000000001,276.5,No,Yes,Vaginal Breech,No,No,1610,cmv-,C615D
+Male,White,Apr-Jun,-3.710000000000001,0,NA,No,Vaginal Vertex,No,No,3575,NA,CD34B
+Female,White,Apr-Jun,6.140000000000001,5185.5,NA,Yes,Caesarean Section,No,No,941,NA,CABA7
+Female,White,Apr-Jun,11.86,1958,No,Yes,Caesarean Section,No,No,690,cmv-,CAC86
+Male,Black/AA,Jan-Mar,13,6002,Yes,Yes,Caesarean Section,No,No,705,cmv-,CF291
+Male,Black/AA,Apr-Jun,6.289999999999999,454.5,Yes,Yes,Vaginal Vertex,Yes,Yes,1420,cmv-,N724D
+Male,White,Apr-Jun,-2.289999999999999,0,NA,No,Caesarean Section,No,No,3118,NA,C0A68
+Male,White,Apr-Jun,-1.4299999999999997,0,NA,Yes,Vaginal Vertex,No,No,3031,NA,CC8A0
+Male,White,July-Sep,-2,0,No,Yes,Caesarean Section,No,No,4765,cmv+lab+,CBFE6
+Male,White,July-Sep,-1.1400000000000006,0,No,No,Vaginal Vertex,No,No,3329,cmv-,C4FB5
+Male,Unknown or Not Reported,July-Sep,-3.289999999999999,0,Yes,No,Vaginal Vertex,No,Unknown,3161,cmv+lab+,CF2AC
+Female,Black/AA,July-Sep,-2.289999999999999,0,NA,Yes,Caesarean Section,No,No,2965,NA,C266E
+Male,Black/AA,July-Sep,-2.8599999999999994,0,NA,No,Vaginal Vertex,Yes,No,3400,NA,CE31F
+Female,White,Oct-Dec,-3.4299999999999997,0,No,Yes,Vaginal Vertex,No,No,3150,cmv-,CE240
+Male,White,Jan-Mar,-0.8599999999999994,0,No,Yes,Caesarean Section,No,No,3395,cmv+lab+,C36B6
+Female,White,July-Sep,-2,0,NA,Yes,Caesarean Section,No,No,2895,NA,CD47D
+Male,White,July-Sep,-2.1400000000000006,0,No,No,Vaginal Vertex,No,No,3221,cmv-,C1497
+Male,Unknown or Not Reported,Oct-Dec,-2,0,Yes,No,Vaginal Vertex,No,No,3975,cmv-,C4D1A
+Male,More than 1 race,July-Sep,-3,0,No,No,Vaginal Vertex,No,No,3105,NA,CD93C
+Male,Unknown or Not Reported,Apr-Jun,-0.4299999999999997,0,No,No,Vaginal Vertex,No,No,3425,cmv-,CD7B4
+Male,Black/AA,Oct-Dec,-2.4299999999999997,0,NA,No,Caesarean Section,No,No,3850,NA,C4EAC
+Male,Black/AA,Jan-Mar,8.71,23.5,No,Yes,Vaginal Vertex,No,No,1170,cmv-,CDF47
+Female,White,July-Sep,7,928.5,Yes,Yes,Caesarean Section,No,No,1090,cmv-,CA0D9
+Male,White,Jan-Mar,4.140000000000001,0,No,Yes,Vaginal Vertex,No,No,2145,cmv-,CB655
+Female,More than 1 race,Apr-Jun,13,7021.5,Yes,Yes,Vaginal Vertex,No,Yes,710,cmv+lab+,C1EE6
+Male,White,Oct-Dec,6.289999999999999,923,NA,Yes,Vaginal Vertex,No,Yes,1851,NA,C3300
+Male,White,Jan-Mar,13,6345.5,No,Yes,Caesarean Section,No,No,720,cmv-,C5D06
+Male,White,Apr-Jun,-2.289999999999999,0,NA,No,Vaginal Vertex,No,No,3285,NA,C1ED2
+Male,Black/AA,Jan-Mar,-2.5700000000000003,0,NA,No,Vaginal Vertex,No,No,3569,NA,C5C91
+Female,Black/AA,Jan-Mar,1.2899999999999991,42,No,No,Vaginal Vertex,No,No,2750,cmv-,C81C6
+Female,White,Jan-Mar,1.8599999999999994,0,No,Yes,Caesarean Section,No,No,2350,cmv-,CF9D9
+Female,More than 1 race,Oct-Dec,9.43,134.8426415,Yes,Yes,Vaginal Vertex,No,No,1018,lab+,CFBDE
+Male,White,Jan-Mar,4.57,4,No,Yes,Vaginal Vertex,No,No,1770,cmv-,CBB3D
+Female,White,Jan-Mar,7,557.5,NA,No,Caesarean Section,No,No,1290,NA,C2073
+Female,White,Jan-Mar,7,2224.5,Yes,No,Caesarean Section,No,No,1260,cmv-,C37A0
+Male,White,Apr-Jun,-2.5700000000000003,0,No,No,Vaginal Vertex,No,No,3561,cmv-,C8226
+Female,White,Oct-Dec,-4,0,No,Yes,Caesarean Section,No,No,3095,cmv-,CC305
+Female,White,Apr-Jun,6.140000000000001,26,No,Yes,Vaginal Vertex,No,No,1710,cmv-,CBE2E
+Male,White,Apr-Jun,10,2435,No,Yes,Caesarean Section,No,No,916,NA,C16C6
+Male,Black/AA,Jan-Mar,12,7872.5,No,No,Caesarean Section,No,No,820,cmv-,CFA20
+Female,More than 1 race,Apr-Jun,-2.4299999999999997,0,NA,Yes,Caesarean Section,No,No,3654,cmv-,CD406
+Female,White,Oct-Dec,9.71,3782,Yes,No,Caesarean Section,No,No,1240,cmv-,CC034
+Female,White,Apr-Jun,5.43,1,Yes,Yes,Caesarean Section,No,No,1990,cmv-,N6D78
+Female,White,Oct-Dec,-2.289999999999999,0,No,Yes,Vaginal Vertex,No,No,3357,cmv-,C83E3
+Male,White,Apr-Jun,-3.289999999999999,0,Yes,Yes,Vaginal Vertex,No,No,3500,cmv-,C98F2
+Female,Black/AA,Apr-Jun,-4.140000000000001,0,No,No,Vaginal Vertex,No,No,4706,lab+,CB85D
+Male,Black/AA,Apr-Jun,-4,0,NA,No,Vaginal Vertex,No,No,2841,NA,CAD50
+Female,White,Oct-Dec,-3.289999999999999,0,No,Yes,Vaginal Vertex,No,No,3195,cmv-,C8141
+Female,White,Apr-Jun,11.86,2820.5,No,Yes,Caesarean Section,No,No,730,cmv-,C786E
+Male,White,Jan-Mar,13,3209.5,No,No,Caesarean Section,No,No,496,cmv-,C1E3F
+Female,White,July-Sep,-1.8599999999999994,0,No,No,Vaginal Vertex,No,No,3305,cmv-,C09C2
+Female,White,Apr-Jun,-3.289999999999999,0,NA,No,Vaginal Vertex,No,No,3439,NA,CB504
+Male,White,Jan-Mar,6.140000000000001,128,Yes,Yes,Caesarean Section,No,No,1525,cmv-,C6D11
+Male,White,Oct-Dec,13,10332.5,Yes,Yes,Vaginal Vertex,No,No,600,cmv-,C8088
+Male,White,July-Sep,11.43,4994.5,NA,Yes,Caesarean Section,No,No,811,NA,CFE49
+Male,White,Apr-Jun,1.2899999999999991,0,No,No,Caesarean Section,No,No,2430,"NA",ND8A2
+Male,Other Race,July-Sep,-4,0,No,No,Vaginal Vertex,Yes,No,3654,cmv-,CE93B
+Male,More than 1 race,Oct-Dec,-2.5700000000000003,0,NA,Yes,Caesarean Section,No,No,3651,NA,C596E
+Female,Black/AA,Jan-Mar,6,240,Yes,No,Caesarean Section,No,No,1245,lab+,CB69C
+Male,White,Apr-Jun,3.289999999999999,0,Yes,No,Caesarean Section,No,No,1511,cmv-,CBC29
+Male,Asian,July-Sep,-4.140000000000001,0,No,No,Vaginal Vertex,No,No,2841,cmv-,CE06C
+Female,Black/AA,Oct-Dec,4,52.93421053,Yes,Yes,Caesarean Section,No,No,1641,cmv+lab+,C34D5
+Male,Black/AA,Oct-Dec,10.86,1728.5,NA,Yes,Vaginal Vertex,No,No,935,NA,CEC03
+Female,White,Oct-Dec,9.29,127,Yes,Yes,Vaginal Vertex,No,No,1160,cmv+lab+,C6D4A
+Male,White,July-Sep,6.710000000000001,1871.5,Yes,Yes,Caesarean Section,No,No,1735,lab+,C4C56
+Female,Other Race,Apr-Jun,13,2850.5,Yes,Yes,Caesarean Section,No,Yes,585,cmv-,CA772
+Male,Black/AA,Oct-Dec,6.710000000000001,167,NA,Yes,Caesarean Section,No,No,1361,NA,CEA09
+Male,Black/AA,Apr-Jun,8.86,4398.5,No,No,Vaginal Vertex,No,No,1055,NA,C659E
+Female,White,Apr-Jun,6.140000000000001,47,No,Yes,Vaginal Vertex,No,No,1530,cmv-,CBA2E
+Male,White,Oct-Dec,6.57,906,Yes,No,Caesarean Section,No,No,1590,cmv-,C48BC
+Male,More than 1 race,Jan-Mar,1.7100000000000009,0,No,Yes,Vaginal Vertex,No,No,2145,cmv-,CC8B4
+Male,Unknown or Not Reported,Apr-Jun,-3.710000000000001,0,No,Yes,Caesarean Section,No,No,4304,cmv-,CE11D
+Male,White,Oct-Dec,-2.1400000000000006,0,No,No,Caesarean Section,No,No,3864,cmv-,C0796
+Male,More than 1 race,Oct-Dec,8.43,322.5,No,No,Caesarean Section,No,No,1180,cmv-,CBB28
+Female,Black/AA,Oct-Dec,13,6826,Yes,Yes,Vaginal Breech,No,No,650,cmv-,NB0D2
+Male,White,Apr-Jun,-4.859999999999999,0,No,No,Caesarean Section,No,No,4375,cmv-,CA55D
+Female,More than 1 race,Oct-Dec,13,7767,Yes,Yes,Caesarean Section,No,No,561,cmv-,CCEC6
+Female,White,July-Sep,-3.1400000000000006,0,No,No,Vaginal Vertex,No,No,3300,cmv-,C94DD
+Male,Unknown or Not Reported,Oct-Dec,-2.289999999999999,0,Yes,No,Vaginal Vertex,No,Yes,2991,cmv-,CA3C7
+Male,White,Jan-Mar,6.289999999999999,309,No,Yes,Vaginal Vertex,No,No,1658,cmv-,CB881
+Female,Black/AA,Apr-Jun,-3.4299999999999997,0,NA,Yes,Caesarean Section,No,No,3606,NA,CED0D
+Female,White,July-Sep,5.43,0,No,Yes,Vaginal Vertex,No,Yes,1790,cmv-,C7ABD
+Male,White,Apr-Jun,-2.710000000000001,0,No,No,Vaginal Vertex,No,No,3221,cmv-,C6732
+Female,More than 1 race,Apr-Jun,-2.710000000000001,0,No,No,Vaginal Vertex,No,No,3884,cmv-,C7D5A
+Female,Black/AA,Apr-Jun,3.289999999999999,0,No,Yes,Vaginal Vertex,No,No,1945,cmv-,C5D9D
+Male,White,Jan-Mar,2.4299999999999997,0,No,No,Caesarean Section,No,No,2200,cmv-,C1571
+Male,White,July-Sep,11.43,2928.5,NA,Yes,Caesarean Section,No,No,910,NA,CD044
+Male,Black/AA,Oct-Dec,7.859999999999999,663.5,Yes,No,Caesarean Section,No,No,780,cmv-,CEAF1
+Male,White,Jan-Mar,-2.5700000000000003,0,No,No,Vaginal Vertex,No,No,3470,cmv-,C3AB2
+Male,White,Oct-Dec,-2.1400000000000006,0,NA,Yes,Caesarean Section,No,No,4505,cmv-,CF4B8
+Female,White,Apr-Jun,-1.7100000000000009,0,NA,Yes,Vaginal Vertex,No,No,2976,NA,CF3CC
+Female,White,Oct-Dec,-3.289999999999999,0,NA,No,Vaginal Vertex,No,No,4e3,NA,C382A
+Male,Black/AA,Jan-Mar,13,2576,No,Yes,Vaginal Vertex,Yes,No,850,cmv-,C4DCC
+Female,Black/AA,Jan-Mar,8.14,114,Yes,Yes,Vaginal Breech,No,Yes,1110,cmv+lab+,C63EE
+Male,White,July-Sep,-2.710000000000001,0,No,No,Vaginal Vertex,No,No,2910,cmv-,C09B7
+Female,White,Apr-Jun,3.5700000000000003,0,Yes,Yes,Vaginal Vertex,No,No,1745,cmv-,C6804
+Male,White,Oct-Dec,-2.289999999999999,0,No,Yes,Caesarean Section,No,No,3545,cmv-,C7BA1
+Male,White,July-Sep,-2,0,No,No,Caesarean Section,No,No,3771,cmv-,CD4E3
+Male,White,July-Sep,-2.710000000000001,0,NA,No,Vaginal Vertex,No,No,3374,NA,C6F73
+Male,Black/AA,July-Sep,-3.710000000000001,0,NA,No,Vaginal Vertex,No,No,4051,cmv-,C970F
+Male,White,July-Sep,4.289999999999999,94,No,No,Caesarean Section,No,No,1675,cmv-,C8EC5
+Male,More than 1 race,Apr-Jun,13,1793,NA,No,Caesarean Section,No,No,709,NA,CDD85
+Male,White,Jan-Mar,4.140000000000001,50,Yes,Yes,Vaginal Breech,No,No,2170,cmv-,C24F3
+Female,More than 1 race,July-Sep,9,521.5,NA,No,Vaginal Breech,No,No,1077,NA,CE529
+Female,Black/AA,Jan-Mar,4.57,72,NA,No,Caesarean Section,No,No,1471,NA,C1923
+Male,White,Jan-Mar,9.71,486,Yes,Yes,Caesarean Section,No,Yes,910,cmv-,C4B89
+Male,White,Jan-Mar,-2.1400000000000006,0,NA,Yes,Caesarean Section,No,No,3565,cmv+lab+,CE068
+Male,White,Apr-Jun,1.2899999999999991,24,No,No,Caesarean Section,No,No,2885,cmv-,N3EA5
+Male,White,Apr-Jun,1.4299999999999997,0,NA,Yes,Caesarean Section,No,No,2040,NA,CECCF
+Male,Other Race,July-Sep,4.43,0,No,No,Vaginal Vertex,No,No,1810,cmv-,CAC82
+Male,White,Jan-Mar,-2.1400000000000006,0,No,No,Vaginal Vertex,No,No,3385,cmv+lab+,C84BC
+Female,White,Apr-Jun,-2.4299999999999997,0,NA,Yes,Caesarean Section,No,No,4301,NA,C79BB
+Male,Black/AA,Jan-Mar,-2.5700000000000003,0,No,Yes,Caesarean Section,No,No,3946,cmv-,CE2E7
+Male,Unknown or Not Reported,Oct-Dec,11.43,6142.5,Yes,Yes,Caesarean Section,No,No,730,cmv-,C5E05
+Male,Black/AA,Oct-Dec,-3,0,No,No,Vaginal Vertex,No,No,3885,cmv+lab+,CB127
+Female,White,Jan-Mar,7,0,Yes,No,Caesarean Section,No,No,760,cmv-,C86B4
+Male,White,Apr-Jun,5.140000000000001,1420,No,No,Caesarean Section,No,No,1154,cmv-,C3C3E
+Male,Black/AA,Apr-Jun,-2,0,NA,No,Caesarean Section,No,No,3300,NA,C6BD1
+Male,White,Apr-Jun,-1.2899999999999991,0,No,Yes,Caesarean Section,No,No,3144,cmv-,CF3A8
+Male,More than 1 race,Jan-Mar,13,18133,NA,Yes,Caesarean Section,No,Unknown,510,NA,C43FE
+Male,Black/AA,Jan-Mar,-3.4299999999999997,0,No,Yes,Caesarean Section,No,No,3195,cmv-,C3AED
+Female,White,Jan-Mar,9.29,26,No,No,Caesarean Section,No,No,810,cmv-,N6DB9
+Male,White,July-Sep,-2.8599999999999994,0,Yes,No,Vaginal Vertex,No,No,4525,cmv-,CE827
+Female,White,Apr-Jun,-3.4299999999999997,0,No,No,Vaginal Vertex,No,No,3780,cmv-,C4692
+Female,White,Jan-Mar,-3.8599999999999994,0,No,No,Vaginal Vertex,No,No,3396,cmv+lab+,C572C
+Female,Black/AA,Oct-Dec,4.140000000000001,0,NA,Yes,Vaginal Vertex,No,No,2169,NA,CFD47
+Male,White,Oct-Dec,-2.8599999999999994,0,No,No,Vaginal Vertex,No,No,3640,cmv-,C7049
+Male,White,Apr-Jun,-1,0,Yes,Yes,Caesarean Section,No,No,5049,NA,CEF3C
+Female,More than 1 race,Oct-Dec,-3.8599999999999994,0,No,Yes,Vaginal Vertex,No,Yes,3204,cmv-,CB603
+Male,Black/AA,Oct-Dec,5.57,1080,Yes,Yes,Caesarean Section,No,Yes,1750,cmv-,CF510
+Male,More than 1 race,Jan-Mar,11.43,3770.5,Yes,Yes,Caesarean Section,Yes,Yes,720,cmv-,C4B0A
+Female,Asian,Jan-Mar,2.5700000000000003,68,Yes,Yes,Caesarean Section,No,No,2509,cmv-,CED62
+Female,White,July-Sep,7,32.5,No,Yes,Caesarean Section,No,No,1320,cmv-,CC798
+Male,White,Apr-Jun,2,0,No,Yes,Caesarean Section,No,Yes,2920,cmv-,C48B6
+Male,Black/AA,Apr-Jun,9.14,91,Yes,Yes,Vaginal Vertex,No,No,1290,cmv-,N4987
+Male,White,Oct-Dec,4.57,271,No,Yes,Vaginal Vertex,No,No,1610,cmv-,CF15A
+Female,White,Oct-Dec,3.8599999999999994,0,No,Yes,Vaginal Vertex,No,Unknown,1880,cmv-,C7C51
+Female,White,Oct-Dec,-4.140000000000001,0,Yes,Yes,Vaginal Vertex,No,No,4286,cmv-,C7E1B
+Female,Black/AA,Oct-Dec,-3.1400000000000006,0,No,No,Vaginal Vertex,No,No,2665,cmv-,C9B72
+Male,White,Apr-Jun,1.4299999999999997,0,No,Yes,Caesarean Section,No,No,2790,cmv-,N8092
+Female,White,Oct-Dec,1.7100000000000009,183,No,No,Caesarean Section,No,No,2470,cmv+lab+,C1114
+Male,White,Oct-Dec,-4.57,0,No,Yes,Caesarean Section,No,No,4035,cmv-,C0E4F
+Female,Black/AA,Jan-Mar,-3.710000000000001,0,No,No,Vaginal Vertex,No,No,3615,NA,CA122
+Male,White,Apr-Jun,-3.710000000000001,0,Yes,No,Caesarean Section,No,No,4245,cmv-,CBDB0
+Female,White,Apr-Jun,5.43,0,Yes,Yes,Vaginal Vertex,No,No,1760,cmv-,N2158
+Female,Black/AA,July-Sep,-3.710000000000001,0,Yes,No,Vaginal Vertex,No,No,4119,cmv-,C2CE9
+Male,Black/AA,Apr-Jun,10.14,2272,NA,Yes,Caesarean Section,Yes,Yes,980,NA,C12E4
+Female,Black/AA,Oct-Dec,-2,0,NA,Yes,Caesarean Section,No,No,3691,NA,C2ED8
+Male,Black/AA,Jan-Mar,4,274.5,Yes,Yes,Caesarean Section,No,No,1959,cmv-,C5BFA
+Female,Black/AA,Apr-Jun,11,2810.5,Yes,Yes,Vaginal Vertex,No,No,870,cmv-,CEEA5
+Male,Black/AA,Jan-Mar,-3.4299999999999997,0,No,No,Vaginal Vertex,No,No,4014,cmv-,C53CC
+Male,White,Jan-Mar,3.5700000000000003,0,No,Yes,Caesarean Section,No,No,1700,cmv-,C2286
+Female,Unknown or Not Reported,July-Sep,-0.8599999999999994,0,No,No,Vaginal Vertex,No,No,2740,cmv-,C94F1
+Female,White,Jan-Mar,2.4299999999999997,0,No,No,Caesarean Section,No,No,2380,cmv-,C911C
+Female,Other Race,Oct-Dec,-3.1400000000000006,0,NA,No,Vaginal Vertex,No,No,3750,NA,C2CFE

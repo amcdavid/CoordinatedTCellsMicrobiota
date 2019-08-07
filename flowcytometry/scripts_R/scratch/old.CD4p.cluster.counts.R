@@ -1,0 +1,12 @@
+COUNTS_PATHS <- list.files("./data_source/TPHE2_with.spillover/", recursive=TRUE, full.names=TRUE, pattern="*fSOM.CD4pheno.rerun_counts.csv$")
+raw.counts <- generate.counts(COUNTS_PATHS)
+counts <- as.data.frame(t(apply(raw.counts, 1, function(i) i/sum(i)))) * 100 # sum100 (percent)
+counts$unique <- sub(" ", "_", sub("_fSOM.*", "", row.names(counts)))
+counts.meta <- merge(counts, readRDS("./data_modified/TPHE_meta.RDS"), by = "unique")
+counts.meta$random <- runif(length(counts.meta$unique), 1, length(counts.meta$unique))
+meta.explorer(counts.meta)
+
+ggord(prcomp(counts.meta[,grep("Meta.Cluster",colnames(counts.meta))]), counts.meta$VisitALIAS, ellipse = FALSE, arrow = NULL, txt = NULL)
+ggord(prcomp(counts.meta[,grep("Meta.Cluster",colnames(counts.meta))]), counts.meta$VisitTermALIAS, ellipse = TRUE, ellipse_pro = 0.8, arrow = NULL, txt = NULL)
+ggord(prcomp(counts.meta[,grep("Meta.Cluster",colnames(counts.meta))]), counts.meta$ExperimentALIAS, ellipse = FALSE, arrow = NULL, txt = NULL)
+biplot(prcomp(counts.meta[,grep("Meta.Cluster",colnames(counts.meta))]))

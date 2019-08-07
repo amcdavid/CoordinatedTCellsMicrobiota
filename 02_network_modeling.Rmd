@@ -1,0 +1,564 @@
+---
+title: "Network modeling"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+refined = 'intermediates'
+private = 'private'
+```
+
+These analyses were used to generate the network plots in figure 6, as well as 
+
+# Analysis of CST Occurrence vs Immunological Parameters - quasi-Poisson Duration
+
+Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter and the number of days a subject spends in the CST.
+
+```{r quasipoisson}
+#Start time
+start.time <- Sys.time()
+
+library(readr)
+
+type <- "duration"
+
+sites = c("REC", "NAS")
+
+for (site in sites) {
+  
+  #Read in metadata and CST duration data
+  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
+  
+  raw_table <- read_tsv(file.path(refined, sprintf("%s_Duration_Input.txt", site)))
+  
+  mapping_length <- ncol(mapping)
+  
+  table_length <- ncol(raw_table)
+  
+  #Iterate through CSTs
+  for (cst_i in 3:table_length) {
+    
+    tmp.time <- Sys.time()
+    
+    cst <- colnames(raw_table[,cst_i])
+    
+    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
+    
+    #Lists to store results
+    var_names <- list()
+    model_pvals <- list()
+    k <- 1
+    
+    voi_names <- list()
+    var_pvals <- list()
+    var_coeffs <- list()
+    vars <- list()
+    renamed_vars <- list()
+    j <- 1
+    
+    #Iterate through immune parameters
+    for (var_i in 4:mapping_length) {
+      
+      var <- colnames(mapping[,var_i])
+      
+      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
+      
+      fac = FALSE
+      
+      #Join metadata with CST duration data on subject
+      working_table <- merge(mapping_in, cst_in, by = "Subject")
+      
+      working_table <- working_table[complete.cases(working_table[,]), ]
+      
+      #If the immmune parameter is IST (vs metacluster abundance), remove any ISTs that occur less than ten times
+      if (typeof(working_table[[var]]) == "character") {
+        
+        fac = TRUE
+        
+        tmp_table <- as.data.frame(table(working_table[[var]]))
+        
+        rare_cats <- list()
+        n <- 1
+        
+        for (cat_i in 1:nrow(tmp_table)) {
+          
+          if (tmp_table[[2]][cat_i] < 10) {
+            
+            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
+            n <- n + 1
+            
+          }
+          
+        }
+        
+        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
+        
+      }
+      
+      #If the current CST occurs in <10% of the remaining subjects or all but one IST has been filtered out, skip this comparison
+      if ((sum(working_table[[cst]] == 0) > nrow(working_table)*0.9) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
+        
+        next
+        
+      }
+      
+      working_table$cst_freq <- working_table[[cst]]
+      
+      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
+      if (fac) {
+        
+        working_table$voi <- factor(working_table[[var]])
+        
+      } else {
+        
+        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
+        
+      }
+      
+      #Center GA on 37 weeks (term)
+      working_table$GAB <- ((working_table$gaBirth)/37) - 1
+      working_table$ldays = log(working_table$Total)
+      
+      #Fit the model with and without the immune parameter (voi = Variable of Interest = the immune parameter)
+      fit.full <- glm(cst_freq ~ MOD + GAB + offset(ldays) + voi, data = working_table, family = quasipoisson)
+      fit.null <- glm(cst_freq ~ MOD + GAB + offset(ldays), data = working_table, family = quasipoisson)
+      
+      #Test for significance
+      model_test <- anova(fit.null, fit.full, test = "Chisq")
+      
+      var_names[[k]] <- var
+      model_pvals[[k]] <- model_test$`Pr(>Chi)`[2]
+      k <- k + 1
+
+      #Write the model summary
+      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
+        dir.create(pth)
+      
+      cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      capture.output(summary(fit.full), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      
+      
+      #If the immune parameter was significant, get the coefficients and p-values
+      if (model_test$`Pr(>Chi)`[2] < 0.05) {
+        
+        s <- summary(fit.full)
+        l <- grep("voi", rownames(s$coefficients))
+        for (i in l) {
+          
+          voi_names[[j]] <- var
+          vars[[j]] <- rownames(s$coefficients)[i]
+          #Because ISTs were renamed after they were defined, provide the alternate name
+          renamed_vars[[j]] <- switch(rownames(s$coefficients)[i], 'voi'='voi', 'voiICS_1'='ICS_8', 'voiICS_2'='ICS_6',	'voiICS_3'='ICS_4',	'voiICS_4'='ICS_2',	'voiICS_5'='ICS_3',	'voiICS_6'='ICS_1',	'voiICS_7'='ICS_5',	'voiICS_8'='ICS_7',	'voiTPHE_1'='TPHE_7',	'voiTPHE_2'='TPHE_2',	'voiTPHE_3'='TPHE_1',	'voiTPHE_4'='TPHE_3',	'voiTPHE_5'='TPHE_5',	'voiTPHE_6'='TPHE_4',	'voiTPHE_7'='TPHE_6')
+          var_coeffs[[j]] <- s$coefficients[i,1]
+          var_pvals[[j]] <- s$coefficients[i,4]
+          j <- j + 1
+          
+        }
+        
+      }
+        
+    }
+    
+    #Multiple test correction, model level
+    adj_model_pvals <- p.adjust(model_pvals, method = "fdr")
+    #Assemble model level results
+    results <- cbind(var_names, model_pvals, adj_model_pvals)
+    #Write model level results
+    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
+    
+    #Do the same thing for variables
+    adj_var_pvals <- p.adjust(var_pvals, method = "fdr")
+    term_results <- cbind(voi_names, vars, renamed_vars, var_coeffs, var_pvals, adj_var_pvals)
+    
+    write.csv(term_results, file.path(refined,  sprintf("%s_results/%s_term_pvals_and_betas.csv", type, cst)))
+    
+    cat("\nTime taken to complete last CST: ")
+    cat(difftime(Sys.time(), tmp.time, units = "mins"))
+    
+  }
+  
+}
+
+#Print total runtime
+cat("\nTotal runtime:")
+cat(difftime(Sys.time(), start.time, units = "hours"))
+cat("\n\n\n")
+
+```
+
+
+# Analysis of CST Occurrence vs Immunological Parameters - Logistic Occurrence Probability
+
+Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter and whether or not the CST occurs at all within a subject.
+
+Same as the quasi-Poisson duration above, just fitting a different model.
+
+```{r logistic}
+
+#Start time
+start.time <- Sys.time()
+
+library(readr)
+
+type <- "logit"
+
+sites = c("REC", "NAS")
+
+for (site in sites) {
+  #Read in metadata and CST occurrence data
+  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
+  
+  raw_table <- read_tsv(file.path(refined, sprintf("%s_Logit_Input.txt", site)))
+  
+  mapping_length <- ncol(mapping)
+  
+  table_length <- ncol(raw_table)
+  
+  for (cst_i in 3:table_length) {
+    
+    tmp.time <- Sys.time()
+    
+    cst <- colnames(raw_table[,cst_i])
+    
+    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
+    
+    #Lists to store results
+    var_names <- list()
+    model_pvals <- list()
+    k <- 1
+    
+    voi_names <- list()
+    var_pvals <- list()
+    var_coeffs <- list()
+    vars <- list()
+    j <- 1
+    
+    for (var_i in 4:mapping_length) {
+      
+      var <- colnames(mapping[,var_i])
+      
+      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
+      
+      fac = FALSE
+      
+      #Merge metadata and CST occurrence data on subject
+      working_table <- merge(mapping_in, cst_in, by = "Subject")
+      
+      working_table <- working_table[complete.cases(working_table[,]), ]
+      
+      #If the immune parameter is IST, remove any ISTs that occur less than ten times at the given time point.
+      if (typeof(working_table[[var]]) == "character") {
+        
+        fac = TRUE
+        
+        tmp_table <- as.data.frame(table(working_table[[var]]))
+        
+        rare_cats <- list()
+        n <- 1
+        
+        for (cat_i in 1:nrow(tmp_table)) {
+          
+          if (tmp_table[[2]][cat_i] < 10) {
+            
+            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
+            n <- n + 1
+            
+          }
+          
+        }
+        
+        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
+        
+      }
+      
+      #If the CST occurs in less than 10% of remaining subjects, skip this comparison
+      if ((sum(working_table[[cst]] == "Yes") < nrow(working_table)*0.1) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
+        
+        next
+        
+      }
+      
+      working_table$cst_yn <- factor(working_table[[cst]])
+      
+      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
+      if (fac) {
+        
+        working_table$voi <- factor(working_table[[var]])
+        
+      } else {
+        
+        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
+        
+      }
+      
+      #Center and scale the number of observations per subjects and GA at birth
+      working_table$Obs <- c(scale(working_table$Total, center = TRUE, scale = TRUE))
+      working_table$GAB <- ((working_table$gaBirth)/37) - 1
+      
+      #Fit the model with and without the immune parameter
+      fit.full <- glm(cst_yn ~ MOD + GAB + Obs + voi, data = working_table, family = binomial)
+      fit.null <- glm(cst_yn ~ MOD + GAB + Obs, data = working_table, family = binomial)
+      
+      #Test for significance
+      model_test <- anova(fit.null, fit.full, test = "Chisq")
+      
+      var_names[[k]] <- var
+      model_pvals[[k]] <- model_test$`Pr(>Chi)`[2]
+      k <- k + 1
+
+      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
+        dir.create(pth)
+      
+      #Write the model summary
+     cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+     cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      capture.output(summary(fit.full), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      
+      #If it's significant, store additional information
+      if (model_test$`Pr(>Chi)`[2] < 0.05) {
+        
+        s <- summary(fit.full)
+        l <- grep("voi", rownames(s$coefficients))
+        for (i in l) {
+          
+          voi_names[[j]] <- var
+          vars[[j]] <- rownames(s$coefficients)[i]
+          var_coeffs[[j]] <- s$coefficients[i,1]
+          var_pvals[[j]] <- s$coefficients[i,4]
+          j <- j + 1
+          
+        }
+        
+      }
+        
+    }
+    
+    #For the model itself and for the variables of interest, perform multiple test correction and save the results.
+    adj_model_pvals <- p.adjust(model_pvals, method = "fdr")
+    results <- cbind(var_names, model_pvals, adj_model_pvals)
+    
+    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
+    
+    adj_var_pvals <- p.adjust(var_pvals, method = "fdr")
+    term_results <- cbind(voi_names, vars, var_coeffs, var_pvals, adj_var_pvals)
+    
+    write.csv(term_results, file.path(refined, sprintf("%s_results/%s_term_pvals_and_betas.csv", type, cst)))
+    
+    cat("\nTime taken to complete last CST: ")
+    cat(difftime(Sys.time(), tmp.time, units = "mins"))
+    
+  }
+  
+}
+
+#Print total runtime
+cat("\nTotal runtime:")
+cat(difftime(Sys.time(), start.time, units = "hours"))
+cat("\n\n\n")
+
+```
+
+The warnings we see about 0/1 fitted values indicate that we need to use LRT tests, and be careful with coefficient estimates at the boundary.
+
+# Analysis of CST Occurrence vs Immunological Parameters - Survival Time to Occurrence
+
+Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter and how low it takes a subject to initially transition into a CST (or out of a CST, in the cases of REC 1 and NAS 1)
+
+Similar as the quasi-Poisson duration and logistic above, except fitting a different model and not comparing a full and null model to assess significance.  The p-value of the term of interest in the full model only is used to assess significance.
+
+
+```{r}
+#Start time
+start.time <- Sys.time()
+
+library(survival)
+library(icenReg)
+library(readr)
+
+type <- "surv"
+
+sites = c("REC", "NAS")
+
+for (site in sites) {
+  #Read in metadata and CST occurrence interval information
+  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
+  
+  raw_table <- read_tsv(file.path(refined, sprintf("%s_Surv_Input.txt", site)))
+  
+  mapping_length <- ncol(mapping)
+  
+  table_length <- ncol(raw_table)
+  
+  for (cst_i in 3:table_length) {
+    
+    tmp.time <- Sys.time()
+    
+    cst <- colnames(raw_table[,cst_i])
+    
+    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
+    
+    cst_in <- cst_in[complete.cases(cst_in[,]),]
+    #Lists to store results
+    var_names <- list()
+    voi_names <- list()
+    var_coeffs <- list()
+    var_exp_coeffs <- list()
+    variable_pvals <- list()
+    k <- 1
+    
+    for (var_i in 4:mapping_length) {
+      
+      var <- colnames(mapping[,var_i])
+      
+      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
+      
+      fac = FALSE
+      #Join metadata and CST occurrence info by Subject
+      working_table <- merge(mapping_in, cst_in, by = "Subject")
+      
+      working_table <- working_table[complete.cases(working_table[,]), ]
+      
+      #If the immune parameter is IST, remove any ISTs that occur less than ten times at the given time point.
+      if (typeof(working_table[[var]]) == "character") {
+        
+        fac = TRUE
+        
+        tmp_table <- as.data.frame(table(working_table[[var]]))
+        
+        rare_cats <- list()
+        n <- 1
+        
+        for (cat_i in 1:nrow(tmp_table)) {
+          
+          if (tmp_table[[2]][cat_i] < 10) {
+            
+            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
+            n <- n + 1
+            
+          }
+          
+        }
+        
+        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
+        
+      }
+      
+      #If fewer than 20 subjects remain having entered the CST, skip this comparison
+      if ((nrow(working_table) < 20) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
+        
+        next
+        
+      }
+      
+      working_table$cst_obs <- working_table[[cst]]
+      
+      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
+      if (fac) {
+        
+        working_table$voi <- factor(working_table[[var]])
+        
+      } else {
+        
+        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
+        
+      }
+      
+      #Center and scale GA at birth
+      working_table$GAB <- ((working_table$gaBirth)/37) - 1
+      
+      #Define the interval in which initial transition into a CST must have occurred
+      cst_surv <- Surv(working_table$PrevSampleDOL, working_table$cst_obs, type = "interval2")
+      
+      #Fit the model
+      fit <- ic_par(cst_surv ~ MOD + GAB + voi, data = working_table, model = "aft", dist = "loglogistic")
+      
+      #Collect resulting parameters
+      fit_summary <- summary(fit)
+      
+      for (p in 5:nrow(fit_summary$summaryParameters)) {
+        
+        var_names[[k]] <- var
+        voi_names[[k]] <- rownames(fit_summary$summaryParameters)[p]
+        var_coeffs[[k]] <- fit_summary$summaryParameters[p, 1]
+        var_exp_coeffs[[k]] <- fit_summary$summaryParameters[p, 2]
+        variable_pvals[[k]] <- fit_summary$summaryParameters[p, 5]
+        k <- k + 1
+        
+      }
+    
+      #Write the model summary
+      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
+  dir.create(pth)
+      
+      cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+     cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      capture.output(summary(fit), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
+    }
+    
+    #Perform multiple test correction and write the results
+    adj_variable_pvals <- p.adjust(variable_pvals, method = "fdr")
+    results <- cbind(var_names, voi_names, var_coeffs, var_exp_coeffs, variable_pvals, adj_variable_pvals)
+    
+    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
+    
+    cat("\nTime taken to complete last CST: ")
+    cat(difftime(Sys.time(), tmp.time, units = "mins"))
+    
+  }
+  
+}
+
+#Print total runtime
+cat("\nTotal runtime:")
+cat(difftime(Sys.time(), start.time, units = "hours"))
+cat("\n\n\n")
+
+```
+
+# Targeted analysis of Alloiococcus abundance, Tphe5, and acute illness
+
+```{r}
+library("readr")
+library("tidyverse")
+library(lme4)
+library(geepack)
+
+#Read in mapping file with metadata including Alloiococcus abundance, Tphe5 at birth or discharge, and acute illness
+md.nas <- read_delim(file.path(refined, "NAS_Focused_Mapping.txt"), "\t", escape_double = FALSE, trim_ws = TRUE, guess_max = 3600)
+rns <- md.nas[[1]]
+md.nas <- md.nas[ , 2:ncol(md.nas)]
+rownames(md.nas) <- rns
+#Turn it into a dataframe
+md.nas <- data.frame(md.nas)
+#Extract only post-discharge samples
+md.post <- md.nas[which(md.nas$PostInitialDischarge == "Yes"), ]
+
+#Center and scale numerical variables and convert categorical variables to factors
+md.post$Subject <- factor(md.post$Subject)
+md.post$GAB <- c(scale(md.post$gaBirth, center = TRUE, scale = TRUE))
+md.post$nDOL <- c(scale(md.post$DOL, center = TRUE, scale = TRUE))
+md.post$MOD <- factor(md.post$MOD)
+md.post$IllnessVisit <- factor(md.post$IllnessVisit)
+md.post$TPHE_5 <- factor(md.post$TPHE_5) #This is a binary variable with an affirmative value if the subject exhibited TPHE 5 at either birth or discharge
+
+md.post$allo_freq <- round(md.post$Reads*md.post$Alloiococcus) #Convert Alloiococcus relative abundance to counts
+
+#Test Alloiococcus and TPHE_5 as predictors of acute illness, both by themselves and jointly, controlling for confounders.
+summary(glmer(IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
+summary(glmer(IllnessVisit ~ TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
+summary(glmer(IllnessVisit ~ Alloiococcus + TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
+
+#Test TPHE_5 and acute illness as predictors of Alloiococcus abundance, both by themselves and jointly, controlling for confounders.
+summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+
+```
