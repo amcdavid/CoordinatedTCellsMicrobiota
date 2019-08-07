@@ -1,0 +1,4136 @@
+Current Variable: Birth_CD4_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5190  33.7500    0.2451 14.3600 0.000000
+log_beta     0.6236   1.8660    0.2290  2.7230 0.006475
+MODVaginal  -0.8370   0.4330    0.5026 -1.6650 0.095830
+GAB         -0.5866   0.5562    1.9760 -0.2969 0.766500
+voi         -0.3405   0.7114    0.2352 -1.4480 0.147700
+
+final llk =  -31.09484 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5460 34.67000    0.2208  16.060 0.000000
+log_beta     0.7604  2.13900    0.2421   3.141 0.001683
+MODVaginal  -0.7640  0.46580    0.4559  -1.676 0.093810
+GAB         -2.8920  0.05545    2.0430  -1.416 0.156900
+voi         -0.5977  0.55010    0.2333  -2.561 0.010420
+
+final llk =  -29.2465 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5800  35.8600    0.2498 14.3300 0.000000
+log_beta     0.6121   1.8440    0.2310  2.6490 0.008071
+MODVaginal  -0.7323   0.4808    0.4921 -1.4880 0.136800
+GAB         -1.7240   0.1783    2.3010 -0.7494 0.453600
+voi         -0.2305   0.7942    0.2544 -0.9058 0.365000
+
+final llk =  -31.58075 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5190  33.7600    0.2541 13.8500 0.00000
+log_beta     0.5745   1.7760    0.2241  2.5630 0.01038
+MODVaginal  -0.7124   0.4904    0.5326 -1.3380 0.18100
+GAB         -0.9172   0.3996    2.1680 -0.4231 0.67220
+voi          0.1170   1.1240    0.2530  0.4623 0.64390
+
+final llk =  -31.87154 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4990  33.0900    0.2551 13.7200 0.000000
+log_beta     0.5837   1.7930    0.2261  2.5810 0.009851
+MODVaginal  -0.7798   0.4585    0.5106 -1.5270 0.126700
+GAB         -1.2560   0.2847    2.3030 -0.5455 0.585400
+voi         -0.1807   0.8347    0.3096 -0.5836 0.559500
+
+final llk =  -31.81205 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value       p
+log_alpha   3.52700  34.0100    0.2566 13.75000 0.00000
+log_beta    0.57020   1.7690    0.2255  2.52800 0.01147
+MODVaginal -0.77760   0.4595    0.5148 -1.51000 0.13090
+GAB        -0.66940   0.5120    2.2030 -0.30390 0.76120
+voi         0.01207   1.0120    0.2903  0.04159 0.96680
+
+final llk =  -31.9761 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.4850  32.6300    0.2587 13.47000 0.000000
+log_beta     0.6084   1.8370    0.2238  2.71800 0.006561
+MODVaginal  -0.9159   0.4001    0.5098 -1.79700 0.072360
+GAB         -0.1430   0.8667    2.0430 -0.07001 0.944200
+voi         -0.5119   0.5994    0.4706 -1.08800 0.276700
+
+final llk =  -31.07541 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5250  33.9700    0.2493 14.1400 0.000000
+log_beta     0.6080   1.8370    0.2264  2.6860 0.007235
+MODVaginal  -1.1270   0.3239    0.5868 -1.9210 0.054700
+GAB         -0.5594   0.5716    1.9940 -0.2805 0.779100
+voi         -0.3153   0.7296    0.2896 -1.0890 0.276300
+
+final llk =  -31.376 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5720  35.5800    0.2508 14.2400 0.000000
+log_beta     0.6058   1.8330    0.2300  2.6340 0.008434
+MODVaginal  -0.6615   0.5161    0.5130 -1.2900 0.197200
+GAB         -0.7369   0.4786    1.9980 -0.3689 0.712200
+voi         -0.1948   0.8230    0.2602 -0.7485 0.454200
+
+final llk =  -31.71028 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value      p
+log_alpha    3.5310  34.1600    0.2444 14.4500 0.0000
+log_beta     0.6135   1.8470    0.2294  2.6740 0.0075
+MODVaginal  -0.7817   0.4576    0.4883 -1.6010 0.1094
+GAB         -1.8240   0.1613    2.3180 -0.7869 0.4313
+voi          0.2749   1.3160    0.2544  1.0800 0.2800
+
+final llk =  -31.44684 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5860  36.0900    0.2275  15.760 0.000000
+log_beta     0.7111   2.0360    0.2412   2.948 0.003197
+MODVaginal  -0.6659   0.5138    0.4539  -1.467 0.142300
+GAB         -2.2530   0.1051    2.0460  -1.101 0.270800
+voi          0.4626   1.5880    0.2243   2.063 0.039140
+
+final llk =  -30.15925 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5010  33.1400    0.2489 14.0700 0.000000
+log_beta     0.6203   1.8600    0.2285  2.7140 0.006642
+MODVaginal  -0.7966   0.4509    0.4989 -1.5970 0.110400
+GAB         -0.3454   0.7080    2.0610 -0.1676 0.866900
+voi          0.2834   1.3280    0.1999  1.4180 0.156300
+
+final llk =  -31.12187 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C13
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5420  34.5200    0.2540 13.9500 0.00000
+log_beta     0.5797   1.7860    0.2272  2.5520 0.01071
+MODVaginal  -0.8347   0.4340    0.5238 -1.5940 0.11100
+GAB         -1.7270   0.1779    2.9760 -0.5802 0.56180
+voi          0.1857   1.2040    0.3718  0.4995 0.61740
+
+final llk =  -31.84875 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C14
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value       p
+log_alpha   3.52300  33.8800    0.2556 13.79000 0.00000
+log_beta    0.56900   1.7660    0.2243  2.53700 0.01119
+MODVaginal -0.77730   0.4596    0.5163 -1.50600 0.13220
+GAB        -0.67000   0.5117    2.1240 -0.31550 0.75240
+voi        -0.02404   0.9762    0.2613 -0.09202 0.92670
+
+final llk =  -31.97272 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C15
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5560  35.0100    0.2132 16.6700 0.0000000
+log_beta     0.7943   2.2130    0.2406  3.3020 0.0009614
+MODVaginal  -0.7811   0.4579    0.4179 -1.8690 0.0615800
+GAB         -1.0520   0.3493    1.7110 -0.6149 0.5386000
+voi          0.5240   1.6890    0.1933  2.7120 0.0066980
+
+final llk =  -29.11784 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C16
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value         p
+log_alpha   3.60100   36.640    0.2070 17.40000 0.0000000
+log_beta    0.83020    2.294    0.2447  3.39300 0.0006909
+MODVaginal -0.60320    0.547    0.4187 -1.44100 0.1496000
+GAB         0.08469    1.088    1.6990  0.04983 0.9603000
+voi         0.53990    1.716    0.1817  2.97100 0.0029700
+
+final llk =  -28.50262 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C17
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4820  32.5200    0.2570 13.5500 0.000000
+log_beta     0.5960   1.8150    0.2233  2.6690 0.007603
+MODVaginal  -0.9200   0.3985    0.5325 -1.7280 0.084050
+GAB          1.3840   3.9890    2.7800  0.4977 0.618700
+voi          0.3149   1.3700    0.2876  1.0950 0.273500
+
+final llk =  -31.40974 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_CD4_C18
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4760  32.3400    0.2423 14.3500 0.000000
+log_beta     0.6647   1.9440    0.2313  2.8730 0.004061
+MODVaginal  -0.7779   0.4594    0.4934 -1.5770 0.114900
+GAB          1.2140   3.3690    2.1980  0.5525 0.580600
+voi          0.4244   1.5290    0.2318  1.8310 0.067070
+
+final llk =  -30.59686 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.51800  33.7200    0.2548 13.8100 0.00000
+log_beta    0.57200   1.7720    0.2242  2.5510 0.01073
+MODVaginal -0.72260   0.4855    0.5353 -1.3500 0.17700
+GAB        -0.88000   0.4148    2.1720 -0.4051 0.68540
+voi         0.09009   1.0940    0.2357  0.3823 0.70230
+
+final llk =  -31.90375 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5140  33.5800    0.2214 15.8700 0.000000
+log_beta     0.7572   2.1320    0.2342  3.2330 0.001224
+MODVaginal  -0.8590   0.4236    0.4427 -1.9400 0.052330
+GAB         -1.5510   0.2121    1.7950 -0.8641 0.387500
+voi         -0.6742   0.5096    0.3198 -2.1080 0.035010
+
+final llk =  -29.01148 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate  Exp(Est) Std.Error z-value         p
+log_alpha    3.5350 34.310000    0.2100  16.830 0.0000000
+log_beta     0.8714  2.390000    0.2359   3.694 0.0002206
+MODVaginal  -1.2640  0.282600    0.4323  -2.923 0.0034650
+GAB         -4.7440  0.008704    2.0850  -2.275 0.0228900
+voi         -1.0440  0.352100    0.3470  -3.008 0.0026270
+
+final llk =  -26.86229 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4940  32.9300    0.2393 14.6000 0.000000
+log_beta     0.6722   1.9590    0.2316  2.9030 0.003695
+MODVaginal  -0.7163   0.4886    0.4835 -1.4820 0.138500
+GAB         -0.4517   0.6366    1.9660 -0.2297 0.818300
+voi          0.3563   1.4280    0.1842  1.9350 0.053040
+
+final llk =  -30.36157 
+Iterations =  9 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5920  36.2900    0.1879 19.1100 0.0000000
+log_beta     0.9608   2.6140    0.2497  3.8480 0.0001192
+MODVaginal  -1.0500   0.3499    0.3853 -2.7250 0.0064230
+GAB         -1.5350   0.2155    1.5510 -0.9896 0.3224000
+voi         -0.7563   0.4694    0.2047 -3.6950 0.0002199
+
+final llk =  -27.07912 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5870 36.14000    0.2296  15.630 0.000000
+log_beta     0.6853  1.98400    0.2307   2.971 0.002968
+MODVaginal  -0.7369  0.47860    0.4590  -1.606 0.108400
+GAB         -2.6480  0.07083    2.2110  -1.197 0.231200
+voi         -0.4340  0.64790    0.2560  -1.695 0.090000
+
+final llk =  -30.60324 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5840  36.0200    0.2264 15.8300 0.000000
+log_beta     0.6890   1.9920    0.2329  2.9580 0.003095
+MODVaginal  -0.8151   0.4426    0.4579 -1.7800 0.075070
+GAB         -2.0460   0.1292    2.0710 -0.9879 0.323200
+voi         -0.4040   0.6677    0.2452 -1.6480 0.099410
+
+final llk =  -30.81398 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5540 34.94000    0.2483 14.3100 0.000000
+log_beta     0.6028  1.82700    0.2278  2.6450 0.008158
+MODVaginal  -0.9963  0.36920    0.5667 -1.7580 0.078740
+GAB         -2.4890  0.08303    2.8100 -0.8855 0.375900
+voi          0.3829  1.46600    0.3957  0.9674 0.333300
+
+final llk =  -31.51372 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5460  34.6900    0.2495 14.2100 0.000000
+log_beta     0.6131   1.8460    0.2259  2.7140 0.006639
+MODVaginal  -0.8754   0.4167    0.5084 -1.7220 0.085090
+GAB         -1.2600   0.2837    2.1120 -0.5965 0.550900
+voi         -0.3057   0.7366    0.2397 -1.2750 0.202200
+
+final llk =  -31.17133 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5250  33.9600    0.2529 13.9400 0.00000
+log_beta     0.5755   1.7780    0.2248  2.5610 0.01044
+MODVaginal  -0.8167   0.4419    0.5237 -1.5590 0.11890
+GAB         -0.5070   0.6023    2.1350 -0.2375 0.81230
+voi          0.1179   1.1250    0.2768  0.4260 0.67010
+
+final llk =  -31.88746 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value       p
+log_alpha    3.5230  33.8700    0.2532 13.91000 0.00000
+log_beta     0.5750   1.7770    0.2252  2.55300 0.01068
+MODVaginal  -0.7674   0.4642    0.5179 -1.48200 0.13840
+GAB         -0.2265   0.7973    2.4820 -0.09127 0.92730
+voi          0.1020   1.1070    0.2901  0.35150 0.72520
+
+final llk =  -31.91658 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_CD8_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5450  34.6600    0.2459 14.4200 0.000000
+log_beta     0.6255   1.8690    0.2266  2.7610 0.005762
+MODVaginal  -0.8089   0.4453    0.4918 -1.6450 0.100000
+GAB         -1.0680   0.3438    2.0440 -0.5225 0.601400
+voi          0.3195   1.3760    0.2380  1.3430 0.179400
+
+final llk =  -31.10741 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5580  35.1000    0.2288 15.5500 0.000000
+log_beta     0.6362   1.8890    0.2240  2.8410 0.004502
+MODVaginal  -0.7241   0.4848    0.4748 -1.5250 0.127300
+GAB         -1.1210   0.3261    2.0070 -0.5583 0.576600
+voi         -0.0839   0.9195    0.2253 -0.3724 0.709600
+
+final llk =  -34.76814 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54300  34.5700    0.2215 15.9900 0.000000
+log_beta    0.69550   2.0050    0.2263  3.0740 0.002112
+MODVaginal -0.89430   0.4089    0.4341 -2.0600 0.039380
+GAB        -0.02398   0.9763    1.7250 -0.0139 0.988900
+voi        -0.37960   0.6841    0.2548 -1.4900 0.136300
+
+final llk =  -33.72911 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5040  33.2600    0.2366 14.8100 0.00000
+log_beta     0.6504   1.9160    0.2216  2.9360 0.00333
+MODVaginal  -0.7083   0.4925    0.4569 -1.5500 0.12110
+GAB          0.2560   1.2920    1.9710  0.1299 0.89660
+voi          0.3078   1.3600    0.2597  1.1850 0.23580
+
+final llk =  -34.12388 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54900  34.7900    0.2328 15.2500 0.000000
+log_beta    0.62760   1.8730    0.2237  2.8060 0.005021
+MODVaginal -0.78860   0.4545    0.4510 -1.7490 0.080360
+GAB        -0.83630   0.4333    2.5380 -0.3295 0.741800
+voi        -0.01572   0.9844    0.3151 -0.0499 0.960200
+
+final llk =  -34.83721 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5440  34.6100    0.2095  16.910 0.000000
+log_beta     0.7250   2.0650    0.2304   3.147 0.001651
+MODVaginal  -0.7219   0.4858    0.4083  -1.768 0.077050
+GAB         -1.8780   0.1529    1.7650  -1.064 0.287300
+voi         -0.3700   0.6907    0.2251  -1.644 0.100200
+
+final llk =  -33.68424 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5540  34.9600    0.2250 15.8000 0.000000
+log_beta     0.6726   1.9590    0.2214  3.0380 0.002378
+MODVaginal  -0.6532   0.5204    0.4396 -1.4860 0.137300
+GAB          0.2287   1.2570    1.8380  0.1244 0.901000
+voi         -0.3481   0.7061    0.2811 -1.2380 0.215600
+
+final llk =  -34.05667 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4970  33.0200    0.2460 14.2200 0.000000
+log_beta     0.6575   1.9300    0.2206  2.9800 0.002882
+MODVaginal  -0.8874   0.4117    0.4440 -1.9990 0.045650
+GAB         -0.5535   0.5749    1.7150 -0.3228 0.746800
+voi         -0.4695   0.6253    0.4826 -0.9729 0.330600
+
+final llk =  -33.94942 
+Iterations =  9 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5620 35.23000    0.2127  16.740 0.000000
+log_beta     0.7141  2.04200    0.2292   3.116 0.001833
+MODVaginal  -0.6534  0.52030    0.4150  -1.574 0.115400
+GAB         -2.6810  0.06848    2.0420  -1.313 0.189200
+voi         -0.4004  0.67010    0.2681  -1.494 0.135300
+
+final llk =  -33.70682 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.55400  34.9600    0.2286 15.5500 0.000000
+log_beta    0.63450   1.8860    0.2236  2.8370 0.004552
+MODVaginal -0.75300   0.4709    0.4609 -1.6340 0.102300
+GAB        -0.76710   0.4644    1.7470 -0.4390 0.660700
+voi        -0.07306   0.9295    0.2452 -0.2979 0.765800
+
+final llk =  -34.79493 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54800  34.7300    0.2302 15.4100 0.000000
+log_beta    0.62650   1.8710    0.2223  2.8180 0.004836
+MODVaginal -0.77790   0.4594    0.4947 -1.5720 0.115800
+GAB        -0.67740   0.5079    2.0690 -0.3274 0.743300
+voi        -0.01771   0.9824    0.2833 -0.0625 0.950200
+
+final llk =  -34.8365 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value         p
+log_alpha   3.49000  32.8000    0.2054 16.99000 0.0000000
+log_beta    0.80410   2.2350    0.2307  3.48500 0.0004925
+MODVaginal -0.69980   0.4967    0.3872 -1.80700 0.0707100
+GAB        -0.07449   0.9282    1.4910 -0.04995 0.9602000
+voi        -0.49520   0.6094    0.1960 -2.52700 0.0115100
+
+final llk =  -32.26653 
+Iterations =  9 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5490  34.7800    0.2169 16.3700 0.000000
+log_beta     0.6865   1.9870    0.2266  3.0290 0.002453
+MODVaginal  -0.7320   0.4809    0.4245 -1.7240 0.084660
+GAB         -0.9823   0.3744    1.6610 -0.5913 0.554300
+voi         -0.2648   0.7674    0.2150 -1.2320 0.218100
+
+final llk =  -34.1372 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C13
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error   z-value        p
+log_alpha    3.5250  33.9500    0.2370 14.870000 0.000000
+log_beta     0.6271   1.8720    0.2207  2.842000 0.004484
+MODVaginal  -0.6792   0.5070    0.4973 -1.366000 0.172000
+GAB         -0.0223   0.9779    2.2430 -0.009944 0.992100
+voi         -0.1661   0.8469    0.3226 -0.515000 0.606500
+
+final llk =  -34.70182 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C14
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5390  34.4400    0.2207 16.0400 0.000000
+log_beta     0.6728   1.9600    0.2270  2.9640 0.003039
+MODVaginal  -0.7522   0.4713    0.4301 -1.7490 0.080290
+GAB         -0.7948   0.4517    1.6750 -0.4745 0.635100
+voi          0.2440   1.2760    0.2210  1.1040 0.269500
+
+final llk =  -34.25088 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C15
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5520  34.8900    0.2281 15.5800 0.000000
+log_beta     0.6400   1.8960    0.2223  2.8790 0.003993
+MODVaginal  -0.7478   0.4734    0.4480 -1.6690 0.095090
+GAB         -0.5013   0.6057    1.7750 -0.2825 0.777600
+voi         -0.1486   0.8620    0.2258 -0.6578 0.510700
+
+final llk =  -34.62098 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C16
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.4670  32.0400    0.2104 16.4700 0.0000000
+log_beta     0.7749   2.1700    0.2273  3.4080 0.0006533
+MODVaginal  -0.8243   0.4386    0.3986 -2.0680 0.0386300
+GAB         -1.1420   0.3191    1.5490 -0.7375 0.4608000
+voi         -0.5184   0.5955    0.2247 -2.3070 0.0210500
+
+final llk =  -32.35661 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C17
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5420  34.5400    0.2182 16.2300 0.000000
+log_beta     0.6852   1.9840    0.2275  3.0120 0.002593
+MODVaginal  -0.8251   0.4382    0.4257 -1.9380 0.052580
+GAB         -1.0240   0.3591    1.6660 -0.6148 0.538700
+voi         -0.2915   0.7472    0.2272 -1.2830 0.199500
+
+final llk =  -34.07306 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD4_C18
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54500  34.6500    0.2313 15.3300 0.000000
+log_beta    0.62510   1.8680    0.2223  2.8120 0.004931
+MODVaginal -0.79450   0.4518    0.4512 -1.7610 0.078260
+GAB        -0.61550   0.5404    1.9080 -0.3226 0.747000
+voi         0.04606   1.0470    0.2423  0.1901 0.849200
+
+final llk =  -34.82058 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.48200  32.5100    0.2376 14.65000 0.000000
+log_beta    0.65730   1.9300    0.2194  2.99600 0.002735
+MODVaginal -0.84960   0.4276    0.4559 -1.86300 0.062400
+GAB         0.06817   1.0710    1.8310  0.03723 0.970300
+voi         0.30410   1.3550    0.2187  1.39000 0.164500
+
+final llk =  -33.81102 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5950  36.4300    0.1812  19.840 0.0000000
+log_beta     0.8970   2.4520    0.2370   3.784 0.0001542
+MODVaginal  -0.9211   0.3981    0.3526  -2.612 0.0089900
+GAB         -1.6410   0.1938    1.4390  -1.140 0.2542000
+voi         -0.5119   0.5993    0.1657  -3.089 0.0020080
+
+final llk =  -31.29031 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5160  33.6500    0.2010  17.490 0.0000000
+log_beta     0.7732   2.1670    0.2319   3.334 0.0008547
+MODVaginal  -1.0230   0.3596    0.4215  -2.427 0.0152300
+GAB         -2.0740   0.1257    1.7040  -1.217 0.2238000
+voi         -0.4898   0.6128    0.2194  -2.232 0.0256300
+
+final llk =  -32.81504 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.53900  34.4300    0.2335 15.1500 0.000000
+log_beta    0.62750   1.8730    0.2223  2.8230 0.004755
+MODVaginal -0.79890   0.4498    0.4503 -1.7740 0.076010
+GAB        -0.79910   0.4497    1.7710 -0.4512 0.651900
+voi        -0.06631   0.9358    0.2945 -0.2251 0.821900
+
+final llk =  -34.81192 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5700  35.5300    0.2135 16.7200 0.000000
+log_beta     0.7335   2.0820    0.2257  3.2500 0.001155
+MODVaginal  -0.9192   0.3988    0.4121 -2.2300 0.025720
+GAB         -0.6457   0.5243    1.5800 -0.4087 0.682800
+voi         -0.3862   0.6797    0.2285 -1.6900 0.091090
+
+final llk =  -33.24111 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5740  35.6600    0.2115 16.9000 0.000000
+log_beta     0.7104   2.0350    0.2295  3.0950 0.001968
+MODVaginal  -0.8353   0.4337    0.4169 -2.0040 0.045120
+GAB         -0.9598   0.3830    1.6230 -0.5914 0.554200
+voi         -0.2970   0.7431    0.2032 -1.4620 0.143900
+
+final llk =  -33.93953 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5790  35.8500    0.2048 17.4800 0.000000
+log_beta     0.7450   2.1070    0.2319  3.2130 0.001313
+MODVaginal  -0.8573   0.4243    0.4048 -2.1180 0.034200
+GAB         -1.3100   0.2697    1.6080 -0.8148 0.415200
+voi         -0.3224   0.7244    0.1744 -1.8490 0.064500
+
+final llk =  -33.54295 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4630  31.9200    0.2292 15.1100 0.000000
+log_beta     0.6867   1.9870    0.2191  3.1340 0.001722
+MODVaginal  -0.6319   0.5316    0.4370 -1.4460 0.148300
+GAB          0.7573   2.1320    1.9110  0.3962 0.691900
+voi         -0.4423   0.6426    0.2971 -1.4880 0.136700
+
+final llk =  -33.75255 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.6100  36.9700    0.2151 16.7800 0.000000
+log_beta     0.7163   2.0470    0.2304  3.1100 0.001874
+MODVaginal  -0.7216   0.4860    0.4128 -1.7480 0.080460
+GAB          1.0630   2.8950    1.9550  0.5437 0.586700
+voi         -0.3970   0.6724    0.2512 -1.5800 0.114000
+
+final llk =  -33.67531 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5200  33.7700    0.2137 16.4700 0.000000
+log_beta     0.7268   2.0680    0.2225  3.2670 0.001087
+MODVaginal  -0.6653   0.5141    0.4201 -1.5840 0.113300
+GAB          0.2538   1.2890    1.6770  0.1514 0.879700
+voi         -0.4549   0.6345    0.2421 -1.8790 0.060250
+
+final llk =  -33.11006 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.56300  35.2600    0.2320 15.3600 0.000000
+log_beta    0.63530   1.8880    0.2235  2.8420 0.004481
+MODVaginal -0.79890   0.4498    0.4460 -1.7910 0.073260
+GAB        -1.05900   0.3467    2.0110 -0.5268 0.598300
+voi        -0.08202   0.9213    0.2515 -0.3261 0.744300
+
+final llk =  -34.78517 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_CD8_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.6030  36.7000    0.2002 17.9900 0.0000000
+log_beta     0.8084   2.2440    0.2258  3.5800 0.0003441
+MODVaginal  -0.6375   0.5286    0.3891 -1.6390 0.1013000
+GAB          1.6190   5.0460    1.7340  0.9336 0.3505000
+voi          0.5438   1.7230    0.2310  2.3550 0.0185300
+
+final llk =  -32.19146 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value      p
+log_alpha   3.40900  30.2300    0.2492 13.6800 0.0000
+log_beta    0.59860   1.8200    0.2377  2.5180 0.0118
+MODVaginal -0.52420   0.5920    0.5131 -1.0220 0.3070
+GAB         0.60420   1.8300    2.3390  0.2583 0.7962
+voi        -0.05735   0.9443    0.2809 -0.2042 0.8382
+
+final llk =  -30.79682 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3870  29.5900    0.2505 13.5200 0.000000
+log_beta     0.6730   1.9600    0.2322  2.8980 0.003757
+MODVaginal  -0.7853   0.4560    0.5201 -1.5100 0.131000
+GAB          0.3687   1.4460    2.0980  0.1757 0.860500
+voi         -0.4681   0.6262    0.2747 -1.7040 0.088370
+
+final llk =  -29.18084 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3350  28.0800    0.2354 14.1700 0.000000
+log_beta     0.7271   2.0690    0.2486  2.9250 0.003443
+MODVaginal  -0.5269   0.5904    0.4350 -1.2110 0.225800
+GAB          1.0290   2.8000    1.8100  0.5687 0.569500
+voi          0.4470   1.5640    0.2243  1.9930 0.046230
+
+final llk =  -29.20899 
+Iterations =  9 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.3950  29.8100    0.2423 14.0100 0.00000
+log_beta     0.6612   1.9370    0.2324  2.8450 0.00444
+MODVaginal  -0.4218   0.6559    0.4871 -0.8659 0.38660
+GAB          1.6520   5.2170    2.0810  0.7937 0.42740
+voi         -0.4599   0.6314    0.3342 -1.3760 0.16880
+
+final llk =  -29.70434 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4080  30.2000    0.2425 14.0600 0.000000
+log_beta     0.6245   1.8670    0.2394  2.6080 0.009099
+MODVaginal  -0.5913   0.5536    0.5074 -1.1650 0.243900
+GAB          0.5044   1.6560    2.1280  0.2370 0.812600
+voi         -0.1968   0.8213    0.2584 -0.7617 0.446200
+
+final llk =  -30.53022 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3960  29.8400    0.2513 13.5100 0.000000
+log_beta     0.6120   1.8440    0.2366  2.5870 0.009692
+MODVaginal  -0.5622   0.5700    0.5095 -1.1030 0.269800
+GAB          0.9380   2.5550    2.0790  0.4512 0.651900
+voi         -0.2148   0.8067    0.2581 -0.8324 0.405200
+
+final llk =  -30.4426 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3030  27.1800    0.2486 13.2800 0.000000
+log_beta     0.6577   1.9300    0.2346  2.8040 0.005047
+MODVaginal  -0.6095   0.5436    0.4804 -1.2690 0.204500
+GAB          1.0380   2.8230    2.0400  0.5088 0.610900
+voi         -0.5973   0.5503    0.3837 -1.5570 0.119500
+
+final llk =  -29.77881 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.3570  28.7000    0.2159  15.540 0.0000000
+log_beta     0.8354   2.3060    0.2373   3.521 0.0004305
+MODVaginal  -0.7173   0.4881    0.4544  -1.578 0.1145000
+GAB          2.6780  14.5600    1.8310   1.463 0.1435000
+voi         -0.7535   0.4707    0.2529  -2.979 0.0028890
+
+final llk =  -27.07998 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3540  28.6200    0.2580 13.0000 0.000000
+log_beta     0.6248   1.8680    0.2348  2.6610 0.007796
+MODVaginal  -0.5883   0.5553    0.4957 -1.1870 0.235300
+GAB          1.0550   2.8710    2.0750  0.5084 0.611200
+voi          0.3280   1.3880    0.2803  1.1700 0.241900
+
+final llk =  -30.12629 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.4610  31.8600    0.2379 14.55000 0.000000
+log_beta     0.6609   1.9370    0.2405  2.74800 0.005997
+MODVaginal  -0.5589   0.5718    0.4717 -1.18500 0.236000
+GAB          0.1643   1.1790    2.1120  0.07777 0.938000
+voi          0.3114   1.3650    0.2520  1.23600 0.216600
+
+final llk =  -30.12321 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.41300  30.3700    0.2485 13.7300 0.00000
+log_beta    0.60240   1.8260    0.2380  2.5310 0.01137
+MODVaginal -0.49990   0.6066    0.4995 -1.0010 0.31700
+GAB         0.98760   2.6850    2.2240  0.4441 0.65700
+voi        -0.06608   0.9361    0.2497 -0.2647 0.79130
+
+final llk =  -30.78234 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4050  30.1200    0.2479 13.7400 0.000000
+log_beta     0.6139   1.8480    0.2363  2.5980 0.009382
+MODVaginal  -0.5111   0.5998    0.4924 -1.0380 0.299300
+GAB          0.2865   1.3320    2.2040  0.1300 0.896600
+voi          0.1943   1.2140    0.2548  0.7623 0.445900
+
+final llk =  -30.53341 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C13
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.4130  30.3600    0.2488 13.7200 0.00000
+log_beta     0.6015   1.8250    0.2384  2.5230 0.01163
+MODVaginal  -0.5090   0.6011    0.5014 -1.0150 0.31000
+GAB          0.7879   2.1990    2.1350  0.3691 0.71210
+voi          0.0568   1.0580    0.2655  0.2139 0.83060
+
+final llk =  -30.79536 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C14
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.4150   30.410    0.2461 13.8700 0.00000
+log_beta     0.6100    1.840    0.2383  2.5600 0.01047
+MODVaginal  -0.4733    0.623    0.4979 -0.9505 0.34190
+GAB          0.6794    1.973    2.1030  0.3230 0.74670
+voi         -0.1154    0.891    0.2700 -0.4274 0.66910
+
+final llk =  -30.72849 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C15
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.41100  30.2800    0.2482 13.7400 0.00000
+log_beta    0.60160   1.8250    0.2381  2.5270 0.01151
+MODVaginal -0.50990   0.6006    0.5005 -1.0190 0.30830
+GAB         0.93710   2.5530    2.2110  0.4238 0.67170
+voi        -0.05046   0.9508    0.2387 -0.2114 0.83260
+
+final llk =  -30.79542 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C16
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4070  30.1700    0.2473 13.7800 0.000000
+log_beta     0.6290   1.8760    0.2371  2.6530 0.007981
+MODVaginal  -0.5812   0.5592    0.5007 -1.1610 0.245700
+GAB          1.9070   6.7340    2.2290  0.8558 0.392100
+voi         -0.2903   0.7480    0.2622 -1.1070 0.268300
+
+final llk =  -30.17435 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C17
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.40700  30.1800    0.2484 13.7200 0.00000
+log_beta    0.60070   1.8230    0.2380  2.5240 0.01161
+MODVaginal -0.48160   0.6178    0.5162 -0.9331 0.35080
+GAB         0.72750   2.0700    2.1560  0.3375 0.73570
+voi         0.04094   1.0420    0.2438  0.1680 0.86660
+
+final llk =  -30.80371 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD4_C18
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.3960  29.8500    0.2439 13.93000 0.000000
+log_beta     0.6505   1.9160    0.2382  2.73100 0.006316
+MODVaginal  -0.4493   0.6381    0.4773 -0.94140 0.346500
+GAB          0.1197   1.1270    2.0540  0.05831 0.953500
+voi          0.3145   1.3700    0.2339  1.34400 0.178800
+
+final llk =  -30.02999 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.40000  29.9700    0.2482 13.7000 0.00000
+log_beta    0.60560   1.8320    0.2387  2.5370 0.01119
+MODVaginal -0.50530   0.6033    0.4961 -1.0180 0.30850
+GAB         1.06000   2.8870    2.2250  0.4765 0.63370
+voi         0.07348   1.0760    0.2205  0.3332 0.73900
+
+final llk =  -30.76302 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3600  28.7900    0.2284 14.7100 0.000000
+log_beta     0.7441   2.1050    0.2347  3.1710 0.001521
+MODVaginal  -0.7197   0.4869    0.4725 -1.5230 0.127700
+GAB          1.1600   3.1890    1.8870  0.6146 0.538800
+voi         -0.6674   0.5130    0.3099 -2.1540 0.031260
+
+final llk =  -28.37718 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3740  29.2100    0.2285 14.7700 0.000000
+log_beta     0.7266   2.0680    0.2339  3.1060 0.001894
+MODVaginal  -0.6158   0.5402    0.4654 -1.3230 0.185900
+GAB          1.0910   2.9770    1.8980  0.5749 0.565400
+voi         -0.6104   0.5431    0.3078 -1.9830 0.047320
+
+final llk =  -28.76389 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3650  28.9200    0.2240  15.020 0.000000
+log_beta     0.7113   2.0370    0.2423   2.936 0.003328
+MODVaginal  -0.4711   0.6243    0.4520  -1.042 0.297300
+GAB          2.0490   7.7640    1.9800   1.035 0.300700
+voi         -0.5889   0.5550    0.3207  -1.836 0.066350
+
+final llk =  -29.43921 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.3990  29.9400    0.2339 14.5300 0.000000
+log_beta     0.7099   2.0340    0.2343  3.0310 0.002441
+MODVaginal  -0.8835   0.4133    0.5352 -1.6510 0.098810
+GAB          1.4700   4.3490    1.9870  0.7399 0.459400
+voi         -0.5734   0.5636    0.3073 -1.8660 0.062020
+
+final llk =  -28.92702 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.47600  32.3400    0.2234 15.56000 0.000000
+log_beta    0.72310   2.0610    0.2465  2.93300 0.003353
+MODVaginal -0.64210   0.5262    0.4657 -1.37900 0.167900
+GAB        -0.03941   0.9614    1.9990 -0.01972 0.984300
+voi        -0.37570   0.6868    0.2122 -1.77000 0.076730
+
+final llk =  -29.44338 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4060  30.1300    0.2362 14.4200 0.000000
+log_beta     0.6635   1.9420    0.2412  2.7500 0.005952
+MODVaginal  -0.5018   0.6054    0.4770 -1.0520 0.292800
+GAB          0.9292   2.5330    1.9890  0.4671 0.640400
+voi         -0.3191   0.7268    0.2467 -1.2940 0.195700
+
+final llk =  -29.98893 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.42500   30.710    0.2502 13.6900 0.00000
+log_beta    0.60710    1.835    0.2388  2.5420 0.01102
+MODVaginal -0.54140    0.582    0.5132 -1.0550 0.29150
+GAB         0.63140    1.880    2.1850  0.2889 0.77260
+voi         0.09035    1.095    0.2647  0.3413 0.73280
+
+final llk =  -30.76149 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.3950  29.8100    0.2537 13.3800 0.00000
+log_beta     0.6021   1.8260    0.2377  2.5330 0.01131
+MODVaginal  -0.6016   0.5479    0.5349 -1.1250 0.26080
+GAB          1.1020   3.0100    2.1790  0.5055 0.61320
+voi         -0.1865   0.8299    0.2807 -0.6644 0.50640
+
+final llk =  -30.582 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4740  32.2600    0.2304 15.0800 0.000000
+log_beta     0.6895   1.9930    0.2409  2.8620 0.004209
+MODVaginal  -0.7316   0.4811    0.4920 -1.4870 0.137000
+GAB          0.7973   2.2200    1.9420  0.4106 0.681400
+voi          0.3447   1.4120    0.2331  1.4780 0.139300
+
+final llk =  -29.85753 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.41400  30.3900    0.2471 13.8200 0.00000
+log_beta    0.60620   1.8340    0.2395  2.5320 0.01136
+MODVaginal -0.49680   0.6085    0.4983 -0.9968 0.31880
+GAB         0.87900   2.4090    2.1290  0.4128 0.67970
+voi        -0.06316   0.9388    0.2491 -0.2536 0.79980
+
+final llk =  -30.78583 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: OneYear_CD8_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.3620  28.8600    0.2565 13.1100 0.00000
+log_beta     0.6463   1.9090    0.2327  2.7780 0.00547
+MODVaginal  -0.6924   0.5004    0.5319 -1.3020 0.19290
+GAB          1.5750   4.8330    2.1070  0.7476 0.45470
+voi          0.4467   1.5630    0.3063  1.4580 0.14480
+
+final llk =  -29.55265 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5610  35.2000    0.2333 15.2600 0.00000
+log_beta     0.6362   1.8890    0.2206  2.8850 0.00392
+MODVaginal  -0.8764   0.4163    0.4854 -1.8060 0.07099
+GAB          0.3268   1.3860    2.0770  0.1573 0.87500
+voi         -0.2355   0.7902    0.2669 -0.8824 0.37760
+
+final llk =  -33.23765 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5880  36.1600    0.2243 16.0000 0.000000
+log_beta     0.6650   1.9440    0.2218  2.9980 0.002714
+MODVaginal  -0.6828   0.5052    0.4529 -1.5080 0.131600
+GAB         -1.8220   0.1617    2.1050 -0.8656 0.386700
+voi         -0.3133   0.7310    0.2622 -1.1950 0.232100
+
+final llk =  -32.94324 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5740  35.6600    0.2300 15.5400 0.000000
+log_beta     0.6354   1.8880    0.2209  2.8760 0.004028
+MODVaginal  -0.7249   0.4844    0.4810 -1.5070 0.131800
+GAB         -0.9261   0.3961    1.9750 -0.4688 0.639200
+voi          0.1717   1.1870    0.2615  0.6566 0.511400
+
+final llk =  -33.44322 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5740  35.6700    0.2249 15.8900 0.000000
+log_beta     0.6645   1.9440    0.2224  2.9880 0.002812
+MODVaginal  -0.9950   0.3697    0.5033 -1.9770 0.048070
+GAB         -0.3333   0.7166    1.8470 -0.1805 0.856800
+voi          0.3087   1.3620    0.2550  1.2110 0.225900
+
+final llk =  -33.00649 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.57400  35.6500    0.2330 15.3400 0.000000
+log_beta    0.62390   1.8660    0.2216  2.8150 0.004874
+MODVaginal -0.73850   0.4779    0.5056 -1.4610 0.144100
+GAB        -1.12700   0.3240    2.7060 -0.4165 0.677000
+voi        -0.09461   0.9097    0.3098 -0.3054 0.760000
+
+final llk =  -33.60416 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.56200  35.2300    0.2339 15.23000 0.000000
+log_beta    0.62380   1.8660    0.2210  2.82200 0.004767
+MODVaginal -0.85580   0.4249    0.4960 -1.72500 0.084460
+GAB        -0.09389   0.9104    2.1550 -0.04356 0.965300
+voi         0.10890   1.1150    0.2490  0.43730 0.661900
+
+final llk =  -33.55668 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5810  35.9000    0.2314 15.4800 0.00000
+log_beta     0.6318   1.8810    0.2217  2.8500 0.00437
+MODVaginal  -0.8160   0.4422    0.4705 -1.7340 0.08283
+GAB         -0.8819   0.4140    1.9740 -0.4468 0.65500
+voi          0.1382   1.1480    0.2631  0.5252 0.59950
+
+final llk =  -33.51893 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5610  35.2100    0.2330 15.2800 0.000000
+log_beta     0.6443   1.9050    0.2211  2.9140 0.003569
+MODVaginal  -0.9055   0.4043    0.4862 -1.8620 0.062570
+GAB          0.4841   1.6230    2.0530  0.2358 0.813600
+voi         -0.2851   0.7519    0.2686 -1.0610 0.288500
+
+final llk =  -33.04625 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5730  35.6100    0.2254  15.850 0.000000
+log_beta     0.6684   1.9510    0.2232   2.995 0.002746
+MODVaginal  -0.9353   0.3925    0.4794  -1.951 0.051050
+GAB         -0.5448   0.5799    1.8340  -0.297 0.766500
+voi          0.2599   1.2970    0.1887   1.378 0.168300
+
+final llk =  -32.87056 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.5570  35.0400    0.2273 15.65000 0.000000
+log_beta     0.6648   1.9440    0.2209  3.00900 0.002617
+MODVaginal  -0.7653   0.4652    0.4637 -1.65100 0.098830
+GAB         -0.1760   0.8386    1.8340 -0.09596 0.923600
+voi          0.2676   1.3070    0.2116  1.26500 0.205900
+
+final llk =  -32.87417 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.5350  34.2900    0.2419 14.61000 0.000000
+log_beta     0.6221   1.8630    0.2183  2.85000 0.004368
+MODVaginal  -0.9229   0.3974    0.5113 -1.80500 0.071080
+GAB          0.1650   1.1790    2.1180  0.07789 0.937900
+voi          0.1778   1.1950    0.2403  0.73990 0.459400
+
+final llk =  -33.37233 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C13
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5650  35.3500    0.2208 16.1400 0.000000
+log_beta     0.6823   1.9780    0.2209  3.0890 0.002011
+MODVaginal  -0.8183   0.4412    0.4529 -1.8070 0.070780
+GAB         -0.6262   0.5346    1.8050 -0.3469 0.728700
+voi         -0.3311   0.7181    0.2360 -1.4030 0.160600
+
+final llk =  -32.75541 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C14
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5730  35.6200    0.2226 16.0500 0.000000
+log_beta     0.6799   1.9740    0.2229  3.0500 0.002287
+MODVaginal  -0.4958   0.6091    0.5076 -0.9768 0.328700
+GAB         -1.3420   0.2614    1.9240 -0.6973 0.485600
+voi          0.3347   1.3980    0.2440  1.3720 0.170000
+
+final llk =  -32.78019 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C15
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.56600  35.3800    0.2332 15.30000 0.000000
+log_beta    0.61980   1.8590    0.2217  2.79600 0.005181
+MODVaginal -0.77980   0.4585    0.5135 -1.51800 0.128900
+GAB        -0.63870   0.5280    2.2080 -0.28930 0.772400
+voi        -0.02366   0.9766    0.2625 -0.09012 0.928200
+
+final llk =  -33.64616 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C16
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5840  36.0200    0.2137 16.7700 0.000000
+log_beta     0.7417   2.1000    0.2267  3.2720 0.001068
+MODVaginal  -0.8685   0.4196    0.4425 -1.9630 0.049670
+GAB          1.0820   2.9520    2.0090  0.5389 0.589900
+voi          0.4423   1.5560    0.2250  1.9650 0.049360
+
+final llk =  -31.85549 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C17
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5430  34.5600    0.2131  16.630 0.000000
+log_beta     0.7436   2.1030    0.2270   3.276 0.001054
+MODVaginal  -0.8360   0.4334    0.4312  -1.939 0.052500
+GAB         -1.8420   0.1585    1.8180  -1.013 0.310800
+voi         -0.5339   0.5863    0.2724  -1.960 0.049970
+
+final llk =  -31.45456 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C18
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5040  33.2500    0.2233 15.6900 0.000000
+log_beta     0.6922   1.9980    0.2174  3.1830 0.001456
+MODVaginal  -0.6014   0.5480    0.4588 -1.3110 0.189900
+GAB         -0.6829   0.5051    1.7580 -0.3885 0.697700
+voi         -0.4674   0.6267    0.2715 -1.7210 0.085180
+
+final llk =  -32.32515 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C20
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5260  33.9900    0.2294 15.3700 0.000000
+log_beta     0.6533   1.9220    0.2214  2.9510 0.003169
+MODVaginal  -0.9188   0.3990    0.4799 -1.9150 0.055550
+GAB         -0.7098   0.4918    1.8600 -0.3816 0.702800
+voi         -0.2999   0.7409    0.2491 -1.2040 0.228700
+
+final llk =  -32.94896 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C21
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5500  34.8300    0.2313 15.3500 0.00000
+log_beta     0.6525   1.9200    0.2221  2.9370 0.00331
+MODVaginal  -0.9071   0.4037    0.4764 -1.9040 0.05691
+GAB          0.8042   2.2350    2.1180  0.3796 0.70420
+voi          0.2685   1.3080    0.2438  1.1010 0.27080
+
+final llk =  -33.10671 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C22
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.56000  35.1600    0.2363 15.06000 0.000000
+log_beta    0.61620   1.8520    0.2215  2.78200 0.005405
+MODVaginal -0.82120   0.4399    0.4935 -1.66400 0.096100
+GAB        -0.24270   0.7845    2.4280 -0.09995 0.920400
+voi        -0.06155   0.9403    0.3130 -0.19660 0.844100
+
+final llk =  -33.63072 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C23
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5810  35.9000    0.2329 15.3700 0.000000
+log_beta     0.6281   1.8740    0.2199  2.8560 0.004286
+MODVaginal  -0.9191   0.3989    0.5133 -1.7910 0.073360
+GAB         -0.8845   0.4129    1.9910 -0.4442 0.656900
+voi         -0.1539   0.8574    0.2542 -0.6054 0.544900
+
+final llk =  -33.46559 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C24
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.56700  35.4000    0.2343 15.22000 0.000000
+log_beta    0.61920   1.8570    0.2214  2.79600 0.005171
+MODVaginal -0.79870   0.4499    0.4753 -1.68000 0.092900
+GAB        -0.60360   0.5469    2.2070 -0.27350 0.784500
+voi        -0.01581   0.9843    0.2676 -0.05906 0.952900
+
+final llk =  -33.64847 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C25
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5720  35.6000    0.2313 15.4400 0.000000
+log_beta     0.6319   1.8810    0.2201  2.8710 0.004097
+MODVaginal  -0.6993   0.4969    0.4872 -1.4350 0.151200
+GAB         -0.5903   0.5541    1.8960 -0.3114 0.755500
+voi         -0.1623   0.8502    0.2400 -0.6762 0.498900
+
+final llk =  -33.42282 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C26
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.54400  34.6200    0.2352 15.07000 0.000000
+log_beta    0.63240   1.8820    0.2196  2.88000 0.003977
+MODVaginal -0.58500   0.5571    0.5399 -1.08400 0.278600
+GAB        -0.06184   0.9400    1.9700 -0.03139 0.975000
+voi         0.23080   1.2600    0.2811  0.82090 0.411700
+
+final llk =  -33.29434 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_C27
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5790  35.8400    0.2330 15.3600 0.000000
+log_beta     0.6292   1.8760    0.2237  2.8130 0.004903
+MODVaginal  -0.8045   0.4473    0.4704 -1.7100 0.087210
+GAB         -1.1450   0.3182    2.4270 -0.4717 0.637100
+voi         -0.1007   0.9042    0.2566 -0.3925 0.694700
+
+final llk =  -33.57517 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.4850  32.6200    0.2331 14.95000 0.000000
+log_beta     0.6626   1.9400    0.2202  3.00900 0.002623
+MODVaginal  -0.8399   0.4318    0.4411 -1.90400 0.056890
+GAB          0.1794   1.1970    1.8450  0.09725 0.922500
+voi         -0.4527   0.6359    0.3787 -1.19500 0.232000
+
+final llk =  -34.12995 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5640  35.2900    0.2213  16.100 0.00000
+log_beta     0.6895   1.9930    0.2171   3.177 0.00149
+MODVaginal  -0.7832   0.4569    0.4325  -1.811 0.07013
+GAB         -1.6340   0.1952    1.8210  -0.897 0.36970
+voi         -0.3990   0.6710    0.2535  -1.574 0.11550
+
+final llk =  -33.60806 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5350  34.3000    0.2296 15.4000 0.000000
+log_beta     0.6422   1.9010    0.2227  2.8830 0.003937
+MODVaginal  -0.8607   0.4229    0.4570 -1.8830 0.059660
+GAB         -0.9186   0.3991    1.7570 -0.5227 0.601100
+voi         -0.2215   0.8013    0.2770 -0.7997 0.423900
+
+final llk =  -34.51665 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.52700  34.0300    0.2306  15.290 0.000000
+log_beta    0.65730   1.9300    0.2220   2.960 0.003076
+MODVaginal -0.79240   0.4528    0.4426  -1.790 0.073390
+GAB        -0.03653   0.9641    1.8270  -0.020 0.984000
+voi        -0.35890   0.6984    0.3102  -1.157 0.247300
+
+final llk =  -34.12494 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.5410  34.5000    0.2312 15.31000 0.000000
+log_beta     0.6309   1.8790    0.2229  2.83000 0.004653
+MODVaginal  -0.8313   0.4355    0.4564 -1.82100 0.068530
+GAB          0.1726   1.1880    2.3880  0.07228 0.942400
+voi          0.1736   1.1900    0.3043  0.57040 0.568400
+
+final llk =  -34.67304 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5460  34.6800    0.2294 15.4600 0.000000
+log_beta     0.6326   1.8820    0.2209  2.8630 0.004196
+MODVaginal  -0.7203   0.4866    0.4668 -1.5430 0.122800
+GAB         -0.8276   0.4371    1.7780 -0.4654 0.641600
+voi         -0.1301   0.8780    0.2799 -0.4647 0.642200
+
+final llk =  -34.72149 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5420  34.5300    0.2325 15.2300 0.000000
+log_beta     0.6255   1.8690    0.2228  2.8070 0.004994
+MODVaginal  -0.7937   0.4522    0.4516 -1.7570 0.078840
+GAB         -0.3401   0.7117    2.0290 -0.1676 0.866900
+voi         -0.1250   0.8825    0.3025 -0.4133 0.679400
+
+final llk =  -34.7519 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.5460  34.6600    0.2301 15.41000 0.000000
+log_beta     0.6466   1.9090    0.2226  2.90500 0.003672
+MODVaginal  -0.8782   0.4155    0.4554 -1.92900 0.053770
+GAB          0.1362   1.1460    1.9280  0.07065 0.943700
+voi         -0.2603   0.7709    0.2763 -0.94200 0.346200
+
+final llk =  -34.36045 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4870  32.6800    0.2304 15.1300 0.000000
+log_beta     0.6470   1.9100    0.2247  2.8800 0.003983
+MODVaginal  -0.7841   0.4565    0.4395 -1.7840 0.074450
+GAB         -0.3768   0.6861    1.7920 -0.2102 0.833500
+voi         -0.3841   0.6811    0.4307 -0.8916 0.372600
+
+final llk =  -34.59477 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54800  34.7500    0.2303 15.4100 0.000000
+log_beta    0.62640   1.8710    0.2221  2.8200 0.004803
+MODVaginal -0.78120   0.4579    0.4570 -1.7090 0.087400
+GAB        -0.72730   0.4832    1.7740 -0.4100 0.681800
+voi        -0.02819   0.9722    0.2469 -0.1142 0.909100
+
+final llk =  -34.83184 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5600 35.17000    0.2138  16.660 0.000000
+log_beta     0.7003  2.01400    0.2301   3.044 0.002335
+MODVaginal  -0.6605  0.51660    0.4199  -1.573 0.115700
+GAB         -2.6750  0.06891    2.1810  -1.227 0.219900
+voi         -0.3917  0.67590    0.2915  -1.344 0.179000
+
+final llk =  -34.02112 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C13
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54400  34.6100    0.2294 15.4500 0.000000
+log_beta    0.63050   1.8790    0.2219  2.8410 0.004499
+MODVaginal -0.77420   0.4611    0.4505 -1.7180 0.085740
+GAB        -0.79290   0.4525    1.7630 -0.4498 0.652900
+voi        -0.07356   0.9291    0.2696 -0.2728 0.785000
+
+final llk =  -34.8015 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C14
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.53400  34.2700    0.2198 16.0800 0.000000
+log_beta    0.68920   1.9920    0.2272  3.0330 0.002418
+MODVaginal -0.55370   0.5748    0.4617 -1.1990 0.230400
+GAB         0.01932   1.0200    1.7890  0.0108 0.991400
+voi         0.29190   1.3390    0.1959  1.4900 0.136300
+
+final llk =  -33.90563 
+Iterations =  9 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C15
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5510  34.8300    0.2259 15.7200 0.000000
+log_beta     0.6430   1.9020    0.2247  2.8610 0.004223
+MODVaginal  -0.7036   0.4948    0.4683 -1.5030 0.132900
+GAB         -1.3690   0.2543    2.1110 -0.6488 0.516400
+voi         -0.1405   0.8689    0.2734 -0.5138 0.607400
+
+final llk =  -34.70688 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C16
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.55100  34.8300    0.2318 15.3200 0.000000
+log_beta    0.62770   1.8730    0.2228  2.8170 0.004846
+MODVaginal -0.79360   0.4522    0.4501 -1.7630 0.077870
+GAB        -0.79150   0.4532    1.8330 -0.4317 0.666000
+voi         0.03096   1.0310    0.3252  0.0952 0.924200
+
+final llk =  -34.83401 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C17
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5320  34.1900    0.2315 15.2600 0.000000
+log_beta     0.6375   1.8920    0.2204  2.8920 0.003828
+MODVaginal  -0.8549   0.4253    0.4559 -1.8750 0.060770
+GAB          1.3210   3.7480    3.1830  0.4150 0.678100
+voi          0.2891   1.3350    0.3621  0.7984 0.424600
+
+final llk =  -34.50394 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C18
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5160  33.6400    0.2046 17.1800 0.000000
+log_beta     0.7441   2.1050    0.2237  3.3270 0.000879
+MODVaginal  -0.6824   0.5054    0.4084 -1.6710 0.094750
+GAB          0.5384   1.7130    1.6480  0.3267 0.743900
+voi         -0.5097   0.6007    0.2453 -2.0780 0.037720
+
+final llk =  -33.23426 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C20
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5350  34.2800    0.2206 16.0200 0.000000
+log_beta     0.6706   1.9550    0.2223  3.0170 0.002551
+MODVaginal  -0.6831   0.5050    0.4364 -1.5650 0.117500
+GAB         -0.7368   0.4786    1.7000 -0.4335 0.664700
+voi         -0.3085   0.7346    0.2870 -1.0750 0.282400
+
+final llk =  -34.25216 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C21
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5360  34.3400    0.2310 15.3100 0.000000
+log_beta     0.6374   1.8920    0.2208  2.8870 0.003889
+MODVaginal  -0.8561   0.4248    0.4586 -1.8670 0.061940
+GAB          0.5248   1.6900    2.2980  0.2284 0.819300
+voi          0.2397   1.2710    0.2841  0.8437 0.398900
+
+final llk =  -34.47554 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C22
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5320  34.2000    0.2267 15.5800 0.000000
+log_beta     0.6509   1.9170    0.2251  2.8920 0.003825
+MODVaginal  -0.7092   0.4920    0.4469 -1.5870 0.112500
+GAB         -1.3480   0.2598    1.9000 -0.7096 0.478000
+voi          0.2339   1.2630    0.3174  0.7367 0.461300
+
+final llk =  -34.57394 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C23
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5270  34.0200    0.2246 15.7000 0.000000
+log_beta     0.6612   1.9370    0.2241  2.9500 0.003177
+MODVaginal  -0.6576   0.5181    0.4492 -1.4640 0.143200
+GAB          0.9750   2.6510    2.2710  0.4294 0.667600
+voi          0.2881   1.3340    0.2542  1.1330 0.257100
+
+final llk =  -34.22708 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C24
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5650  35.3500    0.2266  15.730 0.000000
+log_beta     0.6517   1.9190    0.2224   2.930 0.003388
+MODVaginal  -0.8423   0.4307    0.4475  -1.882 0.059820
+GAB         -1.7170   0.1796    2.1010  -0.817 0.413900
+voi         -0.2495   0.7792    0.2882  -0.866 0.386500
+
+final llk =  -34.47312 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C25
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5350  34.3000    0.2320 15.2400 0.000000
+log_beta     0.6320   1.8810    0.2232  2.8320 0.004624
+MODVaginal  -0.8852   0.4126    0.4884 -1.8120 0.069920
+GAB         -0.6256   0.5349    1.7650 -0.3545 0.723000
+voi          0.1540   1.1660    0.3060  0.5032 0.614900
+
+final llk =  -34.70849 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C26
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5240  33.9100    0.2375 14.8400 0.000000
+log_beta     0.6245   1.8670    0.2206  2.8310 0.004645
+MODVaginal  -0.6765   0.5084    0.4994 -1.3540 0.175600
+GAB         -0.5056   0.6031    1.8340 -0.2757 0.782800
+voi          0.1440   1.1550    0.2635  0.5463 0.584900
+
+final llk =  -34.68376 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_C27
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5860 36.10000    0.2079  17.250 0.000000
+log_beta     0.7469  2.11000    0.2291   3.260 0.001113
+MODVaginal  -0.9346  0.39270    0.4126  -2.265 0.023500
+GAB         -2.9270  0.05357    1.9660  -1.489 0.136500
+voi         -0.5317  0.58760    0.2693  -1.974 0.048350
+
+final llk =  -33.19392 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5260  33.9900    0.2207 15.9800 0.000000
+log_beta     0.6990   2.0120    0.2194  3.1860 0.001445
+MODVaginal  -0.8171   0.4417    0.4445 -1.8380 0.066040
+GAB         -0.1848   0.8313    1.7630 -0.1048 0.916500
+voi         -0.5157   0.5971    0.3134 -1.6460 0.099840
+
+final llk =  -32.2424 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.5870  36.1300    0.2331 15.39000 0.000000
+log_beta     0.6328   1.8830    0.2232  2.83500 0.004582
+MODVaginal  -0.8490   0.4278    0.4780 -1.77600 0.075700
+GAB         -0.1905   0.8266    1.9680 -0.09676 0.922900
+voi         -0.1133   0.8929    0.2176 -0.52070 0.602600
+
+final llk =  -33.51431 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5510  34.8400    0.2287 15.5200 0.000000
+log_beta     0.6886   1.9910    0.2246  3.0660 0.002168
+MODVaginal  -1.0580   0.3472    0.4763 -2.2210 0.026350
+GAB          1.0970   2.9940    2.0100  0.5454 0.585400
+voi         -0.4656   0.6278    0.2972 -1.5660 0.117200
+
+final llk =  -32.27921 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value         p
+log_alpha    3.4170  30.4800    0.2151 15.89000 0.0000000
+log_beta     0.7794   2.1800    0.2167  3.59600 0.0003229
+MODVaginal  -0.7455   0.4745    0.4255 -1.75200 0.0797300
+GAB         -0.1541   0.8572    1.6720 -0.09212 0.9266000
+voi         -0.8176   0.4415    0.2754 -2.96800 0.0029930
+
+final llk =  -30.55068 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.56800  35.4300    0.2339 15.2500 0.00000
+log_beta    0.61970   1.8580    0.2212  2.8010 0.00509
+MODVaginal -0.78770   0.4549    0.4827 -1.6320 0.10270
+GAB        -0.48140   0.6179    1.9680 -0.2446 0.80670
+voi         0.02758   1.0280    0.2503  0.1102 0.91230
+
+final llk =  -33.64413 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5650  35.3600    0.2299 15.5100 0.00000
+log_beta     0.6316   1.8810    0.2195  2.8770 0.00401
+MODVaginal  -0.7923   0.4528    0.4685 -1.6910 0.09082
+GAB         -0.9743   0.3774    2.0260 -0.4809 0.63060
+voi         -0.1553   0.8561    0.2518 -0.6169 0.53730
+
+final llk =  -33.46608 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.4810  32.5000    0.2234 15.5900 0.0000000
+log_beta     0.8251   2.2820    0.2217  3.7220 0.0001974
+MODVaginal  -0.9570   0.3840    0.4187 -2.2860 0.0222700
+GAB         -0.6490   0.5226    1.6210 -0.4004 0.6889000
+voi         -0.7541   0.4704    0.3270 -2.3060 0.0210900
+
+final llk =  -29.35962 
+Iterations =  10 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value       p
+log_alpha   3.56400  35.3000    0.2358 15.12000 0.00000
+log_beta    0.61830   1.8560    0.2215  2.79100 0.00525
+MODVaginal -0.79020   0.4538    0.5025 -1.57300 0.11580
+GAB        -0.53720   0.5844    1.9040 -0.28210 0.77790
+voi         0.01027   1.0100    0.2236  0.04592 0.96340
+
+final llk =  -33.64915 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5470  34.7200    0.2357 15.0500 0.000000
+log_beta     0.6262   1.8700    0.2215  2.8270 0.004702
+MODVaginal  -0.7259   0.4839    0.4884 -1.4860 0.137100
+GAB         -0.4557   0.6340    1.8990 -0.2400 0.810400
+voi          0.1361   1.1460    0.2081  0.6539 0.513200
+
+final llk =  -33.43958 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.4970  33.0300    0.2274 15.3800 0.000000
+log_beta     0.7057   2.0250    0.2246  3.1420 0.001678
+MODVaginal  -1.1180   0.3269    0.5112 -2.1870 0.028740
+GAB         -0.9267   0.3958    1.7940 -0.5165 0.605500
+voi         -0.4539   0.6352    0.3115 -1.4570 0.145100
+
+final llk =  -32.54715 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5290  34.0900    0.2249  15.690 0.000000
+log_beta     0.6825   1.9790    0.2214   3.083 0.002048
+MODVaginal  -0.7248   0.4844    0.4519  -1.604 0.108800
+GAB         -2.2570   0.1046    2.1680  -1.041 0.297800
+voi         -0.4656   0.6278    0.2733  -1.704 0.088470
+
+final llk =  -32.32359 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5370  34.3500    0.2306 15.3400 0.000000
+log_beta     0.6529   1.9210    0.2275  2.8700 0.004109
+MODVaginal  -0.9222   0.3977    0.4861 -1.8970 0.057800
+GAB         -0.3472   0.7067    1.8250 -0.1902 0.849100
+voi         -0.2487   0.7798    0.3410 -0.7294 0.465700
+
+final llk =  -33.37383 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C13
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5840  36.0100    0.2275 15.7600 0.000000
+log_beta     0.6515   1.9180    0.2206  2.9530 0.003146
+MODVaginal  -0.6127   0.5419    0.4950 -1.2380 0.215800
+GAB         -1.2150   0.2967    1.9940 -0.6094 0.542300
+voi         -0.2427   0.7845    0.2405 -1.0090 0.312800
+
+final llk =  -33.11943 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C14
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5760  35.7200    0.2303 15.5300 0.000000
+log_beta     0.6332   1.8840    0.2222  2.8500 0.004373
+MODVaginal  -0.8133   0.4434    0.4694 -1.7330 0.083160
+GAB         -0.5804   0.5597    1.8820 -0.3084 0.757800
+voi         -0.1126   0.8935    0.2204 -0.5108 0.609500
+
+final llk =  -33.52248 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C15
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5400  34.4700    0.2105 16.8100 0.0000000
+log_beta     0.7772   2.1750    0.2286  3.4000 0.0006736
+MODVaginal  -0.6558   0.5190    0.4321 -1.5180 0.1291000
+GAB         -1.0710   0.3426    1.6980 -0.6309 0.5281000
+voi          0.5070   1.6600    0.2237  2.2660 0.0234500
+
+final llk =  -31.43879 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C16
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5340  34.2700    0.2092 16.8900 0.0000000
+log_beta     0.7841   2.1910    0.2267  3.4590 0.0005428
+MODVaginal  -0.8476   0.4284    0.4181 -2.0270 0.0426200
+GAB         -1.4020   0.2460    1.6620 -0.8437 0.3988000
+voi         -0.6260   0.5347    0.3162 -1.9800 0.0477000
+
+final llk =  -30.72891 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C17
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.52200  33.8400    0.2198 16.02000 0.000000
+log_beta    0.68930   1.9920    0.2203  3.12900 0.001755
+MODVaginal -0.76520   0.4652    0.4459 -1.71600 0.086140
+GAB        -0.07313   0.9295    1.7910 -0.04083 0.967400
+voi        -0.51280   0.5988    0.3087 -1.66100 0.096650
+
+final llk =  -32.48459 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C18
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5080  33.3800    0.2345 14.9600 0.000000
+log_beta     0.6667   1.9480    0.2222  3.0000 0.002701
+MODVaginal  -0.9818   0.3746    0.4945 -1.9860 0.047090
+GAB          0.8147   2.2590    2.1090  0.3863 0.699300
+voi         -0.3980   0.6717    0.2908 -1.3680 0.171200
+
+final llk =  -32.67113 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C19
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.54300  34.5600    0.2230 15.89000 0.000000
+log_beta    0.68960   1.9930    0.2188  3.15200 0.001621
+MODVaginal -0.83690   0.4330    0.4538 -1.84400 0.065160
+GAB         0.02326   1.0240    1.7920  0.01298 0.989600
+voi        -0.43740   0.6457    0.2816 -1.55300 0.120300
+
+final llk =  -32.32848 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C20
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.55800  35.1100    0.2380 14.9500 0.000000
+log_beta    0.61770   1.8550    0.2215  2.7890 0.005285
+MODVaginal -0.77810   0.4593    0.4885 -1.5930 0.111200
+GAB        -0.53430   0.5861    1.9090 -0.2799 0.779500
+voi        -0.04579   0.9552    0.2589 -0.1769 0.859600
+
+final llk =  -33.63421 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C21
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5530  34.9300    0.2343 15.1700 0.000000
+log_beta     0.6275   1.8730    0.2199  2.8540 0.004323
+MODVaginal  -0.8126   0.4437    0.4729 -1.7180 0.085750
+GAB         -1.1170   0.3272    2.0460 -0.5459 0.585100
+voi         -0.1760   0.8386    0.2472 -0.7122 0.476300
+
+final llk =  -33.38626 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C22
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value         p
+log_alpha    3.5360  34.3400    0.1806 19.58000 0.000e+00
+log_beta     0.9055   2.4730    0.2322  3.90000 9.632e-05
+MODVaginal  -0.8827   0.4137    0.3798 -2.32400 2.012e-02
+GAB         -0.1315   0.8768    1.4180 -0.09273 9.261e-01
+voi         -0.6626   0.5155    0.1777 -3.73000 1.918e-04
+
+final llk =  -29.27408 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C23
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.57200  35.6000    0.2340 15.2700 0.000000
+log_beta    0.62180   1.8620    0.2217  2.8050 0.005026
+MODVaginal -0.80070   0.4490    0.4739 -1.6900 0.091100
+GAB        -0.35560   0.7007    2.0130 -0.1767 0.859800
+voi        -0.06866   0.9336    0.2476 -0.2773 0.781600
+
+final llk =  -33.61187 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Birth_TPHE_CD8_C24
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha   3.56800  35.4500    0.2331 15.3100 0.00000
+log_beta    0.62090   1.8610    0.2218  2.8000 0.00511
+MODVaginal -0.83740   0.4328    0.5138 -1.6300 0.10320
+GAB        -0.38860   0.6780    2.0270 -0.1917 0.84800
+voi         0.05181   1.0530    0.2565  0.2020 0.83990
+
+final llk =  -33.62997 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C1
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.4950 32.96000    0.1819  19.220 0.000e+00
+log_beta     0.9152  2.49700    0.2238   4.089 4.334e-05
+MODVaginal  -1.0660  0.34430    0.3514  -3.034 2.411e-03
+GAB         -4.4530  0.01164    1.6990  -2.621 8.771e-03
+voi         -0.9154  0.40040    0.2426  -3.773 1.615e-04
+
+final llk =  -30.44547 
+Iterations =  8 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C2
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.56000  35.1500    0.2315 15.3700 0.000000
+log_beta    0.63200   1.8810    0.2231  2.8330 0.004613
+MODVaginal -0.79800   0.4502    0.4480 -1.7810 0.074900
+GAB        -0.52840   0.5896    1.8730 -0.2821 0.777800
+voi        -0.06785   0.9344    0.2098 -0.3234 0.746400
+
+final llk =  -34.786 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C3
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha    3.5520  34.9000    0.2291 15.51000 0.000000
+log_beta     0.6652   1.9450    0.2233  2.97800 0.002897
+MODVaginal  -0.8659   0.4207    0.4417 -1.96000 0.049940
+GAB          0.1023   1.1080    1.8200  0.05622 0.955200
+voi         -0.3445   0.7085    0.2916 -1.18200 0.237300
+
+final llk =  -33.95428 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C4
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.54900  34.7700    0.2310 15.36000 0.000000
+log_beta    0.62730   1.8720    0.2230  2.81300 0.004907
+MODVaginal -0.78170   0.4576    0.4758 -1.64300 0.100400
+GAB        -0.80370   0.4477    2.0320 -0.39550 0.692500
+voi        -0.01214   0.9879    0.2095 -0.05792 0.953800
+
+final llk =  -34.83677 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C5
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5240  33.9100    0.2343 15.0400 0.000000
+log_beta     0.6351   1.8870    0.2229  2.8490 0.004388
+MODVaginal  -0.8622   0.4222    0.4584 -1.8810 0.059980
+GAB         -1.0150   0.3626    1.8210 -0.5571 0.577500
+voi         -0.1805   0.8349    0.2581 -0.6992 0.484400
+
+final llk =  -34.58499 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C6
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54600  34.6600    0.2292 15.4700 0.000000
+log_beta    0.63070   1.8790    0.2214  2.8490 0.004383
+MODVaginal -0.80680   0.4463    0.4511 -1.7890 0.073690
+GAB        -1.14300   0.3189    2.0770 -0.5502 0.582200
+voi        -0.09906   0.9057    0.2727 -0.3633 0.716400
+
+final llk =  -34.77208 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C7
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5920  36.3100    0.2095 17.1500 0.0000000
+log_beta     0.7642   2.1470    0.2240  3.4110 0.0006461
+MODVaginal  -1.0280   0.3576    0.4123 -2.4940 0.0126300
+GAB          1.0220   2.7780    1.7060  0.5989 0.5492000
+voi         -0.5312   0.5879    0.2598 -2.0450 0.0408700
+
+final llk =  -32.60428 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C8
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5510  34.8500    0.2315 15.3400 0.000000
+log_beta     0.6280   1.8740    0.2229  2.8180 0.004835
+MODVaginal  -0.7937   0.4521    0.4496 -1.7660 0.077470
+GAB         -0.6776   0.5078    1.8530 -0.3657 0.714600
+voi         -0.0240   0.9763    0.2057 -0.1166 0.907100
+
+final llk =  -34.83164 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C9
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5430  34.5600    0.2331 15.2000 0.000000
+log_beta     0.6258   1.8700    0.2225  2.8130 0.004915
+MODVaginal  -0.7941   0.4520    0.4504 -1.7630 0.077900
+GAB         -0.7901   0.4538    1.7950 -0.4403 0.659700
+voi          0.0301   1.0310    0.2155  0.1397 0.888900
+
+final llk =  -34.82869 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C10
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5610  35.1900    0.1939 18.3600 0.0000000
+log_beta     0.8092   2.2460    0.2347  3.4470 0.0005663
+MODVaginal  -1.0100   0.3642    0.3979 -2.5380 0.0111500
+GAB         -0.3666   0.6931    1.4560 -0.2518 0.8012000
+voi         -0.4697   0.6252    0.1981 -2.3710 0.0177500
+
+final llk =  -32.6612 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C11
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.55300  34.9000    0.2273 15.6300 0.000000
+log_beta    0.63680   1.8900    0.2246  2.8350 0.004581
+MODVaginal -0.79130   0.4533    0.4441 -1.7820 0.074750
+GAB        -0.52880   0.5893    1.8070 -0.2926 0.769800
+voi         0.09524   1.1000    0.2354  0.4045 0.685800
+
+final llk =  -34.76064 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C12
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5860  36.1000    0.1789 20.0500 0.0000000
+log_beta     0.8785   2.4070    0.2433  3.6100 0.0003056
+MODVaginal  -0.9795   0.3755    0.3569 -2.7440 0.0060630
+GAB         -0.6780   0.5076    1.3460 -0.5036 0.6146000
+voi         -0.5018   0.6054    0.1830 -2.7420 0.0061040
+
+final llk =  -32.19466 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C13
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5100 33.44000    0.1969  17.820 0.0000000
+log_beta     0.8260  2.28400    0.2272   3.636 0.0002772
+MODVaginal  -0.9599  0.38290    0.3953  -2.428 0.0151700
+GAB         -2.9390  0.05292    1.7930  -1.639 0.1011000
+voi         -0.6204  0.53770    0.2362  -2.627 0.0086260
+
+final llk =  -32.06444 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C14
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.57500  35.7000    0.2146  16.660 0.000000
+log_beta    0.70350   2.0210    0.2240   3.141 0.001685
+MODVaginal -0.78800   0.4547    0.4196  -1.878 0.060340
+GAB         0.06607   1.0680    1.7390   0.038 0.969700
+voi        -0.32360   0.7236    0.2242  -1.443 0.149000
+
+final llk =  -33.89139 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C15
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value       p
+log_alpha   3.53100  34.1600    0.2153 16.40000 0.00000
+log_beta    0.72800   2.0710    0.2277  3.19700 0.00139
+MODVaginal -0.60710   0.5449    0.4206 -1.44300 0.14900
+GAB         0.05814   1.0600    1.6810  0.03459 0.97240
+voi         0.39720   1.4880    0.2076  1.91400 0.05567
+
+final llk =  -33.27038 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C16
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5330  34.2200    0.2347 15.0600 0.000000
+log_beta     0.6264   1.8710    0.2209  2.8350 0.004579
+MODVaginal  -0.8867   0.4120    0.4842 -1.8310 0.067060
+GAB         -1.5420   0.2139    2.3110 -0.6673 0.504600
+voi         -0.1755   0.8390    0.3401 -0.5161 0.605800
+
+final llk =  -34.68964 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C17
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.55500  34.9900    0.2283 15.5700 0.000000
+log_beta    0.65030   1.9160    0.2207  2.9460 0.003218
+MODVaginal -0.80180   0.4485    0.4448 -1.8030 0.071440
+GAB        -0.06768   0.9346    1.8290 -0.0370 0.970500
+voi        -0.27550   0.7592    0.2962 -0.9301 0.352300
+
+final llk =  -34.33675 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C18
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error  z-value        p
+log_alpha   3.53600  34.3400    0.2271 15.57000 0.000000
+log_beta    0.65540   1.9260    0.2232  2.93700 0.003315
+MODVaginal -0.79480   0.4517    0.4397 -1.80800 0.070620
+GAB        -0.08609   0.9175    1.8390 -0.04682 0.962700
+voi        -0.25810   0.7725    0.2950 -0.87500 0.381600
+
+final llk =  -34.4339 
+Iterations =  5 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C19
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.5560  35.0300    0.2150 16.5400 0.0000000
+log_beta     0.7403   2.0970    0.2153  3.4390 0.0005841
+MODVaginal  -0.8988   0.4070    0.4193 -2.1440 0.0320700
+GAB         -0.7266   0.4836    1.6130 -0.4506 0.6523000
+voi         -0.4939   0.6102    0.2491 -1.9830 0.0473600
+
+final llk =  -32.73581 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C20
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5300  34.1300    0.2302 15.3400 0.000000
+log_beta     0.6457   1.9070    0.2234  2.8910 0.003844
+MODVaginal  -0.6606   0.5166    0.4703 -1.4050 0.160100
+GAB         -1.1320   0.3223    1.8550 -0.6104 0.541600
+voi         -0.2019   0.8171    0.2829 -0.7138 0.475400
+
+final llk =  -34.574 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C21
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value         p
+log_alpha    3.4440  31.3300    0.2326 14.8100 0.0000000
+log_beta     0.7138   2.0420    0.2107  3.3870 0.0007061
+MODVaginal  -0.9425   0.3897    0.4423 -2.1310 0.0331100
+GAB         -0.2543   0.7755    1.7050 -0.1491 0.8815000
+voi         -0.5210   0.5939    0.2601 -2.0030 0.0452000
+
+final llk =  -32.5465 
+Iterations =  7 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C22
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value       p
+log_alpha    3.5470  34.6900    0.2024 17.5300 0.00000
+log_beta     0.7675   2.1540    0.2245  3.4180 0.00063
+MODVaginal  -0.9280   0.3953    0.4065 -2.2830 0.02244
+GAB         -0.6102   0.5433    1.5680 -0.3892 0.69710
+voi         -0.5290   0.5892    0.2443 -2.1650 0.03037
+
+final llk =  -32.65623 
+Iterations =  6 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C23
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha    3.5060  33.3000    0.2489 14.0800 0.000000
+log_beta     0.6313   1.8800    0.2234  2.8260 0.004709
+MODVaginal  -0.7609   0.4672    0.4529 -1.6800 0.092900
+GAB         -0.6471   0.5236    1.7740 -0.3647 0.715300
+voi         -0.2554   0.7746    0.6313 -0.4046 0.685800
+
+final llk =  -34.76504 
+Iterations =  9 
+
+###
+###
+###
+
+Current Variable: Discharge_TPHE_CD8_C24
+
+Model:  Accelerated Failure Time
+Dependency structure assumed: Independence
+Baseline:  loglogistic 
+Call: ic_par(formula = cst_surv ~ MOD + GAB + voi, data = working_table, 
+    model = "aft", dist = "loglogistic")
+
+           Estimate Exp(Est) Std.Error z-value        p
+log_alpha   3.54300  34.5700    0.2387 14.8500 0.000000
+log_beta    0.62570   1.8700    0.2225  2.8120 0.004919
+MODVaginal -0.79240   0.4527    0.4506 -1.7580 0.078670
+GAB        -0.72510   0.4843    1.7860 -0.4061 0.684700
+voi         0.02963   1.0300    0.3987  0.0743 0.940800
+
+final llk =  -34.83562 
+Iterations =  6 
+
+###
+###
+###
+
