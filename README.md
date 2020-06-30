@@ -1,9 +1,9 @@
 CoordinatedTCellsMicrobiota
 ================
 
-Data and analysis supporting “Newborn T Cell and Microbiota
-Developmental Trajectories and Their Inter-related Roles in Health and
-Diseases.” [Preprint](https://www.biorxiv.org/content/10.1101/736090v2)
+Data and analysis supporting “Aberrant newborn T cell and microbiota
+developmental trajectories predict respiratory compromise during
+infancy.” [Preprint](https://www.biorxiv.org/content/10.1101/736090v2)
 
 ## Contents
 
@@ -11,8 +11,8 @@ Diseases.” [Preprint](https://www.biorxiv.org/content/10.1101/736090v2)
     subpopulation abundances, subject covariates, etc
   - intermediates: derived tables and output from scripts
 
-To reproduce some results, data will need to be downloaded (from
-dbGAP)\[<https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001347.v2.p1>\],
+To reproduce some results, data will need to be downloaded [from
+dbGAP](https://www.ncbi.nlm.nih.gov/projects/gap/cgi-bin/study.cgi?study_id=phs001347.v2.p1),
 as some data posted here has been jittered, quantized or redacted to
 reduce the risk of reidentification of subjects. The `Alias` key will
 join subject-level tables to data in dbGAP.
@@ -21,6 +21,8 @@ join subject-level tables to data in dbGAP.
 
   - 01\_make\_cst: Run DMN model on OTU and flowsom metaclusters and
     find best-fitting model
+  - 01\_table1\_demographics: Summarize some demographic variables to
+    generate portions of “table 1” in the paper.
   - 02\_network\_modeling: Test for pairwise associations between CST,
     IST and flowsom metacluster
   - 02\_ist\_cst\_results: Heatmaps of IST/CST composition, associations
@@ -35,13 +37,13 @@ join subject-level tables to data in dbGAP.
     IMMPORT](https://browser.immport.org/browser?path=SDY1302) to run
     these scripts.
 
-These don’t necessarily need to be run in order, as their inputs hve
+These don’t necessarily need to be run in order, as their inputs have
 been saved under `intermediates`.
 
 To install all dependencies run `devtools::install(CoordinatedTDeps, lib
 = <some new directory>)` where you may wish to set `<some new
 directory>` to be a path besides your default `.libPaths()` to keep
-these packages separated.
+these packages isolated.
 
 Run using R 3.5.1 and Bioconductor 3.7, and YMMV
     otherwise.
@@ -67,7 +69,7 @@ devtools::session_info()
     ##  language (EN)                        
     ##  collate  en_US.UTF-8                 
     ##  tz       America/New_York            
-    ##  date     2020-03-27
+    ##  date     2020-06-29
 
     ## Packages ----------------------------------------------------------------------
 
