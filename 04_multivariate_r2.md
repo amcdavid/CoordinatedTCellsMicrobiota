@@ -1,0 +1,269 @@
+Multivariate \(R^2\) Calculations
+================
+Andrew McDavid
+07/06/2020
+
+``` r
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+knitr::opts_chunk$set(cache = TRUE, autodep = TRUE)
+knitr::opts_chunk$set(dev = c('png', 'pdf'))
+library(broom)
+```
+
+    ## Warning: package 'broom' was built under R version 3.5.2
+
+``` r
+library(tidyverse)
+```
+
+    ## Warning: package 'tidyverse' was built under R version 3.5.2
+
+    ## ── Attaching packages ─────────────────────────────────────────────── tidyverse 1.3.0 ──
+
+    ## ✓ ggplot2 3.3.0     ✓ purrr   0.3.3
+    ## ✓ tibble  2.1.3     ✓ dplyr   0.8.5
+    ## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
+    ## ✓ readr   1.3.1     ✓ forcats 0.5.0
+
+    ## Warning: package 'ggplot2' was built under R version 3.5.2
+
+    ## Warning: package 'tibble' was built under R version 3.5.2
+
+    ## Warning: package 'tidyr' was built under R version 3.5.2
+
+    ## Warning: package 'purrr' was built under R version 3.5.2
+
+    ## Warning: package 'dplyr' was built under R version 3.5.2
+
+    ## Warning: package 'stringr' was built under R version 3.5.2
+
+    ## Warning: package 'forcats' was built under R version 3.5.2
+
+    ## ── Conflicts ────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
+library(ggbeeswarm)
+library(car)
+```
+
+    ## Warning: package 'car' was built under R version 3.5.2
+
+    ## Loading required package: carData
+
+    ## Warning: package 'carData' was built under R version 3.5.2
+
+    ## 
+    ## Attaching package: 'car'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     recode
+
+    ## The following object is masked from 'package:purrr':
+    ## 
+    ##     some
+
+``` r
+all_feats = read_csv('intermediates/all_tcell_features.csv')
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+``` r
+all_mb = read_csv('intermediates/microbiome_joined.csv')
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character()
+    ## )
+    ## See spec(...) for full column specifications.
+
+``` r
+timeline = read_csv('data/subject_timeline.csv')
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   `Sequence Num` = col_double(),
+    ##   DOL = col_double(),
+    ##   cga = col_double(),
+    ##   Subject = col_character()
+    ## )
+
+# Multivariate \(R^2\) associations (figure 1)
+
+``` r
+estimate_mlm_r2 = function(lhs_data, rhs_data, formula_, null_form = . ~ 1, response_label, predictor_label){
+  # Drop NAs and constant columns
+  lhs_data = as.matrix(lhs_data)
+  colVar = apply(lhs_data, 2, var, na.rm = TRUE)
+  lhs_data = lhs_data[,colVar > 1e-4,drop = FALSE]
+  colVar = apply(rhs_data, 2, var, na.rm = TRUE)
+  rhs_data = rhs_data[,colVar > 1e-4, drop = FALSE]
+  good_right = rowSums(is.na(rhs_data)) == 0
+  good_left = rowSums(is.na(lhs_data)) == 0
+  good_good = good_right & good_left
+  lhs_data = lhs_data[good_good,,drop = FALSE]
+  rhs_data = rhs_data[good_good,,drop = FALSE]
+  
+  # Left hand side is compositional, take ILR
+  lhs_data_comp = compositions::ilr(compositions::clo(lhs_data))
+  environment(formula_) = environment()
+  full = lm(formula_, data = rhs_data)
+  null = update(full, null_form)
+  adjr2 = 1 - (sum(full$residuals^2)/full$df.residual) /  (sum(null$residuals^2)/null$df.residual)
+  anova_ = anova(full, null, test = 'Wilks', tol = 1e-6)
+  stats = tibble(adjr2 = adjr2, pval = anova_[2,'Pr(>F)'], response_label = response_label, predictor_label = predictor_label, n = min(nrow(rhs_data), nrow(lhs_data)), p_rhs = ncol(rhs_data), p_lhs = ncol(lhs_data))
+  stats
+}
+
+push = function(x, y){
+  if(missing(y)){
+    x = list(x)
+    } else{
+      if(!is.list(x)) stop('Not list')
+      x[[length(x)+1]] = y
+    }
+  x
+}
+
+all_mb_dol = all_mb %>% mutate(log2DOL = log2(DOL + 1 ))
+rec_mb = all_mb_dol %>% select(ends_with('.rec')) %>% as.matrix()
+
+
+all_feats_dol = all_feats %>% left_join(timeline[c('Subject',  'Sequence Num', 'DOL')], by = c('Subject',  'Sequence Num')) %>% mutate(log2DOL = log2(`DOL` + 1))
+
+r2_res = push(estimate_mlm_r2(rec_mb, all_mb_dol['cga'],  lhs_data_comp ~ cga, response_label = 'REC', predictor_label = 'PMA'))
+
+r2_res = push(r2_res, estimate_mlm_r2(rec_mb, all_mb_dol['log2DOL'],  lhs_data_comp ~ log2DOL, response_label = 'REC', predictor_label = 'DOL'))
+
+
+r2_res = push(r2_res, estimate_mlm_r2(all_mb_dol %>% select(ends_with('.nas')) %>% as.matrix(), all_mb_dol['cga'], lhs_data_comp ~ cga, response_label = 'NAS', predictor_label = 'PMA'))
+
+r2_res = push(r2_res, estimate_mlm_r2(all_mb_dol %>% select(ends_with('.nas')) %>% as.matrix(), all_mb_dol['log2DOL'], lhs_data_comp ~ log2DOL, response_label = 'NAS', predictor_label = 'DOL'))
+
+r2_res = push(r2_res, estimate_mlm_r2(all_mb_dol %>% select(ends_with('.nas')) %>% as.matrix(), all_mb_dol %>% select(ends_with('.rec')), lhs_data_comp ~ ., response_label = 'NAS', predictor_label = 'REC'))
+
+r2_res = push(r2_res, estimate_mlm_r2(all_mb_dol %>% select(ends_with('.nas')) %>% as.matrix(), all_mb_dol %>% select(ends_with('.rec'), cga), lhs_data ~ . + cga, null_form = . ~ cga, response_label = 'NAS', predictor_label = 'REC (cga adjusted)'))
+
+r2_res = push(r2_res, estimate_mlm_r2(all_mb_dol %>% select(ends_with('.rec')) %>% as.matrix(), all_mb_dol %>% select(ends_with('.nas')), lhs_data ~ ., response_label = 'REC', predictor_label = 'NAS'))
+
+r2_res = push(r2_res, estimate_mlm_r2(all_mb_dol %>% select(ends_with('.rec')) %>% as.matrix(), all_mb_dol %>% select(ends_with('.nas'), cga), lhs_data ~ . + cga, null_form = . ~ cga, response_label = 'REC', predictor_label = 'NAS (cga adjusted)'))
+
+
+r2_res = push(r2_res, estimate_mlm_r2(all_feats_dol %>% select(starts_with('Meta.Cluster')) %>% as.matrix(), all_feats_dol['cga'], lhs_data_comp ~ cga, response_label = 'T cell', predictor_label = 'PMA'))
+
+
+r2_res = push(r2_res, estimate_mlm_r2(all_feats_dol %>% select(starts_with('Meta.Cluster')) %>% as.matrix(), all_feats_dol['log2DOL'], lhs_data_comp ~ log2DOL, response_label = 'T cell', predictor_label = 'DOL'))
+```
+
+## T cell on MB
+
+Get Visits 1, 7, 19 from timeline, and their DOL
+
+Merge onto MB
+timelines
+
+``` r
+closest_1_7_19 = timeline %>% filter(`Sequence Num` %in% c(1, 7, 19)) %>% select(`Sequence Num`, `Subject`, DOL_t = DOL) %>%  left_join(all_mb %>% select(`Subject`, DOL_m = DOL), by = 'Subject') 
+
+closest_visit = closest_1_7_19 %>% mutate(diff = DOL_m -DOL_t)%>% group_by(`Subject`, `Sequence Num`) %>% arrange(abs(diff)) %>% mutate(rank_diff = seq_along(diff)) %>% filter(rank_diff == 1, abs(diff) < 28)
+
+closest_visit %>% group_by(`Subject`) %>% summarize(n())
+```
+
+    ## # A tibble: 215 x 2
+    ##    Subject `n()`
+    ##    <chr>   <int>
+    ##  1 C01D8       3
+    ##  2 C0427       2
+    ##  3 C04D3       2
+    ##  4 C04F0       3
+    ##  5 C0522       3
+    ##  6 C054B       3
+    ##  7 C0796       3
+    ##  8 C08F3       2
+    ##  9 C09B7       3
+    ## 10 C09C2       3
+    ## # … with 205 more rows
+
+``` r
+all_mb_closest = inner_join(all_mb[!duplicated(all_mb[c('Subject', 'DOL')]),], 
+                            closest_visit %>% select(`Sequence Num.T` = `Sequence Num`, `Subject`, DOL = DOL_m))
+
+mb_tcell_closest = inner_join(all_feats %>% rename(`Sequence Num.T` = `Sequence Num`), select(all_mb_closest, -`Sequence Num`), by = c('Subject', 'Sequence Num.T'), suffix = c('.T', '.B'))
+
+mb_tcell_closest %>% group_by(`Subject`) %>% summarize(n())
+```
+
+    ## # A tibble: 147 x 2
+    ##    Subject `n()`
+    ##    <chr>   <int>
+    ##  1 C01D8       3
+    ##  2 C0427       1
+    ##  3 C04D3       2
+    ##  4 C0522       3
+    ##  5 C08F3       1
+    ##  6 C09B7       3
+    ##  7 C09C2       3
+    ##  8 C0C1C       3
+    ##  9 C0E4F       3
+    ## 10 C1114       2
+    ## # … with 137 more rows
+
+``` r
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(ends_with('.rec')) %>% as.matrix(), mb_tcell_closest %>% select(starts_with('Meta.Cluster')), lhs_data_comp ~ ., response_label = 'REC', predictor_label = 'T cell'))
+
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(ends_with('.nas')) %>% as.matrix(), mb_tcell_closest %>% select(starts_with('Meta.Cluster')), lhs_data_comp ~ ., response_label = 'NAS', predictor_label = 'T cell'))
+
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(starts_with('Meta.Cluster')) %>% as.matrix(), mb_tcell_closest %>% select(ends_with('.nas')), lhs_data_comp ~ ., response_label = 'T cell', predictor_label = 'NAS'))
+
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(starts_with('Meta.Cluster')) %>% as.matrix(), mb_tcell_closest %>% select(ends_with('.rec')), lhs_data_comp ~ ., response_label = 'T cell', predictor_label = 'REC'))
+
+# Adjusted 
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(ends_with('.rec'))%>% as.matrix(), mb_tcell_closest %>% select(starts_with('Meta.Cluster'), cga.T), lhs_data_comp ~ ., null_form = ~ cga.T, response_label = 'REC', predictor_label = 'T cell (cga adjusted)'))
+
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(ends_with('.nas'))%>% as.matrix(), mb_tcell_closest %>% select(starts_with('Meta.Cluster'), cga.T), lhs_data_comp ~ ., null_form = ~ cga.T, response_label = 'NAS', predictor_label = 'T cell (cga adjusted)'))
+
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(starts_with('Meta.Cluster')) %>% as.matrix(), mb_tcell_closest %>% select(ends_with('.nas'), cga.B), lhs_data_comp ~ ., null_form = ~ cga.B, response_label = 'T cell', predictor_label = 'NAS (cga adjusted)'))
+
+r2_res = push(r2_res, estimate_mlm_r2(mb_tcell_closest %>% select(starts_with('Meta.Cluster')) %>% as.matrix(), mb_tcell_closest %>% select(ends_with('.rec'), cga.B), lhs_data_comp ~ ., null_form = ~ cga.B, response_label = 'T cell', predictor_label = 'REC (cga adjusted)'))
+```
+
+``` r
+r2_res = bind_rows(r2_res) 
+
+r2_res = r2_res %>% 
+  mutate(adjusted = str_detect(predictor_label, '(cga adjusted)'), 
+         predictor_label2 = str_replace_all(predictor_label, fixed(' (cga adjusted)'), ''), 
+         predictor_label2 = factor(predictor_label2, levels = rev(c('DOL', 'PMA', 'T cell', 'NAS', 'REC'))),
+         response_label = factor(response_label, levels = c('T cell', 'NAS', 'REC')), 
+         adjusted = factor(adjusted, levels = c('TRUE', 'FALSE')),
+         pstar = case_when(pval < 1e-20 ~ '**',  pval < 1e-4 ~ '*', TRUE ~ ''))
+
+#p_rhs = r2_res %>% arrange(predictor_label2, p_rhs) %>% split(f = .$predictor_label2) %>% map_dfr(~ .x[[1,]])
+
+ggplot(r2_res, aes(x = response_label, y = predictor_label, fill = adjr2)) + geom_tile() + geom_text(aes(label = format(pval, digits = 1))) + scale_fill_distiller(palette = 3, limits = c(0, .2), direction = 1)
+```
+
+![](04_multivariate_r2_files/figure-gfm/plot_mv_r2-1.png)<!-- -->
+
+``` r
+ggplot(r2_res, aes(y = adjr2, x = predictor_label2, fill = adjusted)) + geom_col(position = 'dodge') + coord_flip() + facet_grid(~response_label)+ geom_text(aes(y = adjr2 + .01, label = pstar), position = position_dodge(width = 1), size = 6) + ylab('Adjusted R2') + xlab('Predictor(s)') + scale_y_continuous(limits = c(0, .22), breaks = c(0, .1, .2)) + theme(legend.position = 'bottom') + scale_fill_discrete('PMA Adjusted?', direction = 1)
+```
+
+![](04_multivariate_r2_files/figure-gfm/plot_mv_r2-2.png)<!-- -->
+
+``` r
+r2_res %>% dplyr::select(-predictor_label2) %>% dplyr::select(predictor_label, response_label, everything()) %>% mutate(adjr2 = round(adjr2, 3)) %>% write_csv(path = 'intermediates/di_results/r2_supp_table.csv')
+```
