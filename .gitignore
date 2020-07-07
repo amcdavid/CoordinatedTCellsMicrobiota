@@ -31,8 +31,8 @@ vignettes/*.pdf
 /*_cache/
 /files/
 /cache/
-/03_development_indices_files/*/*.pdf
-/04_multivariate_r2_files/*/*.pdf
+/*_files/*/*.pdf
+
 
 # Temporary files created by R markdown
 *.utf8.md
