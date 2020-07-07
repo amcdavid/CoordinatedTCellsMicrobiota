@@ -1,19 +1,22 @@
-predictor_label,response_label,adjr2,pval,n,p_rhs,p_lhs,adjusted,pstar
-PMA,REC,0.036,1.0819532882301e-310,2972,1,83,FALSE,**
-DOL,REC,0.03,7.746700134687277e-240,2972,1,83,FALSE,**
-PMA,NAS,0.082,0,2661,1,39,FALSE,**
-DOL,NAS,0.062,2.860190485093044e-238,2661,1,39,FALSE,**
-REC,NAS,0.089,1.0554272350558685e-147,2601,83,39,FALSE,**
-REC (cga adjusted),NAS,0.063,5.916574745844057e-156,2601,84,39,TRUE,**
-NAS,REC,0.061,4.1575126018727325e-300,2601,39,83,FALSE,**
-NAS (cga adjusted),REC,0.027,5.916574746363859e-156,2601,40,83,TRUE,**
-PMA,T cell,0.176,1.1021386132591592e-123,385,1,27,FALSE,**
-DOL,T cell,0.142,1.7700362860663195e-91,385,1,27,FALSE,**
-T cell,REC,0.067,5.3109465441882354e-24,248,28,67,FALSE,**
-T cell,NAS,0.124,1.0261842589029314e-11,222,28,44,FALSE,*
-NAS,T cell,0.162,1.2435559306104936e-19,222,44,28,FALSE,*
-REC,T cell,0.134,2.3359559382288246e-10,248,67,28,FALSE,*
-T cell (cga adjusted),REC,0.034,1.2048443452558307e-17,248,29,67,TRUE,*
-T cell (cga adjusted),NAS,0.069,2.0479545117285867e-7,222,29,44,TRUE,*
-NAS (cga adjusted),T cell,0.079,1.586491416169044e-13,222,45,28,TRUE,*
-REC (cga adjusted),T cell,0.029,2.9640041541623417e-5,248,68,28,TRUE,*
+predictor_label,response_label,adjr2,pval,n,p_rhs,p_lhs,adjusted,null_form,full_form,aic_full,pstar
+Term,T cell,0.022,1.7025160125349927e-28,385,1,27,FALSE,. ~ 1,lhs_data_comp ~ 1 + ispreterm,28849.39956796767,**
+Term,NAS,0.021,2.634051484756398e-72,2661,1,39,FALSE,. ~ 1,lhs_data_comp ~ 1 + ispreterm,297054.0203124417,**
+Term,REC,0.008,1.4918391346900493e-96,2972,1,83,FALSE,. ~ 1,lhs_data_comp ~ 1 + ispreterm,711911.1761557407,**
+DOL,T cell,0.166,3.8163237761447643e-100,385,2,27,FALSE,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,27011.521737950865,**
+DOL,NAS,0.055,8.334651916059346e-228,2661,2,39,FALSE,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,291297.07890718075,**
+DOL,REC,0.028,5.36455126227007e-231,2972,2,83,FALSE,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,704856.5511523824,**
+PMA,T cell,0.179,7.612435642492903e-123,385,2,27,FALSE,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,26853.060992377064,**
+PMA,NAS,0.066,1.8197879096348487e-301,2661,2,39,FALSE,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,290113.09954619675,**
+PMA,REC,0.031,7.754144272120712e-275,2972,2,83,FALSE,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,704257.2676057267,**
+T cell,NAS,0.079,2.577430653806212e-9,222,29,44,FALSE,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,22958.81975416865,*
+T cell,REC,0.066,7.643845299314168e-22,248,29,67,FALSE,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,44938.84749994411,**
+NAS,T cell,0.137,1.4597983423273224e-15,222,45,28,FALSE,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,15025.94310778554,*
+NAS,REC,0.032,3.093082297141045e-132,2601,40,83,FALSE,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,609570.7668364045,**
+REC,T cell,0.116,1.8566957302056443e-7,248,68,28,FALSE,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,16642.849304284184,*
+REC,NAS,0.074,2.9663839317319556e-124,2601,84,39,FALSE,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,279749.3168321483,**
+T cell,NAS,0.041,3.7738963092460428e-6,222,30,44,TRUE,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,22860.280645140017,*
+T cell,REC,0.028,3.356073758809613e-16,248,30,67,TRUE,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,44782.53345806398,*
+NAS,T cell,0.061,7.781281323509253e-11,222,46,28,TRUE,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,14325.417132493465,*
+NAS,REC,0.014,1.521682181298943e-67,2601,41,83,TRUE,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,607327.8778773578,**
+REC,T cell,0.013,0.0029327307181780653,248,69,28,TRUE,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,16243.121226072872,
+REC,NAS,0.034,1.091800067226754e-56,2601,85,39,TRUE,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,277297.65823191736,**
