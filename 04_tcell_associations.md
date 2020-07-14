@@ -1,7 +1,7 @@
 T cell / IST Associations
 ================
 Andrew McDavid
-07/06/2020
+2020-07-14
 
 # ANOVA on some clusters
 
@@ -181,203 +181,88 @@ ggplot(filter(tests_by_ist, term == 'preterm_weeks'), aes(x = ist, y = estimate,
 
 ![](04_tcell_associations_files/figure-gfm/ist_by_term-1.png)<!-- -->
 
-# TPHE5 association (Figure S2)
+# IST-CMV-Antibiotic associations
+
+### Setup covariates
+
+``` r
+# cmv+ : positive for 2 targets via PCR on saliva at one year
+# lab+ : positive for serology on blood at one year
+cmv_dat = subject %>% mutate(cmv_pcr = str_detect(`cmv test`, fixed('cmv+')))
+
+hospital_humilk = read_csv('data/milk_hospital.csv') %>% rename(perinatal_milk = `Any Human Milk Perinatal`)
+nabx_polish = read_csv('data/antibiotic_exposure.csv')
+nabx_time = nabx_polish %>% select(-group) %>% rename(n_antibiotics = `Number of systemic antibiotic`) %>% spread(discharge, n_antibiotics) %>% rename(n_antibiotics_discharge = 'TRUE', n_antibiotics_pre = 'FALSE')
+
+discharge_humilk = read_csv( 'intermediates/milk_subject.csv')
+
+covariates =  purrr::reduce(list(cmv_dat, hospital_humilk, nabx_time, discharge_humilk), left_join) %>%
+  mutate(Race = fct_collapse(Race, other_unk = c('Other Race', 'Unknown or Not Reported', 'Asian')),
+         preg_membrane_18hr  = fct_collapse(preg_membrane_18hr, No_Unknown = c('No', 'Unknown')))
+covariates$n_antibiotics_pre = ifelse(covariates$preterm_weeks <=0, NA, covariates$n_antibiotics_pre)
+```
+
+### Generate presence/absence tables of ists per early/late/ever epoch
+
+``` r
+get_ist_tables = function(x, label){
+  ist_tab = x %>% ungroup(all_ist_cat) %>% 
+  group_by(assay) %>% do({
+    sub = factor(.$Subject)
+  tab = table(Var1 = sub, .$IST_modal)
+  as.data.frame(tab) %>% 
+    dplyr::rename(Subject = Var1, IST = Var2) %>%
+    mutate(present = Freq > 0, epoch = label)
+}) %>% left_join(covariates)
+}
+ 
+ist_ever = filter(all_ist_cat, `Sequence Num` %in% c(1,7, 19)) %>% get_ist_tables(label = 'ever')
+ist_late = filter(all_ist_cat, `Sequence Num` == 19) %>% get_ist_tables(label = 'early')
+ist_early = filter(all_ist_cat, `Sequence Num` < 19)  %>% get_ist_tables(label = 'late')
+```
+
+### Antibiotics, CMV, Inflammation and TPHE5 (Figure S2)
 
 ``` r
 library(mgcv)
-ist_ever = filter(all_ist_cat, `Sequence Num` %in% c(1,7, 19))  %>% group_by(`Subject`) %>% 
-  summarize(TPHE_6  = any(IST_modal == 'TPHE_6'),
-            TPHE_5  = any(IST_modal == 'TPHE_5'),
-            ICS_5 = any(IST_modal == 'ICS_5'),
-            ICS_6 = any(IST_modal == 'ICS_6'),
-            ICS_7 = any(IST_modal == 'ICS_7'))
+combined_epochs = bind_rows(ist_ever, ist_late, ist_early)
 
-ist_early = filter(all_ist_cat, `Sequence Num` < 19)  %>% group_by(`Subject`) %>% 
-  summarize(TPHE_6_early  = any(IST_modal == 'TPHE_6'),
-            TPHE_5_early  = any(IST_modal == 'TPHE_5'),
-            ICS_5_early = any(IST_modal == 'ICS_5'),
-            ICS_6_early = any(IST_modal == 'ICS_6'),
-            ICS_7_early = any(IST_modal == 'ICS_7'))
-
-ist_late = filter(all_ist_cat, `Sequence Num` == 19)  %>% group_by(`Subject`) %>% 
-  summarize(TPHE_6_late  = any(IST_modal == 'TPHE_6'),
-            TPHE_5_late  = any(IST_modal == 'TPHE_5'))
-
-# cmv+ : positive for 2 targets via PCR on saliva at one year
-# lab+ : positive for serology on blood at one year
-cmv_dat = subject %>% mutate(cmv_probable = str_detect(`cmv test`, fixed('+')) & !is.na(`cmv test`))
-
-inutero_exposure = cmv_dat %>% inner_join(ist_ever) %>% 
-  mutate(Race = fct_collapse(Race, other_unk = c('Other Race', 'Unknown or Not Reported', 'Asian')),
-         preg_membrane_18hr  = fct_collapse(preg_membrane_18hr, No_Unknown = c('No', 'Unknown'))) %>% 
-  left_join(ist_early) %>% left_join(ist_late)
-```
-
-### Antibiotics and TPHE5
-
-``` r
-tphe5_gam = gam(TPHE_5 ~ s(preterm_weeks) + preg_antibiotics + cchorio + mode_delivery + preg_membrane_18hr + Race + Gender + cmv_probable, data = inutero_exposure, family = 'binomial')
-
-tphe5_early = update(tphe5_gam, TPHE_5_early ~ . )
-summary(tphe5_early)
-```
-
-    ## 
-    ## Family: binomial 
-    ## Link function: logit 
-    ## 
-    ## Formula:
-    ## TPHE_5_early ~ s(preterm_weeks) + preg_antibiotics + cchorio + 
-    ##     mode_delivery + preg_membrane_18hr + Race + Gender + cmv_probable
-    ## 
-    ## Parametric coefficients:
-    ##                             Estimate Std. Error z value Pr(>|z|)   
-    ## (Intercept)                 -3.42592    1.11609  -3.070  0.00214 **
-    ## preg_antibioticsYes          1.64721    0.59547   2.766  0.00567 **
-    ## cchorioYes                   1.92113    1.04298   1.842  0.06548 . 
-    ## mode_deliveryVaginal Breech  1.95716    1.19265   1.641  0.10079   
-    ## mode_deliveryVaginal Vertex  0.08610    0.54318   0.159  0.87405   
-    ## preg_membrane_18hrYes       -1.57523    1.25853  -1.252  0.21070   
-    ## RaceBlack/AA                 0.10306    1.01712   0.101  0.91929   
-    ## RaceMore than 1 race         0.01509    1.26609   0.012  0.99049   
-    ## RaceWhite                    0.12513    0.92119   0.136  0.89195   
-    ## GenderMale                  -0.08510    0.47342  -0.180  0.85734   
-    ## cmv_probableTRUE             1.85048    0.64648   2.862  0.00420 **
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Approximate significance of smooth terms:
-    ##                    edf Ref.df Chi.sq p-value  
-    ## s(preterm_weeks) 4.047   4.97  11.14  0.0496 *
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## R-sq.(adj) =   0.15   Deviance explained = 21.8%
-    ## UBRE = -0.18155  Scale est. = 1         n = 183
-
-``` r
-plot(tphe5_gam)
-```
-
-![](04_tcell_associations_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
-
-GA birth smooth (very noisy…)
-
-``` r
 cleanup_gam = function(gamfit){
   gamfit_ci = tidy(gamfit, parametric = TRUE) %>% mutate(conf.low = estimate - 1.96*std.error, conf.high = estimate + 1.96*std.error )
-  fit_sub = filter(gamfit_ci, term != '(Intercept)', !str_detect(term, 'Race')) %>% mutate(p_adjust = p.adjust(p.value, 'bonferroni'), term = fct_reorder(term, p.value), pval = as.character(cut(p.value, breaks = c(0, .01, .05, 1), labels = c('**', '*', ''))))
+  fit_sub = filter(gamfit_ci, term != '(Intercept)', !str_detect(term, 'Race')) %>% mutate(p_adjust = p.adjust(p.value, 'bonferroni'), term = fct_reorder(term, p.value), pval = as.character(cut(p.value, breaks = c(0, .01, .05, 1), labels = c('**', '*', ''))), n_obs = nobs(gamfit))
   fit_sub
 }
 
-tphe5_tests_sub = cleanup_gam(tphe5_gam)
 
-
-tphe5_plt = ggplot(tphe5_tests_sub, aes(x = term, y = estimate, ymin = conf.low, ymax = conf.high)) + geom_pointrange(position = position_dodge(width =.3)) + geom_text(aes(label = pval), size = 7, position = position_nudge(x = -.1, y = -.2)) + ylab('Log odds of ever TPHE5') + geom_hline(yintercept = 0, lty = 2) + theme(axis.text.x = element_text(angle = 90))
-
-tphe5_plt
+gamss = combined_epochs %>% group_by(IST, epoch) %>% do({
+  stopifnot(nrow(.) <= 267)
+  model_cmv_ = gam(present ~ s(preterm_weeks) + preg_antibiotics + cchorio + mode_delivery + preg_membrane_18hr + Race + Gender + cmv_pcr, data = ., family = 'binomial')
+  model_milk_ = gam(present ~  s(preterm_weeks) +  perinatal_milk  + milk_months + mode_delivery + Race + Gender, data = ., family = 'binomial')
+model_abx_pre_ = gam(present ~  s(preterm_weeks) + n_antibiotics_pre  + mode_delivery + Race + Gender, data = ., family = 'binomial')
+  model_abx_post_ = gam(present ~  s(preterm_weeks) + n_antibiotics_discharge + mode_delivery + Race + Gender, data = ., family = 'binomial')
+  tibble(cmv_df = list(cleanup_gam(model_cmv_)), model_cmv = list(model_cmv_), 
+         model_abx_pre = list(model_abx_pre_),
+         model_abx_post = list(model_abx_post_),
+         model_milk= list(model_milk_),
+         milk_df = list(cleanup_gam(model_milk_)),
+         abx_pre_df = list(cleanup_gam(model_abx_pre_)),
+         abx_post_df = list(cleanup_gam(model_abx_post_)))
+         
+})
 ```
 
-![](04_tcell_associations_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
-
-parametric effects
-
-### Tphe6 CMV gam
-
 ``` r
-tphe6_gam = update(tphe5_gam, TPHE_6 ~ .)
-tphe6_early = update(tphe5_gam, TPHE_6_early ~ .)
-tphe6_late = update(tphe5_gam, TPHE_6_late ~ .)
-summary(tphe6_early)
+tphe_tests_sub = filter(gamss, IST %in% c('TPHE_5', 'TPHE_6'), epoch == 'ever') %>% ungroup() %>% select(IST, cmv_df) %>% unnest(cols = c(cmv_df))
+
+
+tphe5_plt = ggplot(tphe_tests_sub, aes(x = term, y = estimate, ymin = conf.low, ymax = conf.high)) + geom_pointrange(position = position_dodge(width =.3)) + geom_text(aes(label = pval), size = 7, position = position_nudge(x = -.1, y = -.2)) + ylab('Log odds of ever TPHE5') + geom_hline(yintercept = 0, lty = 2) + theme(axis.text.x = element_text(angle = 90))
 ```
 
-    ## 
-    ## Family: binomial 
-    ## Link function: logit 
-    ## 
-    ## Formula:
-    ## TPHE_6_early ~ s(preterm_weeks) + preg_antibiotics + cchorio + 
-    ##     mode_delivery + preg_membrane_18hr + Race + Gender + cmv_probable
-    ## 
-    ## Parametric coefficients:
-    ##                               Estimate Std. Error z value Pr(>|z|)   
-    ## (Intercept)                 -4.720e+00  1.784e+00  -2.646  0.00814 **
-    ## preg_antibioticsYes          5.680e-01  1.235e+00   0.460  0.64551   
-    ## cchorioYes                   1.258e+00  1.552e+00   0.810  0.41769   
-    ## mode_deliveryVaginal Breech -3.611e+01  3.001e+07   0.000  1.00000   
-    ## mode_deliveryVaginal Vertex  7.553e-01  9.892e-01   0.763  0.44517   
-    ## preg_membrane_18hrYes        8.409e-01  1.252e+00   0.672  0.50169   
-    ## RaceBlack/AA                 4.949e-01  1.451e+00   0.341  0.73294   
-    ## RaceMore than 1 race         7.558e-01  1.623e+00   0.466  0.64146   
-    ## RaceWhite                   -1.669e+00  1.659e+00  -1.006  0.31439   
-    ## GenderMale                   3.543e-01  9.846e-01   0.360  0.71898   
-    ## cmv_probableTRUE             2.520e+00  9.942e-01   2.535  0.01124 * 
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Approximate significance of smooth terms:
-    ##                  edf Ref.df Chi.sq p-value
-    ## s(preterm_weeks)   1  1.001  0.362   0.548
-    ## 
-    ## R-sq.(adj) =  0.167   Deviance explained = 26.2%
-    ## UBRE = -0.62934  Scale est. = 1         n = 183
-
 ``` r
-summary(tphe6_late)
-```
-
-    ## 
-    ## Family: binomial 
-    ## Link function: logit 
-    ## 
-    ## Formula:
-    ## TPHE_6_late ~ s(preterm_weeks) + preg_antibiotics + cchorio + 
-    ##     mode_delivery + preg_membrane_18hr + Race + Gender + cmv_probable
-    ## 
-    ## Parametric coefficients:
-    ##                               Estimate Std. Error z value Pr(>|z|)  
-    ## (Intercept)                 -8.886e-01  1.338e+00  -0.664   0.5066  
-    ## preg_antibioticsYes          4.853e-01  7.833e-01   0.620   0.5355  
-    ## cchorioYes                  -4.877e-02  1.470e+00  -0.033   0.9735  
-    ## mode_deliveryVaginal Breech  2.159e-01  2.562e+00   0.084   0.9329  
-    ## mode_deliveryVaginal Vertex -1.764e+00  8.542e-01  -2.065   0.0390 *
-    ## preg_membrane_18hrYes        6.208e-01  1.504e+00   0.413   0.6798  
-    ## RaceBlack/AA                 8.241e-01  1.270e+00   0.649   0.5163  
-    ## RaceMore than 1 race        -2.635e+01  1.082e+05   0.000   0.9998  
-    ## RaceWhite                   -2.719e+00  1.353e+00  -2.009   0.0445 *
-    ## GenderMale                   6.225e-01  7.079e-01   0.879   0.3792  
-    ## cmv_probableTRUE             2.055e+00  8.566e-01   2.399   0.0164 *
-    ## ---
-    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-    ## 
-    ## Approximate significance of smooth terms:
-    ##                    edf Ref.df Chi.sq p-value
-    ## s(preterm_weeks) 2.208   2.76  5.256   0.157
-    ## 
-    ## R-sq.(adj) =  0.309   Deviance explained = 40.1%
-    ## UBRE = -0.21887  Scale est. = 1         n = 112
-
-``` r
-plot(tphe6_gam)
-```
-
-![](04_tcell_associations_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
-
-GA birth smooth
-
-``` r
-tphe6_tests_sub = cleanup_gam(tphe6_gam)
-
-tphe5_6 = bind_rows(list(tphe5 = tphe5_tests_sub, tphe6 = tphe6_tests_sub), .id = 'IST')
-
-tphe5_plt %+% tphe5_6 + aes(color = IST) + ylab('Log odds\nIST ever') 
+tphe5_plt + aes(color = IST) + ylab('Log odds\nIST ever') 
 ```
 
 ![](04_tcell_associations_files/figure-gfm/tphe5_6_assoc-1.png)<!-- -->
-
-``` r
-tphe6_plt = ggplot(tphe6_tests_sub, aes(x = term, y = estimate, ymin = conf.low, ymax = conf.high)) + geom_pointrange() + geom_text(aes(label = pval), size = 7, position = position_nudge(x = -.1, y = -.2)) + ylab('Log odds of ever TPHE6') + geom_hline(yintercept = 0, lty = 2) + theme(axis.text.x = element_text(angle = 90))
-```
 
 parametric
 effects
@@ -385,86 +270,149 @@ effects
 ## TPHE5 vs TPHE6 associations
 
 ``` r
-fisher.test(table(inutero_exposure$TPHE_6_late, inutero_exposure$TPHE_5_early))
+early_late = filter(combined_epochs, epoch %in% c('early', 'late'), IST %in% c('TPHE_5', 'TPHE_6')) %>% ungroup()
+
+early_late_crosstab = pivot_wider(early_late %>% select(Subject, IST, present, epoch), names_from = c(IST, epoch), values_from = present)
+
+with(early_late_crosstab, fisher.test(TPHE_5_early, TPHE_6_late))
 ```
 
     ## 
     ##  Fisher's Exact Test for Count Data
     ## 
-    ## data:  table(inutero_exposure$TPHE_6_late, inutero_exposure$TPHE_5_early)
-    ## p-value = 0.001658
-    ## alternative hypothesis: true odds ratio is not equal to 1
-    ## 95 percent confidence interval:
-    ##   1.74162 20.71802
-    ## sample estimates:
-    ## odds ratio 
-    ##   5.939196
-
-``` r
-fisher.test(table(inutero_exposure$TPHE_6_early, inutero_exposure$TPHE_5))
-```
-
-    ## 
-    ##  Fisher's Exact Test for Count Data
-    ## 
-    ## data:  table(inutero_exposure$TPHE_6_early, inutero_exposure$TPHE_5)
+    ## data:  TPHE_5_early and TPHE_6_late
     ## p-value = 1
     ## alternative hypothesis: true odds ratio is not equal to 1
     ## 95 percent confidence interval:
-    ##  0.01776216 7.38383325
+    ##   0.0000 92.0689
     ## sample estimates:
     ## odds ratio 
-    ##  0.8455665
-
-## ICS5, ICS6, ICS7 associations
+    ##          0
 
 ``` r
-ics_gams = map_dfr(Hmisc::llist('ICS_5', 'ICS_6', 'ICS_7', 'ICS_5_early', 'ICS_6_early', 'ICS_7_early'), ~ cleanup_gam(update(tphe5_gam, as.formula(sprintf(' %s ~. ', .x)))), .id = 'IST')
-
-knitr::kable(ics_gams %>% mutate_at(vars(estimate:p_adjust), signif, digits = 4), digits = 2)
+with(early_late_crosstab, fisher.test(TPHE_6_early, TPHE_5_late))
 ```
 
-| IST           | term                         | estimate | std.error | statistic | p.value |    conf.low | conf.high | p\_adjust | pval |
-| :------------ | :--------------------------- | -------: | --------: | --------: | ------: | ----------: | --------: | --------: | :--- |
-| ICS\_5        | preg\_antibioticsYes         |   \-0.60 |      0.44 |    \-1.36 |    0.18 |      \-1.47 |      0.27 |      1.00 |      |
-| ICS\_5        | cchorioYes                   |   \-0.56 |      1.14 |    \-0.49 |    0.62 |      \-2.80 |      1.68 |      1.00 |      |
-| ICS\_5        | mode\_deliveryVaginal Breech |   \-0.52 |      1.21 |    \-0.43 |    0.67 |      \-2.90 |      1.86 |      1.00 |      |
-| ICS\_5        | mode\_deliveryVaginal Vertex |   \-0.61 |      0.45 |    \-1.37 |    0.17 |      \-1.49 |      0.26 |      1.00 |      |
-| ICS\_5        | preg\_membrane\_18hrYes      |   \-0.43 |      0.87 |    \-0.49 |    0.62 |      \-2.14 |      1.28 |      1.00 |      |
-| ICS\_5        | GenderMale                   |   \-0.09 |      0.41 |    \-0.22 |    0.83 |      \-0.89 |      0.71 |      1.00 |      |
-| ICS\_5        | cmv\_probableTRUE            |     0.71 |      0.60 |      1.20 |    0.23 |      \-0.45 |      1.88 |      1.00 |      |
-| ICS\_6        | preg\_antibioticsYes         |     0.05 |      0.37 |      0.13 |    0.90 |      \-0.68 |      0.78 |      1.00 |      |
-| ICS\_6        | cchorioYes                   |  \-24.79 |  68550.00 |      0.00 |    1.00 | \-134400.00 | 134300.00 |      1.00 |      |
-| ICS\_6        | mode\_deliveryVaginal Breech |   \-0.33 |      1.18 |    \-0.28 |    0.78 |      \-2.65 |      1.99 |      1.00 |      |
-| ICS\_6        | mode\_deliveryVaginal Vertex |   \-0.05 |      0.37 |    \-0.14 |    0.89 |      \-0.78 |      0.68 |      1.00 |      |
-| ICS\_6        | preg\_membrane\_18hrYes      |   \-0.58 |      0.74 |    \-0.78 |    0.43 |      \-2.03 |      0.87 |      1.00 |      |
-| ICS\_6        | GenderMale                   |   \-0.18 |      0.34 |    \-0.54 |    0.59 |      \-0.85 |      0.48 |      1.00 |      |
-| ICS\_6        | cmv\_probableTRUE            |   \-0.72 |      0.61 |    \-1.19 |    0.23 |      \-1.91 |      0.47 |      1.00 |      |
-| ICS\_7        | preg\_antibioticsYes         |   \-0.79 |      0.61 |    \-1.29 |    0.20 |      \-1.99 |      0.41 |      1.00 |      |
-| ICS\_7        | cchorioYes                   |     1.61 |      1.03 |      1.56 |    0.12 |      \-0.41 |      3.62 |      0.83 |      |
-| ICS\_7        | mode\_deliveryVaginal Breech |     2.61 |      1.20 |      2.18 |    0.03 |        0.26 |      4.96 |      0.21 | \*   |
-| ICS\_7        | mode\_deliveryVaginal Vertex |     0.94 |      0.57 |      1.66 |    0.10 |      \-0.17 |      2.05 |      0.68 |      |
-| ICS\_7        | preg\_membrane\_18hrYes      |   \-1.23 |      1.30 |    \-0.95 |    0.34 |      \-3.79 |      1.32 |      1.00 |      |
-| ICS\_7        | GenderMale                   |   \-0.79 |      0.51 |    \-1.55 |    0.12 |      \-1.80 |      0.21 |      0.84 |      |
-| ICS\_7        | cmv\_probableTRUE            |     0.31 |      0.88 |      0.35 |    0.73 |      \-1.41 |      2.03 |      1.00 |      |
-| ICS\_5\_early | preg\_antibioticsYes         |   \-0.36 |      0.46 |    \-0.78 |    0.44 |      \-1.25 |      0.54 |      1.00 |      |
-| ICS\_5\_early | cchorioYes                   |   \-0.48 |      1.22 |    \-0.39 |    0.70 |      \-2.87 |      1.92 |      1.00 |      |
-| ICS\_5\_early | mode\_deliveryVaginal Breech |   \-0.57 |      1.22 |    \-0.47 |    0.64 |      \-2.97 |      1.82 |      1.00 |      |
-| ICS\_5\_early | mode\_deliveryVaginal Vertex |   \-0.75 |      0.48 |    \-1.55 |    0.12 |      \-1.69 |      0.20 |      0.85 |      |
-| ICS\_5\_early | preg\_membrane\_18hrYes      |   \-0.22 |      0.93 |    \-0.23 |    0.82 |      \-2.04 |      1.61 |      1.00 |      |
-| ICS\_5\_early | GenderMale                   |   \-0.16 |      0.43 |    \-0.37 |    0.71 |      \-1.00 |      0.68 |      1.00 |      |
-| ICS\_5\_early | cmv\_probableTRUE            |     0.03 |      0.71 |      0.04 |    0.97 |      \-1.36 |      1.41 |      1.00 |      |
-| ICS\_6\_early | preg\_antibioticsYes         |     0.00 |      0.38 |    \-0.01 |    0.99 |      \-0.76 |      0.75 |      1.00 |      |
-| ICS\_6\_early | cchorioYes                   |  \-24.73 |  74060.00 |      0.00 |    1.00 | \-145200.00 | 145100.00 |      1.00 |      |
-| ICS\_6\_early | mode\_deliveryVaginal Breech |   \-0.30 |      1.21 |    \-0.25 |    0.80 |      \-2.68 |      2.08 |      1.00 |      |
-| ICS\_6\_early | mode\_deliveryVaginal Vertex |   \-0.12 |      0.39 |    \-0.32 |    0.75 |      \-0.88 |      0.64 |      1.00 |      |
-| ICS\_6\_early | preg\_membrane\_18hrYes      |   \-0.30 |      0.76 |    \-0.40 |    0.69 |      \-1.78 |      1.18 |      1.00 |      |
-| ICS\_6\_early | GenderMale                   |   \-0.21 |      0.35 |    \-0.61 |    0.54 |      \-0.90 |      0.47 |      1.00 |      |
-| ICS\_6\_early | cmv\_probableTRUE            |   \-0.57 |      0.61 |    \-0.94 |    0.35 |      \-1.77 |      0.62 |      1.00 |      |
-| ICS\_7\_early | preg\_antibioticsYes         |   \-0.19 |      0.74 |    \-0.25 |    0.80 |      \-1.64 |      1.27 |      1.00 |      |
-| ICS\_7\_early | cchorioYes                   |     1.29 |      1.28 |      1.00 |    0.32 |      \-1.23 |      3.80 |      1.00 |      |
-| ICS\_7\_early | mode\_deliveryVaginal Breech |     1.48 |      1.34 |      1.11 |    0.27 |      \-1.14 |      4.10 |      1.00 |      |
-| ICS\_7\_early | mode\_deliveryVaginal Vertex |     0.89 |      0.69 |      1.30 |    0.19 |      \-0.45 |      2.24 |      1.00 |      |
-| ICS\_7\_early | preg\_membrane\_18hrYes      |   \-0.42 |      1.33 |    \-0.31 |    0.75 |      \-3.02 |      2.19 |      1.00 |      |
-| ICS\_7\_early | GenderMale                   |   \-0.98 |      0.64 |    \-1.54 |    0.12 |      \-2.23 |      0.27 |      0.87 |      |
-| ICS\_7\_early | cmv\_probableTRUE            |     1.09 |      0.92 |      1.18 |    0.24 |      \-0.72 |      2.90 |      1.00 |      |
+    ## 
+    ##  Fisher's Exact Test for Count Data
+    ## 
+    ## data:  TPHE_6_early and TPHE_5_late
+    ## p-value = 0.001824
+    ## alternative hypothesis: true odds ratio is not equal to 1
+    ## 95 percent confidence interval:
+    ##   1.717808 21.071347
+    ## sample estimates:
+    ## odds ratio 
+    ##   5.937518
+
+## Other inflam associations
+
+``` r
+all_assoc = gamss %>% ungroup() %>% select(IST, epoch, cmv_df) %>% unnest(cols = c(cmv_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
+
+knitr::kable(head(all_assoc, n= 10), digits = 3)
+```
+
+| IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
+| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
+| TPHE\_6 | ever  | cmv\_pcrTRUE                 |    3.098 |     0.814 |     3.806 |   0.000 |    1.502 |     4.694 |    122 |         0.005 |
+| TPHE\_5 | ever  | preg\_antibioticsYes         |    2.061 |     0.675 |     3.055 |   0.002 |    0.739 |     3.383 |    122 |         0.083 |
+| TPHE\_2 | ever  | preg\_antibioticsYes         |  \-1.729 |     0.582 |   \-2.969 |   0.003 |  \-2.871 |   \-0.588 |    122 |         0.108 |
+| TPHE\_5 | late  | preg\_antibioticsYes         |    2.043 |     0.689 |     2.965 |   0.003 |    0.693 |     3.393 |    121 |         0.108 |
+| TPHE\_2 | late  | preg\_antibioticsYes         |  \-1.723 |     0.582 |   \-2.962 |   0.003 |  \-2.864 |   \-0.583 |    121 |         0.108 |
+| TPHE\_7 | ever  | mode\_deliveryVaginal Vertex |    1.339 |     0.514 |     2.606 |   0.009 |    0.332 |     2.346 |    122 |         0.339 |
+| TPHE\_6 | early | mode\_deliveryVaginal Vertex |  \-3.415 |     1.321 |   \-2.586 |   0.010 |  \-6.003 |   \-0.826 |     91 |         0.350 |
+| TPHE\_5 | ever  | cchorioYes                   |    2.931 |     1.210 |     2.424 |   0.015 |    0.561 |     5.302 |    122 |         0.569 |
+| TPHE\_7 | ever  | preg\_antibioticsYes         |  \-1.236 |     0.524 |   \-2.360 |   0.018 |  \-2.262 |   \-0.209 |    122 |         0.604 |
+| TPHE\_7 | early | cmv\_pcrTRUE                 |  \-2.704 |     1.205 |   \-2.244 |   0.025 |  \-5.067 |   \-0.342 |     91 |         0.894 |
+
+``` r
+write_csv(all_assoc, 'intermediates/inflam_ics_assocs.csv')
+```
+
+Top 20 associations, full table under
+[‘intermediates/inflam\_ics\_assocs.csv’](intermediates/inflam_ics_assocs.csv)
+
+## Milk associations
+
+``` r
+milk_assoc = gamss %>% ungroup() %>% select(IST, epoch, milk_df) %>% unnest(cols = c(milk_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
+
+knitr::kable(head(milk_assoc, n= 10), digits = 3)
+```
+
+| IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
+| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
+| TPHE\_4 | ever  | mode\_deliveryVaginal Vertex |    1.768 |     0.643 |     2.749 |   0.006 |    0.508 |     3.029 |    144 |         0.221 |
+| TPHE\_4 | late  | mode\_deliveryVaginal Vertex |    1.762 |     0.643 |     2.739 |   0.006 |    0.501 |     3.023 |    143 |         0.222 |
+| TPHE\_1 | late  | mode\_deliveryVaginal Vertex |  \-1.052 |     0.444 |   \-2.371 |   0.018 |  \-1.922 |   \-0.182 |    143 |         0.621 |
+| TPHE\_1 | ever  | mode\_deliveryVaginal Vertex |  \-1.005 |     0.439 |   \-2.287 |   0.022 |  \-1.866 |   \-0.144 |    144 |         0.754 |
+| ICS\_7  | ever  | mode\_deliveryVaginal Breech |    3.078 |     1.385 |     2.222 |   0.026 |    0.362 |     5.793 |    145 |         0.974 |
+| TPHE\_7 | ever  | mode\_deliveryVaginal Vertex |    0.939 |     0.435 |     2.156 |   0.031 |    0.085 |     1.792 |    144 |         1.000 |
+| TPHE\_4 | ever  | mode\_deliveryVaginal Breech |    3.127 |     1.469 |     2.128 |   0.033 |    0.247 |     6.007 |    144 |         1.000 |
+| TPHE\_4 | late  | mode\_deliveryVaginal Breech |    3.114 |     1.471 |     2.118 |   0.034 |    0.232 |     5.996 |    143 |         1.000 |
+| TPHE\_6 | early | mode\_deliveryVaginal Vertex |  \-1.631 |     0.775 |   \-2.104 |   0.035 |  \-3.150 |   \-0.112 |    104 |         1.000 |
+| TPHE\_4 | ever  | GenderMale                   |  \-1.176 |     0.583 |   \-2.017 |   0.044 |  \-2.320 |   \-0.033 |    144 |         1.000 |
+
+``` r
+write_csv(milk_assoc, 'intermediates/milk_ics_assocs.csv')
+```
+
+Top 20 associations, full table under
+[‘intermediates/milk\_ics\_assocs.csv’](intermediates/milk_ics_assocs.csv)
+
+## Antibiotic associations (hospital)
+
+``` r
+abx_assoc = gamss %>% ungroup() %>% select(IST, epoch, abx_pre_df) %>% unnest(cols = c(abx_pre_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
+
+knitr::kable(head(abx_assoc, n= 10), digits = 3)
+```
+
+| IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
+| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
+| TPHE\_1 | late  | mode\_deliveryVaginal Vertex |  \-1.774 |     0.618 |   \-2.873 |   0.004 |  \-2.985 |   \-0.564 |     93 |         0.151 |
+| TPHE\_1 | ever  | mode\_deliveryVaginal Vertex |  \-1.661 |     0.608 |   \-2.730 |   0.006 |  \-2.853 |   \-0.469 |     94 |         0.228 |
+| TPHE\_1 | late  | GenderMale                   |    1.404 |     0.565 |     2.487 |   0.013 |    0.298 |     2.511 |     93 |         0.477 |
+| ICS\_7  | ever  | mode\_deliveryVaginal Breech |    3.276 |     1.410 |     2.323 |   0.020 |    0.512 |     6.040 |     92 |         0.746 |
+| TPHE\_1 | ever  | GenderMale                   |    1.275 |     0.551 |     2.316 |   0.021 |    0.196 |     2.355 |     94 |         0.740 |
+| ICS\_7  | ever  | GenderMale                   |  \-1.728 |     0.767 |   \-2.253 |   0.024 |  \-3.232 |   \-0.225 |     92 |         0.849 |
+| ICS\_7  | late  | GenderMale                   |  \-2.085 |     0.980 |   \-2.127 |   0.033 |  \-4.005 |   \-0.164 |     90 |         1.000 |
+| TPHE\_5 | ever  | mode\_deliveryVaginal Breech |    2.771 |     1.371 |     2.021 |   0.043 |    0.083 |     5.458 |     94 |         1.000 |
+| TPHE\_5 | late  | mode\_deliveryVaginal Breech |    2.695 |     1.350 |     1.997 |   0.046 |    0.050 |     5.341 |     93 |         1.000 |
+| ICS\_5  | ever  | n\_antibiotics\_pre          |    0.034 |     0.018 |     1.887 |   0.059 |  \-0.001 |     0.070 |     92 |         1.000 |
+
+``` r
+write_csv(abx_assoc, 'intermediates/abx_pre_df_ics_assocs.csv')
+```
+
+Top 20 associations, full table under
+[‘intermediates/abx\_pre\_df\_ics\_assocs.csv’](intermediates/abx_pre_df_ics_assocs.csv)
+
+## Antibiotic associations (discharge)
+
+``` r
+abx_post_assoc = gamss %>% ungroup() %>% select(IST, epoch, abx_post_df) %>% unnest(cols = c(abx_post_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
+
+knitr::kable(head(abx_post_assoc, n = 10), digits = 3)
+```
+
+| IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
+| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
+| ICS\_7  | late  | n\_antibiotics\_discharge    |    0.467 |     0.166 |     2.805 |   0.005 |    0.141 |     0.793 |    175 |         0.186 |
+| TPHE\_4 | ever  | GenderMale                   |  \-1.356 |     0.501 |   \-2.710 |   0.007 |  \-2.337 |   \-0.375 |    176 |         0.249 |
+| TPHE\_4 | late  | GenderMale                   |  \-1.353 |     0.501 |   \-2.701 |   0.007 |  \-2.334 |   \-0.371 |    175 |         0.249 |
+| TPHE\_1 | late  | GenderMale                   |    1.158 |     0.435 |     2.662 |   0.008 |    0.305 |     2.011 |    175 |         0.272 |
+| TPHE\_4 | ever  | mode\_deliveryVaginal Vertex |    1.362 |     0.519 |     2.623 |   0.009 |    0.344 |     2.380 |    176 |         0.323 |
+| TPHE\_4 | late  | mode\_deliveryVaginal Vertex |    1.359 |     0.519 |     2.617 |   0.009 |    0.341 |     2.377 |    175 |         0.323 |
+| TPHE\_5 | late  | n\_antibiotics\_discharge    |    0.297 |     0.115 |     2.587 |   0.010 |    0.072 |     0.523 |    175 |         0.349 |
+| TPHE\_1 | ever  | GenderMale                   |    1.077 |     0.428 |     2.519 |   0.012 |    0.239 |     1.915 |    176 |         0.400 |
+| TPHE\_6 | early | mode\_deliveryVaginal Vertex |  \-1.957 |     0.828 |   \-2.362 |   0.018 |  \-3.580 |   \-0.333 |    104 |         0.636 |
+| ICS\_7  | late  | GenderMale                   |  \-1.932 |     0.824 |   \-2.345 |   0.019 |  \-3.546 |   \-0.317 |    175 |         0.628 |
+
+``` r
+write_csv(abx_post_assoc, 'intermediates/abx_post_df_ics_assocs.csv')
+```
+
+Top 20 associations, full table under
+[‘intermediates/abx\_post\_df\_ics\_assocs.csv’](intermediates/abx_post_df_ics_assocs.csv)

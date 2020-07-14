@@ -1,7 +1,7 @@
 ---
 title: "T cell / IST Associations"
 author: "Andrew McDavid"
-date: "07/06/2020"
+date: "`r Sys.Date()`"
 output: github_document
 ---
 
@@ -14,8 +14,6 @@ library(tidyverse)
 library(ggbeeswarm)
 library(lme4)
 library(car)
-
-# library(AMmisc) # devtools::install_github('amcdavid/AMmisc')
 
 ```
 
@@ -166,8 +164,7 @@ all_ist = read_csv('data/fitted_ist_longformat.csv') %>% rename(Subject = Alias)
 ```
 
 
-```{r ist_by_term, eval = TRUE}
-
+```{r ist_by_term}
 all_ist_cat = all_ist %>% group_by(Subject, `Sequence Num`, assay) %>% summarize(IST_prob = max(value), IST_modal = IST[which.max(value)])
 
 all_ist_cat = left_join(all_ist_cat, subject, by = "Subject") %>% mutate(type = assay) %>% group_by(type, cohort) %>% mutate(total_obs = length(type))
@@ -185,91 +182,91 @@ ggplot(filter(tests_by_ist, term == 'preterm_weeks'), aes(x = ist, y = estimate,
 
 ```
 
-# TPHE5 association (Figure S2)
+
+# IST-CMV-Antibiotic associations
+
+### Setup covariates
+
+```{r}
+# cmv+ : positive for 2 targets via PCR on saliva at one year
+# lab+ : positive for serology on blood at one year
+cmv_dat = subject %>% mutate(cmv_pcr = str_detect(`cmv test`, fixed('cmv+')))
+
+hospital_humilk = read_csv('data/milk_hospital.csv') %>% rename(perinatal_milk = `Any Human Milk Perinatal`)
+nabx_polish = read_csv('data/antibiotic_exposure.csv')
+nabx_time = nabx_polish %>% select(-group) %>% rename(n_antibiotics = `Number of systemic antibiotic`) %>% spread(discharge, n_antibiotics) %>% rename(n_antibiotics_discharge = 'TRUE', n_antibiotics_pre = 'FALSE')
+
+discharge_humilk = read_csv( 'intermediates/milk_subject.csv')
+
+covariates =  purrr::reduce(list(cmv_dat, hospital_humilk, nabx_time, discharge_humilk), left_join) %>%
+  mutate(Race = fct_collapse(Race, other_unk = c('Other Race', 'Unknown or Not Reported', 'Asian')),
+         preg_membrane_18hr  = fct_collapse(preg_membrane_18hr, No_Unknown = c('No', 'Unknown')))
+covariates$n_antibiotics_pre = ifelse(covariates$preterm_weeks <=0, NA, covariates$n_antibiotics_pre)
+```
+
+### Generate presence/absence tables of ists per early/late/ever epoch
+
+```{r}
+get_ist_tables = function(x, label){
+  ist_tab = x %>% ungroup(all_ist_cat) %>% 
+  group_by(assay) %>% do({
+    sub = factor(.$Subject)
+  tab = table(Var1 = sub, .$IST_modal)
+  as.data.frame(tab) %>% 
+    dplyr::rename(Subject = Var1, IST = Var2) %>%
+    mutate(present = Freq > 0, epoch = label)
+}) %>% left_join(covariates)
+}
+ 
+ist_ever = filter(all_ist_cat, `Sequence Num` %in% c(1,7, 19)) %>% get_ist_tables(label = 'ever')
+ist_late = filter(all_ist_cat, `Sequence Num` == 19) %>% get_ist_tables(label = 'early')
+ist_early = filter(all_ist_cat, `Sequence Num` < 19)  %>% get_ist_tables(label = 'late')
+```
+
+
+### Antibiotics, CMV, Inflammation and TPHE5 (Figure S2)
 
 ```{r}
 library(mgcv)
-ist_ever = filter(all_ist_cat, `Sequence Num` %in% c(1,7, 19))  %>% group_by(`Subject`) %>% 
-  summarize(TPHE_6  = any(IST_modal == 'TPHE_6'),
-            TPHE_5  = any(IST_modal == 'TPHE_5'),
-            ICS_5 = any(IST_modal == 'ICS_5'),
-            ICS_6 = any(IST_modal == 'ICS_6'),
-            ICS_7 = any(IST_modal == 'ICS_7'))
+combined_epochs = bind_rows(ist_ever, ist_late, ist_early)
 
-ist_early = filter(all_ist_cat, `Sequence Num` < 19)  %>% group_by(`Subject`) %>% 
-  summarize(TPHE_6_early  = any(IST_modal == 'TPHE_6'),
-            TPHE_5_early  = any(IST_modal == 'TPHE_5'),
-            ICS_5_early = any(IST_modal == 'ICS_5'),
-            ICS_6_early = any(IST_modal == 'ICS_6'),
-            ICS_7_early = any(IST_modal == 'ICS_7'))
-
-ist_late = filter(all_ist_cat, `Sequence Num` == 19)  %>% group_by(`Subject`) %>% 
-  summarize(TPHE_6_late  = any(IST_modal == 'TPHE_6'),
-            TPHE_5_late  = any(IST_modal == 'TPHE_5'))
-
-# cmv+ : positive for 2 targets via PCR on saliva at one year
-# lab+ : positive for serology on blood at one year
-cmv_dat = subject %>% mutate(cmv_probable = str_detect(`cmv test`, fixed('+')) & !is.na(`cmv test`))
-
-inutero_exposure = cmv_dat %>% inner_join(ist_ever) %>% 
-  mutate(Race = fct_collapse(Race, other_unk = c('Other Race', 'Unknown or Not Reported', 'Asian')),
-         preg_membrane_18hr  = fct_collapse(preg_membrane_18hr, No_Unknown = c('No', 'Unknown'))) %>% 
-  left_join(ist_early) %>% left_join(ist_late)
-```
-
-### Antibiotics and TPHE5
-
-```{r}
-
-tphe5_gam = gam(TPHE_5 ~ s(preterm_weeks) + preg_antibiotics + cchorio + mode_delivery + preg_membrane_18hr + Race + Gender + cmv_probable, data = inutero_exposure, family = 'binomial')
-
-tphe5_early = update(tphe5_gam, TPHE_5_early ~ . )
-summary(tphe5_early)
-
-plot(tphe5_gam)
-```
-
-GA birth smooth (very noisy...)
-
-```{r}
 cleanup_gam = function(gamfit){
   gamfit_ci = tidy(gamfit, parametric = TRUE) %>% mutate(conf.low = estimate - 1.96*std.error, conf.high = estimate + 1.96*std.error )
-  fit_sub = filter(gamfit_ci, term != '(Intercept)', !str_detect(term, 'Race')) %>% mutate(p_adjust = p.adjust(p.value, 'bonferroni'), term = fct_reorder(term, p.value), pval = as.character(cut(p.value, breaks = c(0, .01, .05, 1), labels = c('**', '*', ''))))
+  fit_sub = filter(gamfit_ci, term != '(Intercept)', !str_detect(term, 'Race')) %>% mutate(p_adjust = p.adjust(p.value, 'bonferroni'), term = fct_reorder(term, p.value), pval = as.character(cut(p.value, breaks = c(0, .01, .05, 1), labels = c('**', '*', ''))), n_obs = nobs(gamfit))
   fit_sub
 }
 
-tphe5_tests_sub = cleanup_gam(tphe5_gam)
 
+gamss = combined_epochs %>% group_by(IST, epoch) %>% do({
+  stopifnot(nrow(.) <= 267)
+  model_cmv_ = gam(present ~ s(preterm_weeks) + preg_antibiotics + cchorio + mode_delivery + preg_membrane_18hr + Race + Gender + cmv_pcr, data = ., family = 'binomial')
+  model_milk_ = gam(present ~  s(preterm_weeks) +  perinatal_milk  + milk_months + mode_delivery + Race + Gender, data = ., family = 'binomial')
+model_abx_pre_ = gam(present ~  s(preterm_weeks) + n_antibiotics_pre  + mode_delivery + Race + Gender, data = ., family = 'binomial')
+  model_abx_post_ = gam(present ~  s(preterm_weeks) + n_antibiotics_discharge + mode_delivery + Race + Gender, data = ., family = 'binomial')
+  tibble(cmv_df = list(cleanup_gam(model_cmv_)), model_cmv = list(model_cmv_), 
+         model_abx_pre = list(model_abx_pre_),
+         model_abx_post = list(model_abx_post_),
+         model_milk= list(model_milk_),
+         milk_df = list(cleanup_gam(model_milk_)),
+         abx_pre_df = list(cleanup_gam(model_abx_pre_)),
+         abx_post_df = list(cleanup_gam(model_abx_post_)))
+         
+})
 
-tphe5_plt = ggplot(tphe5_tests_sub, aes(x = term, y = estimate, ymin = conf.low, ymax = conf.high)) + geom_pointrange(position = position_dodge(width =.3)) + geom_text(aes(label = pval), size = 7, position = position_nudge(x = -.1, y = -.2)) + ylab('Log odds of ever TPHE5') + geom_hline(yintercept = 0, lty = 2) + theme(axis.text.x = element_text(angle = 90))
-
-tphe5_plt
 ```
 
-parametric effects
-
-
-### Tphe6 CMV gam
 
 ```{r}
-tphe6_gam = update(tphe5_gam, TPHE_6 ~ .)
-tphe6_early = update(tphe5_gam, TPHE_6_early ~ .)
-tphe6_late = update(tphe5_gam, TPHE_6_late ~ .)
-summary(tphe6_early)
-summary(tphe6_late)
-plot(tphe6_gam)
+tphe_tests_sub = filter(gamss, IST %in% c('TPHE_5', 'TPHE_6'), epoch == 'ever') %>% ungroup() %>% select(IST, cmv_df) %>% unnest(cols = c(cmv_df))
+
+
+tphe5_plt = ggplot(tphe_tests_sub, aes(x = term, y = estimate, ymin = conf.low, ymax = conf.high)) + geom_pointrange(position = position_dodge(width =.3)) + geom_text(aes(label = pval), size = 7, position = position_nudge(x = -.1, y = -.2)) + ylab('Log odds of ever TPHE5') + geom_hline(yintercept = 0, lty = 2) + theme(axis.text.x = element_text(angle = 90))
+
 ```
 
-GA birth smooth
 
 ```{r tphe5_6_assoc, dev = c('png', 'pdf'), fig.width = 7, fig.height = 4}
-tphe6_tests_sub = cleanup_gam(tphe6_gam)
-
-tphe5_6 = bind_rows(list(tphe5 = tphe5_tests_sub, tphe6 = tphe6_tests_sub), .id = 'IST')
-
-tphe5_plt %+% tphe5_6 + aes(color = IST) + ylab('Log odds\nIST ever') 
-
-tphe6_plt = ggplot(tphe6_tests_sub, aes(x = term, y = estimate, ymin = conf.low, ymax = conf.high)) + geom_pointrange() + geom_text(aes(label = pval), size = 7, position = position_nudge(x = -.1, y = -.2)) + ylab('Log odds of ever TPHE6') + geom_hline(yintercept = 0, lty = 2) + theme(axis.text.x = element_text(angle = 90))
+tphe5_plt + aes(color = IST) + ylab('Log odds\nIST ever') 
 
 ```
 
@@ -278,15 +275,56 @@ parametric effects
 ## TPHE5 vs TPHE6 associations
 
 ```{r}
-fisher.test(table(inutero_exposure$TPHE_6_late, inutero_exposure$TPHE_5_early))
-fisher.test(table(inutero_exposure$TPHE_6_early, inutero_exposure$TPHE_5))
+early_late = filter(combined_epochs, epoch %in% c('early', 'late'), IST %in% c('TPHE_5', 'TPHE_6')) %>% ungroup()
+
+early_late_crosstab = pivot_wider(early_late %>% select(Subject, IST, present, epoch), names_from = c(IST, epoch), values_from = present)
+
+with(early_late_crosstab, fisher.test(TPHE_5_early, TPHE_6_late))
+with(early_late_crosstab, fisher.test(TPHE_6_early, TPHE_5_late))
 ```
 
 
-## ICS5, ICS6, ICS7 associations
+##  Other inflam associations
 
 ```{r}
-ics_gams = map_dfr(Hmisc::llist('ICS_5', 'ICS_6', 'ICS_7', 'ICS_5_early', 'ICS_6_early', 'ICS_7_early'), ~ cleanup_gam(update(tphe5_gam, as.formula(sprintf(' %s ~. ', .x)))), .id = 'IST')
+all_assoc = gamss %>% ungroup() %>% select(IST, epoch, cmv_df) %>% unnest(cols = c(cmv_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
 
-knitr::kable(ics_gams %>% mutate_at(vars(estimate:p_adjust), signif, digits = 4), digits = 2)
+knitr::kable(head(all_assoc, n= 10), digits = 3)
+write_csv(all_assoc, 'intermediates/inflam_ics_assocs.csv')
 ```
+
+Top 20 associations, full table under ['intermediates/inflam_ics_assocs.csv'](intermediates/inflam_ics_assocs.csv)
+
+## Milk associations
+
+```{r}
+milk_assoc = gamss %>% ungroup() %>% select(IST, epoch, milk_df) %>% unnest(cols = c(milk_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
+
+knitr::kable(head(milk_assoc, n= 10), digits = 3)
+write_csv(milk_assoc, 'intermediates/milk_ics_assocs.csv')
+```
+
+Top 20 associations, full table under ['intermediates/milk_ics_assocs.csv'](intermediates/milk_ics_assocs.csv)
+
+
+## Antibiotic associations (hospital)
+
+```{r}
+abx_assoc = gamss %>% ungroup() %>% select(IST, epoch, abx_pre_df) %>% unnest(cols = c(abx_pre_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
+
+knitr::kable(head(abx_assoc, n= 10), digits = 3)
+write_csv(abx_assoc, 'intermediates/abx_pre_df_ics_assocs.csv')
+```
+
+Top 20 associations, full table under ['intermediates/abx_pre_df_ics_assocs.csv'](intermediates/abx_pre_df_ics_assocs.csv)
+
+## Antibiotic associations (discharge)
+
+```{r}
+abx_post_assoc = gamss %>% ungroup() %>% select(IST, epoch, abx_post_df) %>% unnest(cols = c(abx_post_df)) %>%  group_by(term) %>% mutate(termwise_fdr = p.adjust(p.value)) %>% arrange(p.value) %>% select(-p_adjust, -pval)
+
+knitr::kable(head(abx_post_assoc, n = 10), digits = 3)
+write_csv(abx_post_assoc, 'intermediates/abx_post_df_ics_assocs.csv')
+```
+
+Top 20 associations, full table under ['intermediates/abx_post_df_ics_assocs.csv'](intermediates/abx_post_df_ics_assocs.csv)
