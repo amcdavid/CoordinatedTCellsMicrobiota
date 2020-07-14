@@ -19,23 +19,29 @@ join subject-level tables to data in dbGAP.
 
 ## Scripts
 
-  - 01\_make\_cst: Run DMN model on OTU and flowsom metaclusters and
-    find best-fitting model
-  - 01\_table1\_demographics: Summarize some demographic variables to
-    generate portions of “table 1” in the paper.
-  - 02\_network\_modeling: Test for pairwise associations between CST,
-    IST and flowsom metacluster
-  - 02\_ist\_cst\_results: Heatmaps of IST/CST composition, associations
-    with gestational age and postmenstrual age
-  - 03\_development\_index: prediction of PMA from microbiome and T cell
-    subpopulations. Developmental index. Prediction of PRD. Associations
-    of T cells subpopulation with PMA. Broken stick regression models.
-    IST associations with perinatal exposures.
-  - flowcytometry: scripts for processing T cell flow cytometry
-    (TPHE/ICS) to produce flowsom “metacluster” populations. FCS files
-    would need to be [downloaded from
-    IMMPORT](https://browser.immport.org/browser?path=SDY1302) to run
-    these scripts.
+  - [01\_make\_cst](01_make_cst.md): Run DMN model on OTU and flowsom
+    metaclusters and find best-fitting model
+  - [01\_table1\_demographics](01_table1_demographics.md): Summarize
+    some demographic variables to generate portions of “table 1” in the
+    paper.
+  - [02\_network\_modeling](02_network_modeling.md): Test for pairwise
+    associations between CST, IST and flowsom metacluster
+  - [02\_ist\_cst\_results](02_ist_cst_results.md): Heatmaps of IST/CST
+    composition, associations with gestational age and postmenstrual age
+  - [03\_development\_index](03_development_index.md): prediction of PMA
+    from microbiome and T cell subpopulations. Developmental index.
+    Prediction of PRD.
+  - [04\_multivariate\_r2](04_multivariate_r2.md): Estimates of variance
+    explained from microbiome vs T cells, adjusting for term and PMA
+    (figure 1)
+  - [04\_tcell\_associations](04_tcell_associations.md) PMA associations
+    of T cell cluster abundance and broken-stick regression models of
+    the same. CMV/Inflammation associations between IST.
+  - [flowcytometry](flowcytometry/workflow_top.level.R): scripts for
+    processing T cell flow cytometry (TPHE/ICS) to produce flowsom
+    “metacluster” populations. FCS files would need to be [downloaded
+    from IMMPORT](https://browser.immport.org/browser?path=SDY1302) to
+    run these scripts.
 
 These don’t necessarily need to be run in order, as their inputs have
 been saved under `intermediates`.
@@ -69,7 +75,7 @@ devtools::session_info()
     ##  language (EN)                        
     ##  collate  en_US.UTF-8                 
     ##  tz       America/New_York            
-    ##  date     2020-06-29
+    ##  date     2020-07-14
 
     ## Packages ----------------------------------------------------------------------
 
