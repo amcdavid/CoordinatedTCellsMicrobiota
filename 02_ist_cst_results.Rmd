@@ -117,20 +117,66 @@ library(ggplot2)
 library(tidyverse)
 library(ggbeeswarm)
 
-ics <- read_tsv(file.path(pth, "ics_basic.txt"))
+recode_ist = function(tab){
+  s = tab %>% group_by(IST) %>% summarize(mcga = mean(CGA)) %>% arrange(mcga)
+  s = s %>% mutate(oIST = fct_reorder(factor(str_c('oIST_', seq_len(nrow(.)))), mcga), oIST_num = as.numeric(oIST))
+  left_join(tab, s)
+}
 
-tphe <- read_tsv(file.path(pth, "tphe_basic.txt"))
+ics <- read_tsv(file.path(pth, "ics_basic.txt")) %>% recode_ist()
+tphe <- read_tsv(file.path(pth, "tphe_basic.txt")) %>% recode_ist()
 
-ggplot(ics, aes(y=CGA, x=Renamed_IST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
+
+ggplot(ics, aes(y=CGA, x=oIST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 
 ```
 
 These were reordered by average PMA in the version of this figure in the paper.
 
+```{r}
+summary(lm(CGA ~ IST, data = ics))
+```
+
 
 ```{r}
-ggplot(tphe, aes(y=CGA, x=Renamed_IST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
+ggplot(tphe, aes(y=CGA, x=oIST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 
+
+```
+
+```{r}
+summary(lm(CGA ~ IST, data = tphe))
+```
+
+## Co-occurance of t cell measures
+
+```{r}
+ics_tphe = bind_rows(ICS = ics, TPHE = tphe, .id = 'assay')
+assays_avail = ics_tphe %>% group_by(Subject, Visit, BirthCohort) %>% summarize(assays = str_c(assay, collapse = '_')) %>% mutate(assays = factor(assays, levels = c('ICS', 'TPHE', 'ICS_TPHE')))
+
+counts_by_subj = assays_avail %>% group_by(Subject, assays, BirthCohort) %>% summarize(n = n()) %>% ungroup() %>% arrange(Subject, desc(n))
+# Take modal scenario if a subject had different assays available at different time points (uncommon)
+counts_by_subj = counts_by_subj[!duplicated(counts_by_subj$Subject),]
+assays_by_term = with(counts_by_subj, table(n, BirthCohort, assays))
+ftab = ftable(assays_by_term, row.vars = c('n', 'BirthCohort'))
+ftab
+
+write.ftable(ftab, file.path(refined, 'assay_consort_alternative.txt'))
+```
+
+Number of subjects with 1, 2 or 3 samples of the various assays, stratified by Term.
+
+```{r t_ist_traj, dev = c('png', 'pdf'), fig.width = 2, fig.height = 4}
+ics_tphe = ics_tphe %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
+traj_plot = ggplot(ics_tphe, aes(y = Subjectf, x = CGA, fill = oIST_num)) + 
+  geom_point(pch = 22) + scale_fill_distiller('IST', palette = 'GnBu') + facet_wrap(~assay) + 
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') +
+  theme(legend.position = 'bottom')
+trajs = ics_tphe %>% group_by(assay) %>% do(plot = {
+ out = traj_plot %+% .
+  print(out)
+  out
+})
 
 ```
 
@@ -216,14 +262,41 @@ library(ggplot2)
 library(tidyverse)
 library(ggbeeswarm)
 
-rec <- read_tsv(file.path(pth, "rec_basic.txt"))
 
-nas <- read_tsv(file.path(pth, "nas_basic.txt"))
+recode_cst = function(tab){
+  s = tab %>% group_by(CST) %>% summarize(mcga = mean(CGA)) %>% arrange(mcga)
+  s = s %>% mutate(oCST = fct_reorder(factor(str_c('oCST_', seq_len(nrow(.)))), mcga), oCST_num = as.numeric(oCST))
+  left_join(tab, s)
+}
+
+rec <- read_tsv(file.path(pth, "rec_basic.txt")) %>% recode_cst
+
+nas <- read_tsv(file.path(pth, "nas_basic.txt")) %>% recode_cst
 
 ggplot(rec, aes(y=CGA, x=Renamed_CST, color=gaBirth)) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 ggplot(nas, aes(y=CGA, x=Renamed_CST, color=gaBirth)) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 
 
+```
+
+# Trajectories
+
+```{r cst_traj, dev = c('png', 'pdf'), fig.width = 4, fig.height = 6}
+rec_nas = bind_rows(REC = rec, NAS = nas, .id = 'assay') %>% rename(GAB = gaBirth)
+rec_nas = rec_nas %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
+traj_plot = ggplot(rec_nas, aes(y = Subjectf, x = CGA, fill = oCST_num)) + 
+  geom_point(pch = 22) + scale_fill_distiller('CST', palette = 'GnBu') + facet_wrap(~assay) + 
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + 
+  theme(legend.position = 'bottom')
+trajs2 = rec_nas %>% group_by(assay) %>% do(plot = {
+  out = traj_plot %+% .
+  print(out)
+  out
+})
+```
+
+```{r combined_traj, dev = c('png', 'pdf'), fig.width=8, fig.height=10}
+cowplot::plot_grid(plotlist = bind_rows(trajs, trajs2)$plot)
 ```
 
 #Supplementary Figure 3 PCoA Plots

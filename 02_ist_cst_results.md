@@ -8,20 +8,32 @@ library("readr")
 library("tidyverse")
 ```
 
-    ## ── Attaching packages ───────────────────────────────── tidyverse 1.2.1 ──
+    ## Warning: package 'tidyverse' was built under R version 3.5.2
 
-    ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
-    ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
-    ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
-    ## ✔ ggplot2 3.0.0     ✔ forcats 0.3.0
+    ## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+
+    ## ✓ ggplot2 3.3.0     ✓ dplyr   0.8.5
+    ## ✓ tibble  2.1.3     ✓ stringr 1.4.0
+    ## ✓ tidyr   1.0.2     ✓ forcats 0.5.0
+    ## ✓ purrr   0.3.3
+
+    ## Warning: package 'ggplot2' was built under R version 3.5.2
 
     ## Warning: package 'tibble' was built under R version 3.5.2
 
+    ## Warning: package 'tidyr' was built under R version 3.5.2
+
+    ## Warning: package 'purrr' was built under R version 3.5.2
+
     ## Warning: package 'dplyr' was built under R version 3.5.2
 
-    ## ── Conflicts ──────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
+    ## Warning: package 'stringr' was built under R version 3.5.2
+
+    ## Warning: package 'forcats' was built under R version 3.5.2
+
+    ## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
 
 ``` r
 library("RColorBrewer")
@@ -40,6 +52,8 @@ library("viridis")
 library("ggplot2")
 library("igraph")
 ```
+
+    ## Warning: package 'igraph' was built under R version 3.5.2
 
     ## 
     ## Attaching package: 'igraph'
@@ -77,6 +91,8 @@ library("slam")
 ``` r
 library("scales")
 ```
+
+    ## Warning: package 'scales' was built under R version 3.5.2
 
     ## 
     ## Attaching package: 'scales'
@@ -281,7 +297,13 @@ library(ggplot2)
 library(tidyverse)
 library(ggbeeswarm)
 
-ics <- read_tsv(file.path(pth, "ics_basic.txt"))
+recode_ist = function(tab){
+  s = tab %>% group_by(IST) %>% summarize(mcga = mean(CGA)) %>% arrange(mcga)
+  s = s %>% mutate(oIST = fct_reorder(factor(str_c('oIST_', seq_len(nrow(.)))), mcga), oIST_num = as.numeric(oIST))
+  left_join(tab, s)
+}
+
+ics <- read_tsv(file.path(pth, "ics_basic.txt")) %>% recode_ist()
 ```
 
     ## Parsed with column specification:
@@ -296,12 +318,14 @@ ics <- read_tsv(file.path(pth, "ics_basic.txt"))
     ##   MOD = col_character(),
     ##   GAB = col_double(),
     ##   BirthCohort = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   CGA = col_double()
     ## )
 
+    ## Joining, by = "IST"
+
 ``` r
-tphe <- read_tsv(file.path(pth, "tphe_basic.txt"))
+tphe <- read_tsv(file.path(pth, "tphe_basic.txt")) %>% recode_ist()
 ```
 
     ## Parsed with column specification:
@@ -316,12 +340,13 @@ tphe <- read_tsv(file.path(pth, "tphe_basic.txt"))
     ##   MOD = col_character(),
     ##   GAB = col_double(),
     ##   BirthCohort = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   CGA = col_double()
     ## )
+    ## Joining, by = "IST"
 
 ``` r
-ggplot(ics, aes(y=CGA, x=Renamed_IST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
+ggplot(ics, aes(y=CGA, x=oIST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 ```
 
 ![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->
@@ -330,10 +355,122 @@ These were reordered by average PMA in the version of this figure in the
 paper.
 
 ``` r
-ggplot(tphe, aes(y=CGA, x=Renamed_IST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
+summary(lm(CGA ~ IST, data = ics))
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+    ## 
+    ## Call:
+    ## lm(formula = CGA ~ IST, data = ics)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -53.992  -6.439  -0.302   1.880  58.128 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   35.535      1.484  23.951  < 2e-16 ***
+    ## ISTICS_2      11.332      2.149   5.274 2.20e-07 ***
+    ## ISTICS_3      58.596      2.185  26.818  < 2e-16 ***
+    ## ISTICS_4       3.767      2.243   1.679   0.0939 .  
+    ## ISTICS_5       2.880      2.437   1.182   0.2380    
+    ## ISTICS_6      21.800      2.897   7.525 3.55e-13 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 14.08 on 398 degrees of freedom
+    ## Multiple R-squared:  0.7014, Adjusted R-squared:  0.6976 
+    ## F-statistic:   187 on 5 and 398 DF,  p-value: < 2.2e-16
+
+``` r
+ggplot(tphe, aes(y=CGA, x=oIST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
+```
+
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+``` r
+summary(lm(CGA ~ IST, data = tphe))
+```
+
+    ## 
+    ## Call:
+    ## lm(formula = CGA ~ IST, data = tphe)
+    ## 
+    ## Residuals:
+    ##     Min      1Q  Median      3Q     Max 
+    ## -44.529  -3.258   0.278   2.129  50.330 
+    ## 
+    ## Coefficients:
+    ##             Estimate Std. Error t value Pr(>|t|)    
+    ## (Intercept)   95.398      1.083  88.077  < 2e-16 ***
+    ## ISTTPHE_2    -57.237      1.532 -37.367  < 2e-16 ***
+    ## ISTTPHE_3    -62.529      1.547 -40.425  < 2e-16 ***
+    ## ISTTPHE_4    -57.108      1.619 -35.273  < 2e-16 ***
+    ## ISTTPHE_5    -49.298      1.773 -27.798  < 2e-16 ***
+    ## ISTTPHE_6    -55.966      1.838 -30.442  < 2e-16 ***
+    ## ISTTPHE_7    -15.579      2.177  -7.157 3.88e-12 ***
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+    ## 
+    ## Residual standard error: 9.627 on 406 degrees of freedom
+    ## Multiple R-squared:  0.8605, Adjusted R-squared:  0.8585 
+    ## F-statistic: 417.5 on 6 and 406 DF,  p-value: < 2.2e-16
+
+## Co-occurance of t cell measures
+
+``` r
+ics_tphe = bind_rows(ICS = ics, TPHE = tphe, .id = 'assay')
+```
+
+    ## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
+
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+    ## into character vector
+    
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
+    ## into character vector
+
+``` r
+assays_avail = ics_tphe %>% group_by(Subject, Visit, BirthCohort) %>% summarize(assays = str_c(assay, collapse = '_')) %>% mutate(assays = factor(assays, levels = c('ICS', 'TPHE', 'ICS_TPHE')))
+
+counts_by_subj = assays_avail %>% group_by(Subject, assays, BirthCohort) %>% summarize(n = n()) %>% ungroup() %>% arrange(Subject, desc(n))
+# Take modal scenario if a subject had different assays available at different time points (uncommon)
+counts_by_subj = counts_by_subj[!duplicated(counts_by_subj$Subject),]
+assays_by_term = with(counts_by_subj, table(n, BirthCohort, assays))
+ftab = ftable(assays_by_term, row.vars = c('n', 'BirthCohort'))
+ftab
+```
+
+    ##               assays ICS TPHE ICS_TPHE
+    ## n BirthCohort                         
+    ## 1 FullTerm             0    1        6
+    ##   PreTerm              1    2       10
+    ## 2 FullTerm             5    0       36
+    ##   PreTerm              2    4       47
+    ## 3 FullTerm             0    2       37
+    ##   PreTerm              1    1       30
+
+``` r
+write.ftable(ftab, file.path(refined, 'assay_consort_alternative.txt'))
+```
+
+Number of subjects with 1, 2 or 3 samples of the various assays,
+stratified by
+Term.
+
+``` r
+ics_tphe = ics_tphe %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
+traj_plot = ggplot(ics_tphe, aes(y = Subjectf, x = CGA, fill = oIST_num)) + 
+  geom_point(pch = 22) + scale_fill_distiller('IST', palette = 'GnBu') + facet_wrap(~assay) + 
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') +
+  theme(legend.position = 'bottom')
+trajs = ics_tphe %>% group_by(assay) %>% do(plot = {
+ out = traj_plot %+% .
+  print(out)
+  out
+})
+```
+
+![](02_ist_cst_results_files/figure-gfm/t_ist_traj-1.png)<!-- -->![](02_ist_cst_results_files/figure-gfm/t_ist_traj-2.png)<!-- -->
 
 ``` r
 #Figure 4 CST Composition Heatmap
@@ -360,10 +497,10 @@ md.rec <- read_delim(file.path(pth, "rec_basic.txt"), "\t", escape_double = FALS
     ##   Subject = col_character(),
     ##   MOD = col_character(),
     ##   Sex = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   gaBirth = col_double(),
     ##   CGA = col_double(),
-    ##   Reads = col_integer(),
+    ##   Reads = col_double(),
     ##   CST = col_character(),
     ##   Renamed_CST = col_character(),
     ##   PreviousCST = col_character(),
@@ -388,12 +525,12 @@ md.nas <- read_delim(file.path(pth, "nas_basic.txt"), "\t", escape_double = FALS
     ##   SampleID = col_character(),
     ##   ID = col_character(),
     ##   Subject = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   MOD = col_character(),
     ##   Sex = col_character(),
     ##   gaBirth = col_double(),
     ##   CGA = col_double(),
-    ##   Reads = col_integer(),
+    ##   Reads = col_double(),
     ##   CST = col_character(),
     ##   Renamed_CST = col_character(),
     ##   PreviousCST = col_character(),
@@ -416,13 +553,7 @@ genera.rec <- read_delim(file.path(refined, "REC_top_taxa.txt"), "\t", escape_do
     ## Parsed with column specification:
     ## cols(
     ##   .default = col_double(),
-    ##   Taxon = col_character(),
-    ##   B160QC3F.03 = col_integer(),
-    ##   E160RC6F.03 = col_integer(),
-    ##   H160RC7D.03 = col_integer(),
-    ##   G160R60V.03 = col_integer(),
-    ##   E160W873.03 = col_integer(),
-    ##   K160WBN8.03 = col_integer()
+    ##   Taxon = col_character()
     ## )
 
     ## See spec(...) for full column specifications.
@@ -442,14 +573,7 @@ genera.nas <- read_delim(file.path(refined, "NAS_top_taxa.txt"), "\t", escape_do
     ## Parsed with column specification:
     ## cols(
     ##   .default = col_double(),
-    ##   Taxon = col_character(),
-    ##   G160QNB9.04 = col_integer(),
-    ##   A160PNVS.04 = col_integer(),
-    ##   B160NVWP.04 = col_integer(),
-    ##   C160PHZT.04 = col_integer(),
-    ##   C160PQRM.04 = col_integer(),
-    ##   J160R3VV.04 = col_integer(),
-    ##   J160RC5Z.04 = col_integer()
+    ##   Taxon = col_character()
     ## )
     ## See spec(...) for full column specifications.
 
@@ -497,13 +621,13 @@ mat.nas <- t(apply(mat.nas, 1L, scales::rescale))
 pheatmap(mat = mat.rec, color = colors, annotation_col = anno.rec, cluster_rows = TRUE, cluster_cols = FALSE, show_colnames = FALSE, gaps_col = cumsum(unname(table(anno.rec[[CLUSTER_COLUMN]]))))
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
 
 ``` r
 pheatmap(mat = mat.nas, color = colors, annotation_col = anno.nas, cluster_rows = TRUE, cluster_cols = FALSE, show_colnames = FALSE, gaps_col = cumsum(unname(table(anno.nas[[CLUSTER_COLUMN]]))))
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-7-2.png)<!-- -->
 
 ``` r
 #Figure 4 CST Occurence Over PMA
@@ -513,7 +637,14 @@ library(ggplot2)
 library(tidyverse)
 library(ggbeeswarm)
 
-rec <- read_tsv(file.path(pth, "rec_basic.txt"))
+
+recode_cst = function(tab){
+  s = tab %>% group_by(CST) %>% summarize(mcga = mean(CGA)) %>% arrange(mcga)
+  s = s %>% mutate(oCST = fct_reorder(factor(str_c('oCST_', seq_len(nrow(.)))), mcga), oCST_num = as.numeric(oCST))
+  left_join(tab, s)
+}
+
+rec <- read_tsv(file.path(pth, "rec_basic.txt")) %>% recode_cst
 ```
 
     ## Parsed with column specification:
@@ -523,19 +654,21 @@ rec <- read_tsv(file.path(pth, "rec_basic.txt"))
     ##   Subject = col_character(),
     ##   MOD = col_character(),
     ##   Sex = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   gaBirth = col_double(),
     ##   CGA = col_double(),
-    ##   Reads = col_integer(),
+    ##   Reads = col_double(),
     ##   CST = col_character(),
     ##   Renamed_CST = col_character(),
     ##   PreviousCST = col_character(),
     ##   PostInitialDischarge = col_character(),
     ##   IllnessVisit = col_character()
     ## )
+
+    ## Joining, by = "CST"
 
 ``` r
-nas <- read_tsv(file.path(pth, "nas_basic.txt"))
+nas <- read_tsv(file.path(pth, "nas_basic.txt")) %>% recode_cst
 ```
 
     ## Parsed with column specification:
@@ -543,30 +676,55 @@ nas <- read_tsv(file.path(pth, "nas_basic.txt"))
     ##   SampleID = col_character(),
     ##   ID = col_character(),
     ##   Subject = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   MOD = col_character(),
     ##   Sex = col_character(),
     ##   gaBirth = col_double(),
     ##   CGA = col_double(),
-    ##   Reads = col_integer(),
+    ##   Reads = col_double(),
     ##   CST = col_character(),
     ##   Renamed_CST = col_character(),
     ##   PreviousCST = col_character(),
     ##   PostInitialDischarge = col_character(),
     ##   IllnessVisit = col_character()
     ## )
+    ## Joining, by = "CST"
 
 ``` r
 ggplot(rec, aes(y=CGA, x=Renamed_CST, color=gaBirth)) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
 
 ``` r
 ggplot(nas, aes(y=CGA, x=Renamed_CST, color=gaBirth)) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
+
+# Trajectories
+
+``` r
+rec_nas = bind_rows(REC = rec, NAS = nas, .id = 'assay') %>% rename(GAB = gaBirth)
+rec_nas = rec_nas %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
+traj_plot = ggplot(rec_nas, aes(y = Subjectf, x = CGA, fill = oCST_num)) + 
+  geom_point(pch = 22) + scale_fill_distiller('CST', palette = 'GnBu') + facet_wrap(~assay) + 
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + 
+  theme(legend.position = 'bottom')
+trajs2 = rec_nas %>% group_by(assay) %>% do(plot = {
+  out = traj_plot %+% .
+  print(out)
+  out
+})
+```
+
+![](02_ist_cst_results_files/figure-gfm/cst_traj-1.png)<!-- -->![](02_ist_cst_results_files/figure-gfm/cst_traj-2.png)<!-- -->
+
+``` r
+cowplot::plot_grid(plotlist = bind_rows(trajs, trajs2)$plot)
+```
+
+![](02_ist_cst_results_files/figure-gfm/combined_traj-1.png)<!-- -->
 
 \#Supplementary Figure 3 PCoA Plots
 
@@ -597,10 +755,10 @@ rec <- read_tsv(file.path(pth, "rec_basic.txt"))
     ##   Subject = col_character(),
     ##   MOD = col_character(),
     ##   Sex = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   gaBirth = col_double(),
     ##   CGA = col_double(),
-    ##   Reads = col_integer(),
+    ##   Reads = col_double(),
     ##   CST = col_character(),
     ##   Renamed_CST = col_character(),
     ##   PreviousCST = col_character(),
@@ -626,7 +784,7 @@ df <- merge(rec, pc1, by = "SampleID")
 ggplot(data = df, aes(x = PC1, group = BirthCohort, fill = BirthCohort)) + geom_density(adjust=1.5, position="fill")
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
 
 ``` r
 nas <- read_tsv(file.path(pth, "nas_basic.txt"))
@@ -637,12 +795,12 @@ nas <- read_tsv(file.path(pth, "nas_basic.txt"))
     ##   SampleID = col_character(),
     ##   ID = col_character(),
     ##   Subject = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   MOD = col_character(),
     ##   Sex = col_character(),
     ##   gaBirth = col_double(),
     ##   CGA = col_double(),
-    ##   Reads = col_integer(),
+    ##   Reads = col_double(),
     ##   CST = col_character(),
     ##   Renamed_CST = col_character(),
     ##   PreviousCST = col_character(),
@@ -668,7 +826,7 @@ df <- merge(nas, pc1, by = "SampleID")
 ggplot(data = df, aes(x = PC1, group = BirthCohort, fill = BirthCohort)) + geom_density(adjust=1.5, position="fill")
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
 
 \#Supplementary Figure 5 gCST 3 Time to Occurrence Based on Tphe IST at
 Discharge
@@ -727,6 +885,8 @@ library(survminer)
 library(dplyr)
 library(data.table)
 ```
+
+    ## Warning: package 'data.table' was built under R version 3.5.2
 
     ## 
     ## Attaching package: 'data.table'
@@ -948,20 +1108,20 @@ for (site in sites) {
     ## Parsed with column specification:
     ## cols(
     ##   Subject = col_character(),
-    ##   PrevSampleDOL = col_integer(),
-    ##   REC_2 = col_integer(),
-    ##   REC_3 = col_integer(),
-    ##   REC_9 = col_integer(),
-    ##   REC_1 = col_integer(),
-    ##   REC_6 = col_integer(),
-    ##   REC_8 = col_integer(),
-    ##   REC_11 = col_integer(),
-    ##   REC_7 = col_integer(),
-    ##   REC_4 = col_integer(),
-    ##   REC_5 = col_integer(),
-    ##   REC_12 = col_integer(),
-    ##   REC_13 = col_integer(),
-    ##   REC_10 = col_integer()
+    ##   PrevSampleDOL = col_double(),
+    ##   REC_2 = col_double(),
+    ##   REC_3 = col_double(),
+    ##   REC_9 = col_double(),
+    ##   REC_1 = col_double(),
+    ##   REC_6 = col_double(),
+    ##   REC_8 = col_double(),
+    ##   REC_11 = col_double(),
+    ##   REC_7 = col_double(),
+    ##   REC_4 = col_double(),
+    ##   REC_5 = col_double(),
+    ##   REC_12 = col_double(),
+    ##   REC_13 = col_double(),
+    ##   REC_10 = col_double()
     ## )
 
 ``` r
@@ -980,7 +1140,7 @@ cat("\nTotal runtime:")
 cat(difftime(Sys.time(), start.time, units = "hours"))
 ```
 
-    ## 0.0003581128
+    ## 0.0005906583
 
 ``` r
 cat("\n\n\n")
