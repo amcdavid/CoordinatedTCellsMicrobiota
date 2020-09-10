@@ -18,7 +18,7 @@ library(tidyverse)
 
     ## Warning: package 'tidyverse' was built under R version 3.5.2
 
-    ## ── Attaching packages ────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ──────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.0     ✓ purrr   0.3.3
     ## ✓ tibble  2.1.3     ✓ dplyr   0.8.5
@@ -39,7 +39,7 @@ library(tidyverse)
 
     ## Warning: package 'forcats' was built under R version 3.5.2
 
-    ## ── Conflicts ───────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -66,7 +66,7 @@ library(car)
     ##     some
 
 ``` r
-subject = read_csv('data/subject_covariates.csv') %>% transmute(ispreterm = preterm_weeks >= 0, Subject)
+subject = read_csv('data/subject_covariates.csv') %>% transmute(ispreterm = preterm_weeks >= 0, Subject, preterm_weeks)
 ```
 
     ## Parsed with column specification:
@@ -239,8 +239,8 @@ mb_tcell_closest %>% group_by(`Subject`) %>% summarize(n())
     ## # … with 137 more rows
 
 ``` r
-pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC'),
-      adjusted = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE))
+pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC', 'PMA'),
+      adjusted = c("no", "Term", "Term", "Term", "Term", "Term", 'PMA', 'PMA', 'PMA', 'no'))
 
 r2_res = list()
 for(i in seq_len(nrow(pred_table))){
@@ -258,7 +258,7 @@ for(i in seq_len(nrow(pred_table))){
     
     null_form = . ~  ispreterm
     if(pred == 'Term'){
-      form_ = "lhs_data_comp ~ 1"
+      form_ = "lhs_data_comp ~ ispreterm"
       null_form = . ~ 1
       rhs_data = data['ispreterm']
     } else if(pred == 'DOL'){
@@ -279,9 +279,15 @@ for(i in seq_len(nrow(pred_table))){
     }
     
     # always adjust for preterm
-    form_ = str_c(form_, ' + ispreterm')
+    if(adjusted == 'Term' || adjusted == 'PMA'){
+      form_ = str_c(form_, ' + ispreterm')
+    }
     
-    if(adjusted){
+    if(adjusted == 'GAB'){
+      form_ = str_c(form_, ' + preterm_weeks')
+    }
+    
+    if(adjusted == 'PMA'){
       form_ = str_c(form_, ' + cga')
       rhs_data = cbind(rhs_data, data['cga'])
       null_form = . ~ ispreterm + cga
@@ -303,37 +309,35 @@ for(i in seq_len(nrow(pred_table))){
 ``` r
 r2_res = bind_rows(r2_res) 
 
-r2_res = r2_res %>% 
+r2_res_graph = filter(r2_res, adjusted %in% c('no', 'Term', 'PMA'), !(adjusted == 'no' && predictor_label == "PMA")) %>% 
   mutate(predictor_label2 = factor(predictor_label, levels = rev(c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC'))),
          response_label = factor(response_label, levels = c('T cell', 'NAS', 'REC')), 
-         adjusted = factor(adjusted, levels = c('TRUE', 'FALSE')),
+         pma_adjusted = factor(ifelse(adjusted == 'PMA', 'PMA', 'no'), levels = c('PMA', 'no')),
          pstar = case_when(pval < 1e-20 ~ '**',  pval < 1e-4 ~ '*', TRUE ~ ''))
 
 #p_rhs = r2_res %>% arrange(predictor_label2, p_rhs) %>% split(f = .$predictor_label2) %>% map_dfr(~ .x[[1,]])
 
-ggplot(r2_res, aes(x = response_label, y = predictor_label, fill = adjr2)) + geom_tile() + geom_text(aes(label = format(pval, digits = 1))) + scale_fill_distiller(palette = 3, limits = c(0, .2), direction = 1)
+
+ggplot(r2_res_graph, aes(y = adjr2, x = predictor_label2, fill = pma_adjusted)) + geom_col(position = 'dodge') + coord_flip() + facet_grid(~response_label)+ geom_text(aes(y = adjr2 + .01, label = pstar), position = position_dodge(width = 1), size = 6) + ylab('Adjusted R2') + xlab('Predictor(s)') + scale_y_continuous(limits = c(0, .3), breaks = c(0, .1, .2)) + theme(legend.position = 'bottom') + scale_fill_discrete('Adjusted?', direction = 1) + theme_minimal()
 ```
 
 ![](04_multivariate_r2_files/figure-gfm/plot_mv_r2-1.png)<!-- -->
 
 ``` r
-ggplot(r2_res, aes(y = adjr2, x = predictor_label2, fill = adjusted)) + geom_col(position = 'dodge') + coord_flip() + facet_grid(~response_label)+ geom_text(aes(y = adjr2 + .01, label = pstar), position = position_dodge(width = 1), size = 6) + ylab('Adjusted R2') + xlab('Predictor(s)') + scale_y_continuous(limits = c(0, .3), breaks = c(0, .1, .2)) + theme(legend.position = 'bottom') + scale_fill_discrete('PMA Adjusted?', direction = 1)
-```
-
-![](04_multivariate_r2_files/figure-gfm/plot_mv_r2-2.png)<!-- -->
-
-``` r
-r2_res %>% dplyr::select(-predictor_label2) %>% dplyr::select(predictor_label, response_label, everything()) %>% mutate(adjr2 = round(adjr2, 3)) %>% write_csv(path = 'intermediates/di_results/r2_supp_table.csv')
+r2_res %>% dplyr::select(predictor_label, response_label, everything()) %>% mutate(adjr2 = round(adjr2, 3)) %>% write_csv(path = 'intermediates/di_results/r2_supp_table.csv')
 ```
 
 ## AIC (Smaller is better)
 
 ``` r
-dplyr::filter(r2_res, predictor_label %in% c('Term', 'DOL', 'PMA')) %>% select(predictor_label, response_label, aic_full) %>% tidyr::spread(predictor_label, aic_full) %>% knitr::kable()
+dplyr::filter(r2_res, predictor_label %in% c('Term', 'DOL', 'PMA')) %>% select(predictor_label, response_label, aic_full, adjusted) %>% tidyr::spread(predictor_label, aic_full) %>% knitr::kable()
 ```
 
-| response\_label |       DOL |       PMA |     Term |
-| :-------------- | --------: | --------: | -------: |
-| T cell          |  27011.52 |  26853.06 |  28849.4 |
-| NAS             | 291297.08 | 290113.10 | 297054.0 |
-| REC             | 704856.55 | 704257.27 | 711911.2 |
+| response\_label | adjusted |       DOL |       PMA |     Term |
+| :-------------- | :------- | --------: | --------: | -------: |
+| NAS             | no       |        NA | 290562.90 | 297054.0 |
+| NAS             | Term     | 291297.08 | 290113.10 |       NA |
+| REC             | no       |        NA | 705020.45 | 711911.2 |
+| REC             | Term     | 704856.55 | 704257.27 |       NA |
+| T cell          | no       |        NA |  27133.11 |  28849.4 |
+| T cell          | Term     |  27011.52 |  26853.06 |       NA |

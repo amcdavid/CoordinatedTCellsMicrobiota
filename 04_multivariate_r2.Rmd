@@ -14,7 +14,7 @@ library(tidyverse)
 library(ggbeeswarm)
 library(car)
 
-subject = read_csv('data/subject_covariates.csv') %>% transmute(ispreterm = preterm_weeks >= 0, Subject)
+subject = read_csv('data/subject_covariates.csv') %>% transmute(ispreterm = preterm_weeks >= 0, Subject, preterm_weeks)
 
 all_feats = read_csv('intermediates/all_tcell_features.csv') %>% left_join(subject)
 all_mb = read_csv('intermediates/microbiome_joined.csv') %>% left_join(subject)
@@ -104,8 +104,8 @@ mb_tcell_closest %>% group_by(`Subject`) %>% summarize(n())
 
 
 ```{r}
-pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC'),
-      adjusted = c(FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, TRUE, TRUE, TRUE))
+pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC', 'PMA'),
+      adjusted = c("no", "Term", "Term", "Term", "Term", "Term", 'PMA', 'PMA', 'PMA', 'no'))
 
 r2_res = list()
 for(i in seq_len(nrow(pred_table))){
@@ -123,7 +123,7 @@ for(i in seq_len(nrow(pred_table))){
     
     null_form = . ~  ispreterm
     if(pred == 'Term'){
-      form_ = "lhs_data_comp ~ 1"
+      form_ = "lhs_data_comp ~ ispreterm"
       null_form = . ~ 1
       rhs_data = data['ispreterm']
     } else if(pred == 'DOL'){
@@ -144,9 +144,15 @@ for(i in seq_len(nrow(pred_table))){
     }
     
     # always adjust for preterm
-    form_ = str_c(form_, ' + ispreterm')
+    if(adjusted == 'Term' || adjusted == 'PMA'){
+      form_ = str_c(form_, ' + ispreterm')
+    }
     
-    if(adjusted){
+    if(adjusted == 'GAB'){
+      form_ = str_c(form_, ' + preterm_weeks')
+    }
+    
+    if(adjusted == 'PMA'){
       form_ = str_c(form_, ' + cga')
       rhs_data = cbind(rhs_data, data['cga'])
       null_form = . ~ ispreterm + cga
@@ -170,23 +176,22 @@ for(i in seq_len(nrow(pred_table))){
 ```{r plot_mv_r2, fig.width = 6, fig.height = 4.5}
 r2_res = bind_rows(r2_res) 
 
-r2_res = r2_res %>% 
+r2_res_graph = filter(r2_res, adjusted %in% c('no', 'Term', 'PMA'), !(adjusted == 'no' && predictor_label == "PMA")) %>% 
   mutate(predictor_label2 = factor(predictor_label, levels = rev(c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC'))),
          response_label = factor(response_label, levels = c('T cell', 'NAS', 'REC')), 
-         adjusted = factor(adjusted, levels = c('TRUE', 'FALSE')),
+         pma_adjusted = factor(ifelse(adjusted == 'PMA', 'PMA', 'no'), levels = c('PMA', 'no')),
          pstar = case_when(pval < 1e-20 ~ '**',  pval < 1e-4 ~ '*', TRUE ~ ''))
 
 #p_rhs = r2_res %>% arrange(predictor_label2, p_rhs) %>% split(f = .$predictor_label2) %>% map_dfr(~ .x[[1,]])
 
-ggplot(r2_res, aes(x = response_label, y = predictor_label, fill = adjr2)) + geom_tile() + geom_text(aes(label = format(pval, digits = 1))) + scale_fill_distiller(palette = 3, limits = c(0, .2), direction = 1)
 
-ggplot(r2_res, aes(y = adjr2, x = predictor_label2, fill = adjusted)) + geom_col(position = 'dodge') + coord_flip() + facet_grid(~response_label)+ geom_text(aes(y = adjr2 + .01, label = pstar), position = position_dodge(width = 1), size = 6) + ylab('Adjusted R2') + xlab('Predictor(s)') + scale_y_continuous(limits = c(0, .3), breaks = c(0, .1, .2)) + theme(legend.position = 'bottom') + scale_fill_discrete('PMA Adjusted?', direction = 1)
+ggplot(r2_res_graph, aes(y = adjr2, x = predictor_label2, fill = pma_adjusted)) + geom_col(position = 'dodge') + coord_flip() + facet_grid(~response_label)+ geom_text(aes(y = adjr2 + .01, label = pstar), position = position_dodge(width = 1), size = 6) + ylab('Adjusted R2') + xlab('Predictor(s)') + scale_y_continuous(limits = c(0, .3), breaks = c(0, .1, .2)) + theme(legend.position = 'bottom') + scale_fill_discrete('Adjusted?', direction = 1) + theme_minimal()
 
-r2_res %>% dplyr::select(-predictor_label2) %>% dplyr::select(predictor_label, response_label, everything()) %>% mutate(adjr2 = round(adjr2, 3)) %>% write_csv(path = 'intermediates/di_results/r2_supp_table.csv')
+r2_res %>% dplyr::select(predictor_label, response_label, everything()) %>% mutate(adjr2 = round(adjr2, 3)) %>% write_csv(path = 'intermediates/di_results/r2_supp_table.csv')
 ```
 
 ## AIC  (Smaller is better)
 
 ```{r, results = 'asis'}
-dplyr::filter(r2_res, predictor_label %in% c('Term', 'DOL', 'PMA')) %>% select(predictor_label, response_label, aic_full) %>% tidyr::spread(predictor_label, aic_full) %>% knitr::kable()
+dplyr::filter(r2_res, predictor_label %in% c('Term', 'DOL', 'PMA')) %>% select(predictor_label, response_label, aic_full, adjusted) %>% tidyr::spread(predictor_label, aic_full) %>% knitr::kable()
 ```
