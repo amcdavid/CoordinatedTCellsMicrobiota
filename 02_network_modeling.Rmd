@@ -7,523 +7,272 @@ output: github_document
 knitr::opts_chunk$set(echo = TRUE)
 refined = 'intermediates'
 private = 'private'
+data = 'data'
 ```
 
 These analyses were used to generate the network plots in figure 6, as well as 
 
 # Analysis of CST Occurrence vs Immunological Parameters - quasi-Poisson Duration
 
-Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter and the number of days a subject spends in the CST.
+Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter in adjusted and unadjusted models.
 
-```{r quasipoisson}
-#Start time
-start.time <- Sys.time()
-
+```{r, echo = FALSE, include = FALSE}
 library(readr)
+library(dplyr)
+library(broom)
+library(survival)
+library(icenReg)
 
-type <- "duration"
+refined = 'intermediates'
 
-sites = c("REC", "NAS")
 
-for (site in sites) {
-  
-  #Read in metadata and CST duration data
-  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
-  
-  raw_table <- read_tsv(file.path(refined, sprintf("%s_Duration_Input.txt", site)))
-  
-  mapping_length <- ncol(mapping)
-  
-  table_length <- ncol(raw_table)
-  
-  #Iterate through CSTs
-  for (cst_i in 3:table_length) {
-    
-    tmp.time <- Sys.time()
-    
-    cst <- colnames(raw_table[,cst_i])
-    
-    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
-    
-    #Lists to store results
-    var_names <- list()
-    model_pvals <- list()
-    k <- 1
-    
-    voi_names <- list()
-    var_pvals <- list()
-    var_coeffs <- list()
-    vars <- list()
-    renamed_vars <- list()
-    j <- 1
-    
-    #Iterate through immune parameters
-    for (var_i in 4:mapping_length) {
-      
-      var <- colnames(mapping[,var_i])
-      
-      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
-      
-      fac = FALSE
-      
-      #Join metadata with CST duration data on subject
-      working_table <- merge(mapping_in, cst_in, by = "Subject")
-      
-      working_table <- working_table[complete.cases(working_table[,]), ]
-      
-      #If the immmune parameter is IST (vs metacluster abundance), remove any ISTs that occur less than ten times
-      if (typeof(working_table[[var]]) == "character") {
-        
-        fac = TRUE
-        
-        tmp_table <- as.data.frame(table(working_table[[var]]))
-        
-        rare_cats <- list()
-        n <- 1
-        
-        for (cat_i in 1:nrow(tmp_table)) {
-          
-          if (tmp_table[[2]][cat_i] < 10) {
-            
-            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
-            n <- n + 1
-            
-          }
-          
-        }
-        
-        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
-        
-      }
-      
-      #If the current CST occurs in <10% of the remaining subjects or all but one IST has been filtered out, skip this comparison
-      if ((sum(working_table[[cst]] == 0) > nrow(working_table)*0.9) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
-        
-        next
-        
-      }
-      
-      working_table$cst_freq <- working_table[[cst]]
-      
-      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
-      if (fac) {
-        
-        working_table$voi <- factor(working_table[[var]])
-        
-      } else {
-        
-        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
-        
-      }
-      
-      #Center GA on 37 weeks (term)
-      working_table$GAB <- ((working_table$gaBirth)/37) - 1
-      working_table$ldays = log(working_table$Total)
-      
-      #Fit the model with and without the immune parameter (voi = Variable of Interest = the immune parameter)
-      fit.full <- glm(cst_freq ~ MOD + GAB + offset(ldays) + voi, data = working_table, family = quasipoisson)
-      fit.null <- glm(cst_freq ~ MOD + GAB + offset(ldays), data = working_table, family = quasipoisson)
-      
-      #Test for significance
-      model_test <- anova(fit.null, fit.full, test = "Chisq")
-      
-      var_names[[k]] <- var
-      model_pvals[[k]] <- model_test$`Pr(>Chi)`[2]
-      k <- k + 1
+# Take a big ol' table
+# names of response columns and predictor columns
 
-      #Write the model summary
-      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
-        dir.create(pth)
-      
-      cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      capture.output(summary(fit.full), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      
-      
-      #If the immune parameter was significant, get the coefficients and p-values
-      if (model_test$`Pr(>Chi)`[2] < 0.05) {
-        
-        s <- summary(fit.full)
-        l <- grep("voi", rownames(s$coefficients))
-        for (i in l) {
-          
-          voi_names[[j]] <- var
-          vars[[j]] <- rownames(s$coefficients)[i]
-          #Because ISTs were renamed after they were defined, provide the alternate name
-          renamed_vars[[j]] <- switch(rownames(s$coefficients)[i], 'voi'='voi', 'voiICS_1'='ICS_8', 'voiICS_2'='ICS_6',	'voiICS_3'='ICS_4',	'voiICS_4'='ICS_2',	'voiICS_5'='ICS_3',	'voiICS_6'='ICS_1',	'voiICS_7'='ICS_5',	'voiICS_8'='ICS_7',	'voiTPHE_1'='TPHE_7',	'voiTPHE_2'='TPHE_2',	'voiTPHE_3'='TPHE_1',	'voiTPHE_4'='TPHE_3',	'voiTPHE_5'='TPHE_5',	'voiTPHE_6'='TPHE_4',	'voiTPHE_7'='TPHE_6')
-          var_coeffs[[j]] <- s$coefficients[i,1]
-          var_pvals[[j]] <- s$coefficients[i,4]
-          j <- j + 1
-          
-        }
-        
+# Iterate through pairs of columns in ist_tbl and microbe_tbl, adjusting for extra_tbl
+# All keyed by Subject
+# null_formula should include all confounders
+# regression_fcn(formula, data) returns an object that permits an anova test and tidy method
+# result_id?
+pairwise_regression = function(joined_tbl, ist_fields, microbe_fields, null_formula, regression_fcn, result_id){
+  ist_tbl = joined_tbl[ist_fields]
+  response_tbl = joined_tbl[microbe_fields]
+  extra_tbl = joined_tbl[setdiff(names(joined_tbl), c(ist_fields, microbe_fields))]
+  
+  table_length <- ncol(response_tbl) 
+  full_formula = update(null_formula, . ~ . + voi)
+  
+  
+  if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", result_id))))
+    dir.create(pth)
+  
+  all_results = list()
+  i = 1
+  
+  warn_trapped_fcn = purrr::quietly(regression_fcn)
+  for( cst_i in seq_len(table_length)){
+    response_nm = names(response_tbl)[cst_i]
+    for( voi_i in names(ist_tbl)){
+      this_data = tibble(response = response_tbl[[cst_i]], voi = ist_tbl[[voi_i]]) %>% 
+        bind_cols(extra_tbl) %>% na.omit()
+      if(is.numeric(this_data$voi)){
+        this_data$voi = scale(this_data$voi)
       }
-        
+      try({
+      fit.null = warn_trapped_fcn(null_formula, this_data)
+      fit.full = warn_trapped_fcn(full_formula, this_data)
+      model_test = anova(fit.null$result, fit.full$result, test = "Chisq")
+      full_results = tidy(fit.full$result) %>% mutate(response = response_nm,
+                                               voi = voi_i, produced_warning = length(fit.full$warnings) > 0)
+      anova_p = model_test$`Pr(>Chi)`[2]
+      anova_result = tibble(term = 'anova', p.value = anova_p, response = response_nm, voi = voi_i)
+      all_results[[i]] = bind_rows(full_results, anova_result)
+      })
+      i = i + 1
     }
-    
-    #Multiple test correction, model level
-    adj_model_pvals <- p.adjust(model_pvals, method = "fdr")
-    #Assemble model level results
-    results <- cbind(var_names, model_pvals, adj_model_pvals)
-    #Write model level results
-    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
-    
-    #Do the same thing for variables
-    adj_var_pvals <- p.adjust(var_pvals, method = "fdr")
-    term_results <- cbind(voi_names, vars, renamed_vars, var_coeffs, var_pvals, adj_var_pvals)
-    
-    write.csv(term_results, file.path(refined,  sprintf("%s_results/%s_term_pvals_and_betas.csv", type, cst)))
-    
-    cat("\nTime taken to complete last CST: ")
-    cat(difftime(Sys.time(), tmp.time, units = "mins"))
-    
   }
-  
+ bind_rows(all_results )
 }
-
-#Print total runtime
-cat("\nTotal runtime:")
-cat(difftime(Sys.time(), start.time, units = "hours"))
-cat("\n\n\n")
 
 ```
 
+```{r, results = 'asis'}
+to_fit = expand.grid(site = c('REC', 'NAS'), #microbiome sampling site
+                     model_type = c('logit', 'duration', 'time_to_event'), #type of association. logit = odds of CST ever, duration = number of days in CST, time_to_event = rate of first entry to CST
+                     specification = c('baseline', # baseline = MOD, GAB,
+                                       'full'),# full = MOD, GAB, ABX, MILK
+                     stringsAsFactors = FALSE
+                     ) 
 
-# Analysis of CST Occurrence vs Immunological Parameters - Logistic Occurrence Probability
-
-Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter and whether or not the CST occurs at all within a subject.
-
-Same as the quasi-Poisson duration above, just fitting a different model.
-
-```{r logistic}
-
-#Start time
-start.time <- Sys.time()
-
-library(readr)
-
-type <- "logit"
-
-sites = c("REC", "NAS")
-
-for (site in sites) {
-  #Read in metadata and CST occurrence data
-  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
-  
-  raw_table <- read_tsv(file.path(refined, sprintf("%s_Logit_Input.txt", site)))
-  
-  mapping_length <- ncol(mapping)
-  
-  table_length <- ncol(raw_table)
-  
-  for (cst_i in 3:table_length) {
-    
-    tmp.time <- Sys.time()
-    
-    cst <- colnames(raw_table[,cst_i])
-    
-    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
-    
-    #Lists to store results
-    var_names <- list()
-    model_pvals <- list()
-    k <- 1
-    
-    voi_names <- list()
-    var_pvals <- list()
-    var_coeffs <- list()
-    vars <- list()
-    j <- 1
-    
-    for (var_i in 4:mapping_length) {
-      
-      var <- colnames(mapping[,var_i])
-      
-      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
-      
-      fac = FALSE
-      
-      #Merge metadata and CST occurrence data on subject
-      working_table <- merge(mapping_in, cst_in, by = "Subject")
-      
-      working_table <- working_table[complete.cases(working_table[,]), ]
-      
-      #If the immune parameter is IST, remove any ISTs that occur less than ten times at the given time point.
-      if (typeof(working_table[[var]]) == "character") {
-        
-        fac = TRUE
-        
-        tmp_table <- as.data.frame(table(working_table[[var]]))
-        
-        rare_cats <- list()
-        n <- 1
-        
-        for (cat_i in 1:nrow(tmp_table)) {
-          
-          if (tmp_table[[2]][cat_i] < 10) {
-            
-            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
-            n <- n + 1
-            
-          }
-          
-        }
-        
-        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
-        
-      }
-      
-      #If the CST occurs in less than 10% of remaining subjects, skip this comparison
-      if ((sum(working_table[[cst]] == "Yes") < nrow(working_table)*0.1) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
-        
-        next
-        
-      }
-      
-      working_table$cst_yn <- factor(working_table[[cst]])
-      
-      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
-      if (fac) {
-        
-        working_table$voi <- factor(working_table[[var]])
-        
-      } else {
-        
-        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
-        
-      }
-      
-      #Center and scale the number of observations per subjects and GA at birth
-      working_table$Obs <- c(scale(working_table$Total, center = TRUE, scale = TRUE))
-      working_table$GAB <- ((working_table$gaBirth)/37) - 1
-      
-      #Fit the model with and without the immune parameter
-      fit.full <- glm(cst_yn ~ MOD + GAB + Obs + voi, data = working_table, family = binomial)
-      fit.null <- glm(cst_yn ~ MOD + GAB + Obs, data = working_table, family = binomial)
-      
-      #Test for significance
-      model_test <- anova(fit.null, fit.full, test = "Chisq")
-      
-      var_names[[k]] <- var
-      model_pvals[[k]] <- model_test$`Pr(>Chi)`[2]
-      k <- k + 1
-
-      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
-        dir.create(pth)
-      
-      #Write the model summary
-     cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-     cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      capture.output(summary(fit.full), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      
-      #If it's significant, store additional information
-      if (model_test$`Pr(>Chi)`[2] < 0.05) {
-        
-        s <- summary(fit.full)
-        l <- grep("voi", rownames(s$coefficients))
-        for (i in l) {
-          
-          voi_names[[j]] <- var
-          vars[[j]] <- rownames(s$coefficients)[i]
-          var_coeffs[[j]] <- s$coefficients[i,1]
-          var_pvals[[j]] <- s$coefficients[i,4]
-          j <- j + 1
-          
-        }
-        
-      }
-        
-    }
-    
-    #For the model itself and for the variables of interest, perform multiple test correction and save the results.
-    adj_model_pvals <- p.adjust(model_pvals, method = "fdr")
-    results <- cbind(var_names, model_pvals, adj_model_pvals)
-    
-    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
-    
-    adj_var_pvals <- p.adjust(var_pvals, method = "fdr")
-    term_results <- cbind(voi_names, vars, var_coeffs, var_pvals, adj_var_pvals)
-    
-    write.csv(term_results, file.path(refined, sprintf("%s_results/%s_term_pvals_and_betas.csv", type, cst)))
-    
-    cat("\nTime taken to complete last CST: ")
-    cat(difftime(Sys.time(), tmp.time, units = "mins"))
-    
-  }
-  
+logit =  function(form_, data_) glm(form_, family = 'binomial', data = data_)
+duration = function(form_, data_) glm(form_, family = 'quasipoisson', data = data_)
+time_to_event = function(form_, data_){
+  data_ = dplyr::filter(data_, !is.na(response))
+  data_$response = Surv(data_$PrevSampleDOL, data_$response, type = "interval2")
+  res = ic_par(form_, data = data_, model = "aft", dist = "loglogistic")
+  res
 }
 
-#Print total runtime
-cat("\nTotal runtime:")
-cat(difftime(Sys.time(), start.time, units = "hours"))
-cat("\n\n\n")
-
+knitr::kable(to_fit)
 ```
 
-The warnings we see about 0/1 fitted values indicate that we need to use LRT tests, and be careful with coefficient estimates at the boundary.
+Scenarios to fit.
 
-# Analysis of CST Occurrence vs Immunological Parameters - Survival Time to Occurrence
+```{r}
+nabx_polish = read_csv('data/antibiotic_exposure.csv') %>% 
+  tidyr::pivot_wider(Subject, names_from = 'discharge', values_from = 'Number of systemic antibiotic') %>% 
+  rename(abx_hospital = 'FALSE', abx_discharge = 'TRUE') %>%
+  mutate(abx_hospital = (abx_hospital - mean(abx_hospital))/sd(abx_hospital), abx_discharge = abx_discharge- mean(abx_discharge))
 
-Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter and how low it takes a subject to initially transition into a CST (or out of a CST, in the cases of REC 1 and NAS 1)
 
-Similar as the quasi-Poisson duration and logistic above, except fitting a different model and not comparing a full and null model to assess significance.  The p-value of the term of interest in the full model only is used to assess significance.
+milk_months = read_csv(file.path('intermediates', 'milk_subject.csv')) %>% select(Subject, milk_months)
+
+hospital_humilk = read_csv('data/milk_hospital.csv') %>% rename(milk_perinatal = `Any Human Milk Perinatal`)
+milk = full_join(milk_months, hospital_humilk) %>% mutate(milk_months = milk_months - mean(milk_months, na.rm = TRUE))
+```
+                                                          
+Set up confounders (Antibiotics and Milk).  Both are centered.  Hospital antibiotics (days) are Z-scored so represent SD increases.
 
 
 ```{r}
-#Start time
-start.time <- Sys.time()
-
-library(survival)
-library(icenReg)
-library(readr)
-
-type <- "surv"
-
-sites = c("REC", "NAS")
-
-for (site in sites) {
-  #Read in metadata and CST occurrence interval information
-  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
+fit_scenario_result = list()
+for(i in seq_len(nrow(to_fit))){
+  this_fit = to_fit[i,]
+  ist_extra_tbl <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", this_fit$site)))
   
-  raw_table <- read_tsv(file.path(refined, sprintf("%s_Surv_Input.txt", site)))
-  
-  mapping_length <- ncol(mapping)
-  
-  table_length <- ncol(raw_table)
-  
-  for (cst_i in 3:table_length) {
+  # Get response data and
+  if(this_fit$model_type == 'logit'){ # Logistic
+     microbe_tbl <- read_tsv(file.path(refined, sprintf("%s_Logit_Input.txt", this_fit$site))) %>%
+       mutate_at(.vars = vars(-Subject, -Total), .funs = function(x) x=='Yes')
+  } else if(this_fit$model_type == 'duration'){  # Duration
+    microbe_tbl =  read_tsv(file.path(refined, sprintf("%s_Duration_Input.txt", this_fit$site)))
     
-    tmp.time <- Sys.time()
-    
-    cst <- colnames(raw_table[,cst_i])
-    
-    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
-    
-    cst_in <- cst_in[complete.cases(cst_in[,]),]
-    #Lists to store results
-    var_names <- list()
-    voi_names <- list()
-    var_coeffs <- list()
-    var_exp_coeffs <- list()
-    variable_pvals <- list()
-    k <- 1
-    
-    for (var_i in 4:mapping_length) {
-      
-      var <- colnames(mapping[,var_i])
-      
-      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
-      
-      fac = FALSE
-      #Join metadata and CST occurrence info by Subject
-      working_table <- merge(mapping_in, cst_in, by = "Subject")
-      
-      working_table <- working_table[complete.cases(working_table[,]), ]
-      
-      #If the immune parameter is IST, remove any ISTs that occur less than ten times at the given time point.
-      if (typeof(working_table[[var]]) == "character") {
-        
-        fac = TRUE
-        
-        tmp_table <- as.data.frame(table(working_table[[var]]))
-        
-        rare_cats <- list()
-        n <- 1
-        
-        for (cat_i in 1:nrow(tmp_table)) {
-          
-          if (tmp_table[[2]][cat_i] < 10) {
-            
-            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
-            n <- n + 1
-            
-          }
-          
-        }
-        
-        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
-        
-      }
-      
-      #If fewer than 20 subjects remain having entered the CST, skip this comparison
-      if ((nrow(working_table) < 20) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
-        
-        next
-        
-      }
-      
-      working_table$cst_obs <- working_table[[cst]]
-      
-      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
-      if (fac) {
-        
-        working_table$voi <- factor(working_table[[var]])
-        
-      } else {
-        
-        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
-        
-      }
-      
-      #Center and scale GA at birth
-      working_table$GAB <- ((working_table$gaBirth)/37) - 1
-      
-      #Define the interval in which initial transition into a CST must have occurred
-      cst_surv <- Surv(working_table$PrevSampleDOL, working_table$cst_obs, type = "interval2")
-      
-      #Fit the model
-      fit <- ic_par(cst_surv ~ MOD + GAB + voi, data = working_table, model = "aft", dist = "loglogistic")
-      
-      #Collect resulting parameters
-      fit_summary <- summary(fit)
-      
-      for (p in 5:nrow(fit_summary$summaryParameters)) {
-        
-        var_names[[k]] <- var
-        voi_names[[k]] <- rownames(fit_summary$summaryParameters)[p]
-        var_coeffs[[k]] <- fit_summary$summaryParameters[p, 1]
-        var_exp_coeffs[[k]] <- fit_summary$summaryParameters[p, 2]
-        variable_pvals[[k]] <- fit_summary$summaryParameters[p, 5]
-        k <- k + 1
-        
-      }
-    
-      #Write the model summary
-      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
-  dir.create(pth)
-      
-      cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-     cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      capture.output(summary(fit), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-    }
-    
-    #Perform multiple test correction and write the results
-    adj_variable_pvals <- p.adjust(variable_pvals, method = "fdr")
-    results <- cbind(var_names, voi_names, var_coeffs, var_exp_coeffs, variable_pvals, adj_variable_pvals)
-    
-    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
-    
-    cat("\nTime taken to complete last CST: ")
-    cat(difftime(Sys.time(), tmp.time, units = "mins"))
-    
+  } else if(this_fit$model_type == 'time_to_event'){ #Survival
+    microbe_tbl = read_tsv(file.path(refined, sprintf("%s_Surv_Input.txt",  this_fit$site)))
   }
   
+  joined_tbl = left_join(microbe_tbl, ist_extra_tbl, by = 'Subject')
+  regr_fcn = get(this_fit$model_type)
+  
+  # baseline
+  this_formula = formula(response ~  MOD + gaBirth)
+  if(this_fit$specification == 'full'){
+    this_formula = update(this_formula, . ~ . +  milk_perinatal + milk_months + abx_hospital + abx_discharge)
+  }
+  
+  # Total used as offset
+  if(this_fit$model_type %in% c('logit', 'duration')){
+    this_formula = update(this_formula, . ~. + offset(log(Total)))
+    
+  } else{
+    ist_extra_tbl = left_join(microbe_tbl[c('PrevSampleDOL', 'Subject')], ist_extra_tbl, by = 'Subject')
+    microbe_tbl = select(microbe_tbl, -PrevSampleDOL)
+  }
+  
+  ist_fields = ist_extra_tbl %>% select(contains('TPHE'), contains('CD4'), contains('CD8'), contains('ICS')) %>% names()
+  microbe_fields = microbe_tbl  %>% select(contains('REC'), contains('NAS')) %>% names()
+  joined_tbl2 = joined_tbl %>%
+    left_join(milk) %>%
+    left_join(nabx_polish)
+  
+  fit_scenario_result[[i]] = pairwise_regression(joined_tbl2, ist_fields = ist_fields, microbe_fields = microbe_fields, null_formula = this_formula, regression_fcn = regr_fcn, do.call(paste, c(list(sep = '_'), this_fit)))
+ 
 }
-
-#Print total runtime
-cat("\nTotal runtime:")
-cat(difftime(Sys.time(), start.time, units = "hours"))
-cat("\n\n\n")
 
 ```
 
+Fit all the scenarios.
+
+# Top interactions
+
+```{r}
+library(ggplot2)
+all_fits = bind_rows(fit_scenario_result, .id = 'scenario') %>% left_join(to_fit %>% mutate(scenario = as.character(seq_along(site))))
+
+top = all_fits %>% filter(term == 'anova') %>% group_by(site, model_type) %>% arrange(p.value) %>% do(head(., n = 1))
+
+top_coefs = semi_join(all_fits, top[c('scenario', 'voi', 'response')]) %>% anti_join(tibble(term = c('anova', '(Intercept)')))
+
+clamp = function (x, modulus = 5) 
+{
+    x[x < -modulus] = -modulus
+    x[x > modulus] = modulus
+    x
+}
+
+ggplot(top_coefs, aes(x = term, y = estimate, ymin = estimate - std.error, ymax = estimate + std.error, color = clamp(-log10(p.value)))) + geom_pointrange() + facet_wrap(~model_type  + voi + response, scales = 'free') + coord_flip()
+```
+
+
+# Network plot figures
+
+```{r networks}
+sign_max = function(x){
+  sign(x[which.max(abs(x))])
+}
+
+enmatrix = function(x, rownames_from){
+  y = x[,setdiff(names(x), rownames_from)]
+  y = as.matrix(y)
+  rownames(y) = x[[rownames_from]]
+  y
+}
+
+per_type_fdr = filter(all_fits, term == 'anova')  %>% group_by(model_type, specification)%>% mutate(fdr = p.adjust(p.value, 'fdr'))
+
+per_type_sign = all_fits %>%  filter(stringr::str_detect(term, stringr::fixed('voi'))) %>% group_by(model_type, specification, voi, response) %>% summarize(sign_max = sign_max(estimate))
+
+per_type_fdr = left_join(per_type_fdr, per_type_sign) %>% mutate(signed_fdr = clamp(-log10(fdr), 5) * sign_max, zeroed_fdr = signed_fdr * (fdr< .1))
+
+
+
+per_type_nest = per_type_fdr %>% select(voi, response, zeroed_fdr, model_type, specification) %>% tidyr::nest(data = c(zeroed_fdr, voi, response))
+
+per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi, names_from = response, values_from = zeroed_fdr) %>% enmatrix('voi'))
+
+#Bipartite Graph of CST vs Immunome Results
+
+#Load packages (Probably don't even need half of them - I tried a lot of things before I settled on this relatively simple solution.)
+library(ggplot2)
+library(network)
+library(igraph)
+library(sna)
+library(ggnetwork)
+library(GGally)
+library(ergm)
+library(intergraph)
+library(RColorBrewer)
+library(easyGgplot2)
+
+#Define constants
+
+set.seed(11)
+
+rec_csts = c("REC_4", "REC_1", "REC_2", "REC_9", "REC_10", "REC_5", "REC_8", "REC_6", "REC_3", "REC_13", "REC_7", "REC_11", "REC_12")
+nas_csts = c("NAS_4", "NAS_1", "NAS_2", "NAS_9", "NAS_10", "NAS_5", "NAS_8", "NAS_6", "NAS_3", "NAS_13", "NAS_7", "NAS_11", "NAS_12")
+#tests = c("logit", "surv", "binom", "alt_binom")
+tests = c("logit", "alt_surv")
+
+figs <- list()
+
+#Loop through the sites and make a figure for each as the target site (i.e. predicted by the CSTs of the other two sites)
+for (test in tests) {
+
+  #Read in the site-specific adjacency matrix specifying associations between taxa and the CSTs of the other body sites
+  adj.matrix <- read.table(file = paste(workDir, sprintf("renamed_adjusted_%s_input.csv", test), sep = "/"), header= T, sep= ",", row.names= 1)
+  
+  #Use that adjacency matrix to construct a network object that is bipartite
+  net.obj <- network(adj.matrix, matrix.type = "bipartite", ignore.eval = FALSE, names.eval = "weights")
+  
+  #Color the CST vertices according to the body site they represent
+  network::set.vertex.attribute(net.obj, "color", ifelse(net.obj %v% "vertex.names" %in% rec_csts, "red", ifelse(net.obj %v% "vertex.names" %in% nas_csts, "blue", ifelse(grepl("TPHE", net.obj %v% "vertex.names"), "orange", "green"))))
+  
+  #Shape the vertices according to the visit they represent
+  network::set.vertex.attribute(net.obj, "shape", ifelse(grepl("Birth", net.obj %v% "vertex.names"), 19, ifelse(grepl("Disch", net.obj %v% "vertex.names"), 17, ifelse(grepl("OneYear", net.obj %v% "vertex.names"), 15, 18))))
+  
+  #Make non-significant associations invisible
+  network::set.edge.attribute(net.obj, "alpha", ifelse(net.obj %e% "weight" == 0.0, 0, 1))
+  
+  #Make a color gradient that will be used to color the edges
+  rbPal <- colorRampPalette(c('darkblue', 'cyan', 'white', 'yellow', 'red'))
+  
+  #Map edge weights (signed log10 FDR adjusted p-vals) to colors in the gradient
+  ecols <- rbPal(10)[as.numeric(cut(network::get.edge.attribute(net.obj, "weights"), breaks = 10))]
+  
+  figs[[test]] <- ggnet2(net.obj, color = "color", shape = "shape", edge.color = ecols, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1, layout.par = list(niter = 1000, cell.jitter = 0.25))
+
+}
+
+#ggplot2.multiplot(nas_graph, rec_graph, thr_graph, cols = 2)
+
+#ggsave(paste(workDir, sprintf("%s_graph.pdf", site), sep = "/"), width = 15, height = 15, units = "in")
+
+```
+
+
 # Targeted analysis of Alloiococcus abundance, Tphe5, and acute illness
+
+
 
 ```{r}
 library("readr")

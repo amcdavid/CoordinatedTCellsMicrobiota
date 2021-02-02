@@ -45,5 +45,6 @@ Imports: tidyverse,
   ggrepel,
   Rtsne,
   plotly,
-  gganimate
+  gganimate,
+  network
 RoxygenNote: 6.1.0
