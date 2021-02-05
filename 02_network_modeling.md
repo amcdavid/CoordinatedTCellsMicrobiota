@@ -10,174 +10,150 @@ as
 Iterates through every pairwise combination of CST and immunological
 parameter (either IST or metacluster abundance at one of the three
 timepoints) and tests for a significant associations between the immune
-parameter and the number of days a subject spends in the CST.
+parameter in adjusted and unadjusted models.
 
 ``` r
-#Start time
-start.time <- Sys.time()
+to_fit = expand.grid(site = c('REC', 'NAS'), #microbiome sampling site
+                     model_type = c('logit', 'duration', 'time_to_event'), #type of association. logit = odds of CST ever, duration = number of days in CST, time_to_event = rate of first entry to CST
+                     specification = c('mod_only', 
+                                       'baseline', # MOD, GAB
+                                       'full'),# full = MOD, GAB, ABX, MILK
+                     stringsAsFactors = FALSE
+                     ) 
 
-library(readr)
+logit =  function(form_, data_) arm::bayesglm(form_, family = 'binomial', data = data_)
+duration = function(form_, data_) arm::bayesglm(form_, family = 'quasipoisson', data = data_)
+time_to_event = function(form_, data_){
+  data_ = dplyr::filter(data_, !is.na(response))
+  data_$response = Surv(data_$PrevSampleDOL, data_$response, type = "interval2")
+  res = ic_par(form_, data = data_, model = "aft", dist = "loglogistic")
+  res
+}
 
-type <- "duration"
+knitr::kable(to_fit)
+```
 
-sites = c("REC", "NAS")
+| site | model\_type     | specification |
+| :--- | :-------------- | :------------ |
+| REC  | logit           | mod\_only     |
+| NAS  | logit           | mod\_only     |
+| REC  | duration        | mod\_only     |
+| NAS  | duration        | mod\_only     |
+| REC  | time\_to\_event | mod\_only     |
+| NAS  | time\_to\_event | mod\_only     |
+| REC  | logit           | baseline      |
+| NAS  | logit           | baseline      |
+| REC  | duration        | baseline      |
+| NAS  | duration        | baseline      |
+| REC  | time\_to\_event | baseline      |
+| NAS  | time\_to\_event | baseline      |
+| REC  | logit           | full          |
+| NAS  | logit           | full          |
+| REC  | duration        | full          |
+| NAS  | duration        | full          |
+| REC  | time\_to\_event | full          |
+| NAS  | time\_to\_event | full          |
 
-for (site in sites) {
-  
-  #Read in metadata and CST duration data
-  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
-  
-  raw_table <- read_tsv(file.path(refined, sprintf("%s_Duration_Input.txt", site)))
-  
-  mapping_length <- ncol(mapping)
-  
-  table_length <- ncol(raw_table)
-  
-  #Iterate through CSTs
-  for (cst_i in 3:table_length) {
-    
-    tmp.time <- Sys.time()
-    
-    cst <- colnames(raw_table[,cst_i])
-    
-    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
-    
-    #Lists to store results
-    var_names <- list()
-    model_pvals <- list()
-    k <- 1
-    
-    voi_names <- list()
-    var_pvals <- list()
-    var_coeffs <- list()
-    vars <- list()
-    renamed_vars <- list()
-    j <- 1
-    
-    #Iterate through immune parameters
-    for (var_i in 4:mapping_length) {
-      
-      var <- colnames(mapping[,var_i])
-      
-      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
-      
-      fac = FALSE
-      
-      #Join metadata with CST duration data on subject
-      working_table <- merge(mapping_in, cst_in, by = "Subject")
-      
-      working_table <- working_table[complete.cases(working_table[,]), ]
-      
-      #If the immmune parameter is IST (vs metacluster abundance), remove any ISTs that occur less than ten times
-      if (typeof(working_table[[var]]) == "character") {
-        
-        fac = TRUE
-        
-        tmp_table <- as.data.frame(table(working_table[[var]]))
-        
-        rare_cats <- list()
-        n <- 1
-        
-        for (cat_i in 1:nrow(tmp_table)) {
-          
-          if (tmp_table[[2]][cat_i] < 10) {
-            
-            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
-            n <- n + 1
-            
-          }
-          
-        }
-        
-        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
-        
-      }
-      
-      #If the current CST occurs in <10% of the remaining subjects or all but one IST has been filtered out, skip this comparison
-      if ((sum(working_table[[cst]] == 0) > nrow(working_table)*0.9) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
-        
-        next
-        
-      }
-      
-      working_table$cst_freq <- working_table[[cst]]
-      
-      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
-      if (fac) {
-        
-        working_table$voi <- factor(working_table[[var]])
-        
-      } else {
-        
-        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
-        
-      }
-      
-      #Center GA on 37 weeks (term)
-      working_table$GAB <- ((working_table$gaBirth)/37) - 1
-      working_table$ldays = log(working_table$Total)
-      
-      #Fit the model with and without the immune parameter (voi = Variable of Interest = the immune parameter)
-      fit.full <- glm(cst_freq ~ MOD + GAB + offset(ldays) + voi, data = working_table, family = quasipoisson)
-      fit.null <- glm(cst_freq ~ MOD + GAB + offset(ldays), data = working_table, family = quasipoisson)
-      
-      #Test for significance
-      model_test <- anova(fit.null, fit.full, test = "Chisq")
-      
-      var_names[[k]] <- var
-      model_pvals[[k]] <- model_test$`Pr(>Chi)`[2]
-      k <- k + 1
+Scenarios to fit.
 
-      #Write the model summary
-      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
-        dir.create(pth)
-      
-      cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      capture.output(summary(fit.full), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      
-      
-      #If the immune parameter was significant, get the coefficients and p-values
-      if (model_test$`Pr(>Chi)`[2] < 0.05) {
-        
-        s <- summary(fit.full)
-        l <- grep("voi", rownames(s$coefficients))
-        for (i in l) {
-          
-          voi_names[[j]] <- var
-          vars[[j]] <- rownames(s$coefficients)[i]
-          #Because ISTs were renamed after they were defined, provide the alternate name
-          renamed_vars[[j]] <- switch(rownames(s$coefficients)[i], 'voi'='voi', 'voiICS_1'='ICS_8', 'voiICS_2'='ICS_6', 'voiICS_3'='ICS_4', 'voiICS_4'='ICS_2', 'voiICS_5'='ICS_3', 'voiICS_6'='ICS_1', 'voiICS_7'='ICS_5', 'voiICS_8'='ICS_7', 'voiTPHE_1'='TPHE_7',   'voiTPHE_2'='TPHE_2',   'voiTPHE_3'='TPHE_1',   'voiTPHE_4'='TPHE_3',   'voiTPHE_5'='TPHE_5',   'voiTPHE_6'='TPHE_4',   'voiTPHE_7'='TPHE_6')
-          var_coeffs[[j]] <- s$coefficients[i,1]
-          var_pvals[[j]] <- s$coefficients[i,4]
-          j <- j + 1
-          
-        }
-        
-      }
-        
-    }
+``` r
+nabx_polish = read_csv('data/antibiotic_exposure.csv') %>% 
+  tidyr::pivot_wider(Subject, names_from = 'discharge', values_from = 'Number of systemic antibiotic') %>% 
+  rename(abx_hospital = 'FALSE', abx_discharge = 'TRUE') %>%
+  mutate(abx_hospital = (abx_hospital - mean(abx_hospital))/sd(abx_hospital), abx_discharge = abx_discharge- mean(abx_discharge))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   discharge = col_logical(),
+    ##   group = col_character(),
+    ##   `Number of systemic antibiotic` = col_double()
+    ## )
+
+``` r
+milk_months = read_csv(file.path('intermediates', 'milk_subject.csv')) %>% select(Subject, milk_months)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   months_surveyed = col_double(),
+    ##   milk_months = col_double(),
+    ##   any_milk_quarter = col_double()
+    ## )
+
+``` r
+hospital_humilk = read_csv('data/milk_hospital.csv') %>% rename(milk_perinatal = `Any Human Milk Perinatal`)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   `Any Human Milk Perinatal` = col_logical()
+    ## )
+
+``` r
+milk = full_join(milk_months, hospital_humilk) %>% mutate(milk_months = milk_months - mean(milk_months, na.rm = TRUE))
+```
+
+    ## Joining, by = "Subject"
+
+Set up confounders (Antibiotics and Milk). Both are centered. Hospital
+antibiotics (days) are Z-scored so represent SD increases.
+
+``` r
+network_results_path = file.path(refined, 'network_results')
+if(!dir.exists(network_results_path)) dir.create(network_results_path)
+
+fit_scenario_result = list()
+for(i in seq_len(nrow(to_fit))){
+  this_fit = to_fit[i,]
+  ist_extra_tbl <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", this_fit$site))) %>% mutate(gaBirth = gaBirth - 37)
+  
+  # Get response data and
+  if(this_fit$model_type == 'logit'){ # Logistic
+     microbe_tbl <- read_tsv(file.path(refined, sprintf("%s_Logit_Input.txt", this_fit$site))) %>%
+       mutate_at(.vars = vars(-Subject, -Total), .funs = function(x) x=='Yes')
+  } else if(this_fit$model_type == 'duration'){  # Duration
+    microbe_tbl =  read_tsv(file.path(refined, sprintf("%s_Duration_Input.txt", this_fit$site)))
     
-    #Multiple test correction, model level
-    adj_model_pvals <- p.adjust(model_pvals, method = "fdr")
-    #Assemble model level results
-    results <- cbind(var_names, model_pvals, adj_model_pvals)
-    #Write model level results
-    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
-    
-    #Do the same thing for variables
-    adj_var_pvals <- p.adjust(var_pvals, method = "fdr")
-    term_results <- cbind(voi_names, vars, renamed_vars, var_coeffs, var_pvals, adj_var_pvals)
-    
-    write.csv(term_results, file.path(refined,  sprintf("%s_results/%s_term_pvals_and_betas.csv", type, cst)))
-    
-    cat("\nTime taken to complete last CST: ")
-    cat(difftime(Sys.time(), tmp.time, units = "mins"))
-    
+  } else if(this_fit$model_type == 'time_to_event'){ #Survival
+    microbe_tbl = read_tsv(file.path(refined, sprintf("%s_Surv_Input.txt",  this_fit$site)))
   }
   
+  joined_tbl = left_join(microbe_tbl, ist_extra_tbl, by = 'Subject')
+  regr_fcn = get(this_fit$model_type)
+  
+  # mod_only
+  this_formula = formula(response ~  MOD)
+  if(this_fit$specification == 'full'){
+    this_formula = update(this_formula, . ~ . +  milk_perinatal + milk_months + abx_hospital + abx_discharge + gaBirth)
+  } else if(this_fit$specification == 'baseline'){
+     this_formula = update(this_formula, . ~ . + gaBirth)
+  }
+  
+  # Total used as offset
+  if(this_fit$model_type %in% c('logit', 'duration')){
+    this_formula = update(this_formula, . ~. + offset(log(Total)))
+    
+  } else{
+    ist_extra_tbl = left_join(microbe_tbl[c('PrevSampleDOL', 'Subject')], ist_extra_tbl, by = 'Subject')
+    microbe_tbl = select(microbe_tbl, -PrevSampleDOL)
+  }
+  
+  ist_fields = ist_extra_tbl %>% select(contains('TPHE'), contains('CD4'), contains('CD8'), contains('ICS')) %>% names()
+  microbe_fields = microbe_tbl  %>% select(contains('REC'), contains('NAS')) %>% names()
+  joined_tbl2 = joined_tbl %>%
+    left_join(milk) %>%
+    left_join(nabx_polish)
+  
+  message("Fitting ", paste0(this_fit, collapse = "-"))
+  fit_scenario_result[[i]] = pairwise_regression(joined_tbl2, ist_fields = ist_fields, microbe_fields = microbe_fields, null_formula = this_formula, regression_fcn = regr_fcn)
+  result_file = stringr::str_c(do.call(paste, c(list(sep = '_'), this_fit)), "_results.csv")
+   
+  write_csv(fit_scenario_result[[i]], file.path(network_results_path, result_file))
+ 
 }
 ```
 
@@ -199,293 +175,7 @@ for (site in sites) {
     ## Parsed with column specification:
     ## cols(
     ##   Subject = col_character(),
-    ##   Total = col_integer(),
-    ##   REC_1 = col_integer(),
-    ##   REC_2 = col_integer(),
-    ##   REC_3 = col_integer(),
-    ##   REC_4 = col_integer(),
-    ##   REC_5 = col_integer(),
-    ##   REC_6 = col_integer(),
-    ##   REC_7 = col_integer(),
-    ##   REC_8 = col_integer(),
-    ##   REC_9 = col_integer(),
-    ##   REC_10 = col_integer(),
-    ##   REC_11 = col_integer(),
-    ##   REC_12 = col_integer(),
-    ##   REC_13 = col_integer()
-    ## )
-
-    ## 
-    ## Time taken to complete last CST: 0.05015535
-    ## Time taken to complete last CST: 0.07282457
-    ## Time taken to complete last CST: 0.1226355
-    ## Time taken to complete last CST: 0.08694412
-    ## Time taken to complete last CST: 0.05218252
-    ## Time taken to complete last CST: 0.09292652
-    ## Time taken to complete last CST: 0.06812287
-    ## Time taken to complete last CST: 0.05140285
-    ## Time taken to complete last CST: 0.0447908
-    ## Time taken to complete last CST: 0.004313219
-    ## Time taken to complete last CST: 0.0472049
-    ## Time taken to complete last CST: 0.0488318
-    ## Time taken to complete last CST: 0.04824179
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   .default = col_double(),
-    ##   Subject = col_character(),
-    ##   MOD = col_character(),
-    ##   TPHE_IST_Birth = col_character(),
-    ##   TPHE_IST_Disch = col_character(),
-    ##   TPHE_IST_1YR = col_character(),
-    ##   ICS_IST_Birth = col_character(),
-    ##   ICS_IST_Disch = col_character(),
-    ##   ICS_IST_1YR = col_character()
-    ## )
-
-    ## See spec(...) for full column specifications.
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Subject = col_character(),
-    ##   Total = col_integer(),
-    ##   NAS_1 = col_integer(),
-    ##   NAS_2 = col_integer(),
-    ##   NAS_3 = col_integer(),
-    ##   NAS_4 = col_integer(),
-    ##   NAS_5 = col_integer(),
-    ##   NAS_6 = col_integer(),
-    ##   NAS_7 = col_integer(),
-    ##   NAS_8 = col_integer(),
-    ##   NAS_9 = col_integer(),
-    ##   NAS_10 = col_integer(),
-    ##   NAS_11 = col_integer(),
-    ##   NAS_12 = col_integer(),
-    ##   NAS_13 = col_integer()
-    ## )
-
-    ## 
-    ## Time taken to complete last CST: 0.04688052
-    ## Time taken to complete last CST: 5.356234
-    ## Time taken to complete last CST: 0.0702706
-    ## Time taken to complete last CST: 0.05398927
-    ## Time taken to complete last CST: 0.0526436
-    ## Time taken to complete last CST: 0.0510429
-    ## Time taken to complete last CST: 0.04509755
-    ## Time taken to complete last CST: 0.04682993
-    ## Time taken to complete last CST: 0.04853682
-    ## Time taken to complete last CST: 0.0488218
-    ## Time taken to complete last CST: 0.04807422
-    ## Time taken to complete last CST: 0.04590672
-    ## Time taken to complete last CST: 0.0472614
-
-``` r
-#Print total runtime
-cat("\nTotal runtime:")
-```
-
-    ## 
-    ## Total runtime:
-
-``` r
-cat(difftime(Sys.time(), start.time, units = "hours"))
-```
-
-    ## 0.1126649
-
-``` r
-cat("\n\n\n")
-```
-
-# Analysis of CST Occurrence vs Immunological Parameters - Logistic Occurrence Probability
-
-Iterates through every pairwise combination of CST and immunological
-parameter (either IST or metacluster abundance at one of the three
-timepoints) and tests for a significant associations between the immune
-parameter and whether or not the CST occurs at all within a subject.
-
-Same as the quasi-Poisson duration above, just fitting a different
-model.
-
-``` r
-#Start time
-start.time <- Sys.time()
-
-library(readr)
-
-type <- "logit"
-
-sites = c("REC", "NAS")
-
-for (site in sites) {
-  #Read in metadata and CST occurrence data
-  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
-  
-  raw_table <- read_tsv(file.path(refined, sprintf("%s_Logit_Input.txt", site)))
-  
-  mapping_length <- ncol(mapping)
-  
-  table_length <- ncol(raw_table)
-  
-  for (cst_i in 3:table_length) {
-    
-    tmp.time <- Sys.time()
-    
-    cst <- colnames(raw_table[,cst_i])
-    
-    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
-    
-    #Lists to store results
-    var_names <- list()
-    model_pvals <- list()
-    k <- 1
-    
-    voi_names <- list()
-    var_pvals <- list()
-    var_coeffs <- list()
-    vars <- list()
-    j <- 1
-    
-    for (var_i in 4:mapping_length) {
-      
-      var <- colnames(mapping[,var_i])
-      
-      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
-      
-      fac = FALSE
-      
-      #Merge metadata and CST occurrence data on subject
-      working_table <- merge(mapping_in, cst_in, by = "Subject")
-      
-      working_table <- working_table[complete.cases(working_table[,]), ]
-      
-      #If the immune parameter is IST, remove any ISTs that occur less than ten times at the given time point.
-      if (typeof(working_table[[var]]) == "character") {
-        
-        fac = TRUE
-        
-        tmp_table <- as.data.frame(table(working_table[[var]]))
-        
-        rare_cats <- list()
-        n <- 1
-        
-        for (cat_i in 1:nrow(tmp_table)) {
-          
-          if (tmp_table[[2]][cat_i] < 10) {
-            
-            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
-            n <- n + 1
-            
-          }
-          
-        }
-        
-        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
-        
-      }
-      
-      #If the CST occurs in less than 10% of remaining subjects, skip this comparison
-      if ((sum(working_table[[cst]] == "Yes") < nrow(working_table)*0.1) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
-        
-        next
-        
-      }
-      
-      working_table$cst_yn <- factor(working_table[[cst]])
-      
-      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
-      if (fac) {
-        
-        working_table$voi <- factor(working_table[[var]])
-        
-      } else {
-        
-        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
-        
-      }
-      
-      #Center and scale the number of observations per subjects and GA at birth
-      working_table$Obs <- c(scale(working_table$Total, center = TRUE, scale = TRUE))
-      working_table$GAB <- ((working_table$gaBirth)/37) - 1
-      
-      #Fit the model with and without the immune parameter
-      fit.full <- glm(cst_yn ~ MOD + GAB + Obs + voi, data = working_table, family = binomial)
-      fit.null <- glm(cst_yn ~ MOD + GAB + Obs, data = working_table, family = binomial)
-      
-      #Test for significance
-      model_test <- anova(fit.null, fit.full, test = "Chisq")
-      
-      var_names[[k]] <- var
-      model_pvals[[k]] <- model_test$`Pr(>Chi)`[2]
-      k <- k + 1
-
-      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
-        dir.create(pth)
-      
-      #Write the model summary
-     cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-     cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      capture.output(summary(fit.full), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      
-      #If it's significant, store additional information
-      if (model_test$`Pr(>Chi)`[2] < 0.05) {
-        
-        s <- summary(fit.full)
-        l <- grep("voi", rownames(s$coefficients))
-        for (i in l) {
-          
-          voi_names[[j]] <- var
-          vars[[j]] <- rownames(s$coefficients)[i]
-          var_coeffs[[j]] <- s$coefficients[i,1]
-          var_pvals[[j]] <- s$coefficients[i,4]
-          j <- j + 1
-          
-        }
-        
-      }
-        
-    }
-    
-    #For the model itself and for the variables of interest, perform multiple test correction and save the results.
-    adj_model_pvals <- p.adjust(model_pvals, method = "fdr")
-    results <- cbind(var_names, model_pvals, adj_model_pvals)
-    
-    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
-    
-    adj_var_pvals <- p.adjust(var_pvals, method = "fdr")
-    term_results <- cbind(voi_names, vars, var_coeffs, var_pvals, adj_var_pvals)
-    
-    write.csv(term_results, file.path(refined, sprintf("%s_results/%s_term_pvals_and_betas.csv", type, cst)))
-    
-    cat("\nTime taken to complete last CST: ")
-    cat(difftime(Sys.time(), tmp.time, units = "mins"))
-    
-  }
-  
-}
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   .default = col_double(),
-    ##   Subject = col_character(),
-    ##   MOD = col_character(),
-    ##   TPHE_IST_Birth = col_character(),
-    ##   TPHE_IST_Disch = col_character(),
-    ##   TPHE_IST_1YR = col_character(),
-    ##   ICS_IST_Birth = col_character(),
-    ##   ICS_IST_Disch = col_character(),
-    ##   ICS_IST_1YR = col_character()
-    ## )
-
-    ## See spec(...) for full column specifications.
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Subject = col_character(),
-    ##   Total = col_integer(),
+    ##   Total = col_double(),
     ##   REC_2 = col_character(),
     ##   REC_3 = col_character(),
     ##   REC_9 = col_character(),
@@ -501,80 +191,10 @@ cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, c
     ##   REC_10 = col_character()
     ## )
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
 
-    ## 
-    ## Time taken to complete last CST: 0.0389856
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.03748385
-    ## Time taken to complete last CST: 0.03800955
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.03767507
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.0363434
-    ## Time taken to complete last CST: 0.03532879
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.0376293
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.03729373
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.03815925
-    ## Time taken to complete last CST: 0.03909737
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.03633742
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## 
-    ## Time taken to complete last CST: 0.03683447
-    ## Time taken to complete last CST: 0.003948534
+    ## Fitting REC-logit-mod_only
 
     ## Parsed with column specification:
     ## cols(
@@ -594,7 +214,7 @@ cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, c
     ## Parsed with column specification:
     ## cols(
     ##   Subject = col_character(),
-    ##   Total = col_integer(),
+    ##   Total = col_double(),
     ##   NAS_1 = col_character(),
     ##   NAS_7 = col_character(),
     ##   NAS_4 = col_character(),
@@ -610,493 +230,1444 @@ cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, c
     ##   NAS_10 = col_character()
     ## )
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
 
-    ## 
-    ## Time taken to complete last CST: 0.0402618
+    ## Fitting NAS-logit-mod_only
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
 
-    ## 
-    ## Time taken to complete last CST: 0.03910108
-    ## Time taken to complete last CST: 0.03772487
-    ## Time taken to complete last CST: 0.03833652
-    ## Time taken to complete last CST: 0.0356443
-    ## Time taken to complete last CST: 0.0353639
+    ## See spec(...) for full column specifications.
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   REC_1 = col_double(),
+    ##   REC_2 = col_double(),
+    ##   REC_3 = col_double(),
+    ##   REC_4 = col_double(),
+    ##   REC_5 = col_double(),
+    ##   REC_6 = col_double(),
+    ##   REC_7 = col_double(),
+    ##   REC_8 = col_double(),
+    ##   REC_9 = col_double(),
+    ##   REC_10 = col_double(),
+    ##   REC_11 = col_double(),
+    ##   REC_12 = col_double(),
+    ##   REC_13 = col_double()
+    ## )
 
-    ## 
-    ## Time taken to complete last CST: 0.03589335
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Fitting REC-duration-mod_only
 
-    ## 
-    ## Time taken to complete last CST: 0.03476913
-    ## Time taken to complete last CST: 0.0387526
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-    
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## See spec(...) for full column specifications.
 
-    ## 
-    ## Time taken to complete last CST: 0.0381929
-    ## Time taken to complete last CST: 0.03593445
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   NAS_1 = col_double(),
+    ##   NAS_2 = col_double(),
+    ##   NAS_3 = col_double(),
+    ##   NAS_4 = col_double(),
+    ##   NAS_5 = col_double(),
+    ##   NAS_6 = col_double(),
+    ##   NAS_7 = col_double(),
+    ##   NAS_8 = col_double(),
+    ##   NAS_9 = col_double(),
+    ##   NAS_10 = col_double(),
+    ##   NAS_11 = col_double(),
+    ##   NAS_12 = col_double(),
+    ##   NAS_13 = col_double()
+    ## )
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-duration-mod_only
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   PrevSampleDOL = col_double(),
+    ##   REC_2 = col_double(),
+    ##   REC_3 = col_double(),
+    ##   REC_9 = col_double(),
+    ##   REC_1 = col_double(),
+    ##   REC_6 = col_double(),
+    ##   REC_8 = col_double(),
+    ##   REC_11 = col_double(),
+    ##   REC_7 = col_double(),
+    ##   REC_4 = col_double(),
+    ##   REC_5 = col_double(),
+    ##   REC_12 = col_double(),
+    ##   REC_13 = col_double(),
+    ##   REC_10 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting REC-time_to_event-mod_only
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
     
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
     
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
 
-    ## 
-    ## Time taken to complete last CST: 0.03656717
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
 
-    ## 
-    ## Time taken to complete last CST: 0.03734653
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[4,4] = 0
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   PrevSampleDOL = col_double(),
+    ##   NAS_1 = col_double(),
+    ##   NAS_7 = col_double(),
+    ##   NAS_4 = col_double(),
+    ##   NAS_5 = col_double(),
+    ##   NAS_11 = col_double(),
+    ##   NAS_6 = col_double(),
+    ##   NAS_9 = col_double(),
+    ##   NAS_13 = col_double(),
+    ##   NAS_2 = col_double(),
+    ##   NAS_8 = col_double(),
+    ##   NAS_12 = col_double(),
+    ##   NAS_3 = col_double(),
+    ##   NAS_10 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-time_to_event-mod_only
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   REC_2 = col_character(),
+    ##   REC_3 = col_character(),
+    ##   REC_9 = col_character(),
+    ##   REC_1 = col_character(),
+    ##   REC_6 = col_character(),
+    ##   REC_8 = col_character(),
+    ##   REC_11 = col_character(),
+    ##   REC_7 = col_character(),
+    ##   REC_4 = col_character(),
+    ##   REC_5 = col_character(),
+    ##   REC_12 = col_character(),
+    ##   REC_13 = col_character(),
+    ##   REC_10 = col_character()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting REC-logit-baseline
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   NAS_1 = col_character(),
+    ##   NAS_7 = col_character(),
+    ##   NAS_4 = col_character(),
+    ##   NAS_5 = col_character(),
+    ##   NAS_11 = col_character(),
+    ##   NAS_6 = col_character(),
+    ##   NAS_9 = col_character(),
+    ##   NAS_13 = col_character(),
+    ##   NAS_2 = col_character(),
+    ##   NAS_8 = col_character(),
+    ##   NAS_12 = col_character(),
+    ##   NAS_3 = col_character(),
+    ##   NAS_10 = col_character()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-logit-baseline
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   REC_1 = col_double(),
+    ##   REC_2 = col_double(),
+    ##   REC_3 = col_double(),
+    ##   REC_4 = col_double(),
+    ##   REC_5 = col_double(),
+    ##   REC_6 = col_double(),
+    ##   REC_7 = col_double(),
+    ##   REC_8 = col_double(),
+    ##   REC_9 = col_double(),
+    ##   REC_10 = col_double(),
+    ##   REC_11 = col_double(),
+    ##   REC_12 = col_double(),
+    ##   REC_13 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting REC-duration-baseline
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   NAS_1 = col_double(),
+    ##   NAS_2 = col_double(),
+    ##   NAS_3 = col_double(),
+    ##   NAS_4 = col_double(),
+    ##   NAS_5 = col_double(),
+    ##   NAS_6 = col_double(),
+    ##   NAS_7 = col_double(),
+    ##   NAS_8 = col_double(),
+    ##   NAS_9 = col_double(),
+    ##   NAS_10 = col_double(),
+    ##   NAS_11 = col_double(),
+    ##   NAS_12 = col_double(),
+    ##   NAS_13 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-duration-baseline
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   PrevSampleDOL = col_double(),
+    ##   REC_2 = col_double(),
+    ##   REC_3 = col_double(),
+    ##   REC_9 = col_double(),
+    ##   REC_1 = col_double(),
+    ##   REC_6 = col_double(),
+    ##   REC_8 = col_double(),
+    ##   REC_11 = col_double(),
+    ##   REC_7 = col_double(),
+    ##   REC_4 = col_double(),
+    ##   REC_5 = col_double(),
+    ##   REC_12 = col_double(),
+    ##   REC_13 = col_double(),
+    ##   REC_10 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting REC-time_to_event-baseline
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   PrevSampleDOL = col_double(),
+    ##   NAS_1 = col_double(),
+    ##   NAS_7 = col_double(),
+    ##   NAS_4 = col_double(),
+    ##   NAS_5 = col_double(),
+    ##   NAS_11 = col_double(),
+    ##   NAS_6 = col_double(),
+    ##   NAS_9 = col_double(),
+    ##   NAS_13 = col_double(),
+    ##   NAS_2 = col_double(),
+    ##   NAS_8 = col_double(),
+    ##   NAS_12 = col_double(),
+    ##   NAS_3 = col_double(),
+    ##   NAS_10 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-time_to_event-baseline
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   REC_2 = col_character(),
+    ##   REC_3 = col_character(),
+    ##   REC_9 = col_character(),
+    ##   REC_1 = col_character(),
+    ##   REC_6 = col_character(),
+    ##   REC_8 = col_character(),
+    ##   REC_11 = col_character(),
+    ##   REC_7 = col_character(),
+    ##   REC_4 = col_character(),
+    ##   REC_5 = col_character(),
+    ##   REC_12 = col_character(),
+    ##   REC_13 = col_character(),
+    ##   REC_10 = col_character()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting REC-logit-full
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   NAS_1 = col_character(),
+    ##   NAS_7 = col_character(),
+    ##   NAS_4 = col_character(),
+    ##   NAS_5 = col_character(),
+    ##   NAS_11 = col_character(),
+    ##   NAS_6 = col_character(),
+    ##   NAS_9 = col_character(),
+    ##   NAS_13 = col_character(),
+    ##   NAS_2 = col_character(),
+    ##   NAS_8 = col_character(),
+    ##   NAS_12 = col_character(),
+    ##   NAS_3 = col_character(),
+    ##   NAS_10 = col_character()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-logit-full
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   REC_1 = col_double(),
+    ##   REC_2 = col_double(),
+    ##   REC_3 = col_double(),
+    ##   REC_4 = col_double(),
+    ##   REC_5 = col_double(),
+    ##   REC_6 = col_double(),
+    ##   REC_7 = col_double(),
+    ##   REC_8 = col_double(),
+    ##   REC_9 = col_double(),
+    ##   REC_10 = col_double(),
+    ##   REC_11 = col_double(),
+    ##   REC_12 = col_double(),
+    ##   REC_13 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting REC-duration-full
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   Total = col_double(),
+    ##   NAS_1 = col_double(),
+    ##   NAS_2 = col_double(),
+    ##   NAS_3 = col_double(),
+    ##   NAS_4 = col_double(),
+    ##   NAS_5 = col_double(),
+    ##   NAS_6 = col_double(),
+    ##   NAS_7 = col_double(),
+    ##   NAS_8 = col_double(),
+    ##   NAS_9 = col_double(),
+    ##   NAS_10 = col_double(),
+    ##   NAS_11 = col_double(),
+    ##   NAS_12 = col_double(),
+    ##   NAS_13 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-duration-full
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   PrevSampleDOL = col_double(),
+    ##   REC_2 = col_double(),
+    ##   REC_3 = col_double(),
+    ##   REC_9 = col_double(),
+    ##   REC_1 = col_double(),
+    ##   REC_6 = col_double(),
+    ##   REC_8 = col_double(),
+    ##   REC_11 = col_double(),
+    ##   REC_7 = col_double(),
+    ##   REC_4 = col_double(),
+    ##   REC_5 = col_double(),
+    ##   REC_12 = col_double(),
+    ##   REC_13 = col_double(),
+    ##   REC_10 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting REC-time_to_event-full
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+    
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+    ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
+    ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   .default = col_double(),
+    ##   Subject = col_character(),
+    ##   MOD = col_character(),
+    ##   TPHE_IST_Birth = col_character(),
+    ##   TPHE_IST_Disch = col_character(),
+    ##   TPHE_IST_1YR = col_character(),
+    ##   ICS_IST_Birth = col_character(),
+    ##   ICS_IST_Disch = col_character(),
+    ##   ICS_IST_1YR = col_character()
+    ## )
+
+    ## See spec(...) for full column specifications.
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   PrevSampleDOL = col_double(),
+    ##   NAS_1 = col_double(),
+    ##   NAS_7 = col_double(),
+    ##   NAS_4 = col_double(),
+    ##   NAS_5 = col_double(),
+    ##   NAS_11 = col_double(),
+    ##   NAS_6 = col_double(),
+    ##   NAS_9 = col_double(),
+    ##   NAS_13 = col_double(),
+    ##   NAS_2 = col_double(),
+    ##   NAS_8 = col_double(),
+    ##   NAS_12 = col_double(),
+    ##   NAS_3 = col_double(),
+    ##   NAS_10 = col_double()
+    ## )
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+    ## Fitting NAS-time_to_event-full
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+Fit all the scenarios.
+
+# Top interactions
 
 ``` r
-#Print total runtime
-cat("\nTotal runtime:")
+clamp = function (x, modulus = 5) {
+    x[x < -modulus] = -modulus
+    x[x > modulus] = modulus
+    x
+}
+
+sign_max = function(x) {
+  sign(x[which.max(abs(x))])
+}
+
+
+library(ggplot2)
+all_fits = bind_rows(fit_scenario_result, .id = 'scenario') %>% left_join(to_fit %>% mutate(scenario = as.character(seq_along(site))))
 ```
 
+    ## Joining, by = "scenario"
+
+``` r
+per_type_fdr = filter(all_fits, term == 'anova')  %>% group_by(model_type, specification)%>% mutate(fdr = p.adjust(p.value, 'fdr'))
+
+per_type_sign = all_fits %>%  filter(stringr::str_detect(term, stringr::fixed('voi'))) %>% group_by(model_type, specification, voi, response) %>% summarize(sign_max = sign_max(estimate))
+
+all_fits = all_fits %>%left_join(per_type_sign) %>% left_join(per_type_fdr[c('fdr', intersect(names(per_type_sign), names(per_type_fdr)))])
+```
+
+    ## Joining, by = c("response", "voi", "model_type", "specification")
+
+    ## Joining, by = c("response", "voi", "model_type", "specification")
+
+``` r
+top = all_fits %>% filter(term == 'anova') %>% group_by(site, model_type) %>% arrange(p.value) %>% do(head(., n = 1))
+
+top_coefs = semi_join(all_fits, top[c('scenario', 'voi', 'response')]) %>% anti_join(tibble(term = c('anova', '(Intercept)')))
+```
+
+    ## Joining, by = c("scenario", "response", "voi")
+
+    ## Joining, by = "term"
+
+``` r
+ggplot(top_coefs, aes(x = term, y = estimate, ymin = estimate - std.error, ymax = estimate + std.error, color = clamp(-log10(p.value)))) + geom_pointrange() + facet_wrap(~model_type  + voi + response, scales = 'free') + coord_flip()
+```
+
+    ## Warning: Removed 1 rows containing missing values (geom_segment).
+
+![](02_network_modeling_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+``` r
+of_interest = tibble(response = c("NAS_8", 'REC_10'), voi = c('TPHE_IST_Disch', 'ICS_IST_OneYear'))
+
+write_csv(semi_join(all_fits, of_interest), path = 'intermediates/selected_network_effects.csv')
+```
+
+    ## Joining, by = c("response", "voi")
+
+[Coefficients / etc for NAS\_8 and
+REC\_10](intermediates/selected_network_effects.csv)
+
+[Full results](intermediates/network_results)
+
+# Network plot figures
+
+``` r
+enmatrix = function(x, rownames_from){
+  y = x[,setdiff(names(x), rownames_from)]
+  y = as.matrix(y)
+  rownames(y) = x[[rownames_from]]
+  y[is.na(y)] = 0
+  y
+}
+
+per_type_fdr = left_join(per_type_fdr, per_type_sign) %>% mutate(signed_pval = clamp(-log10(p.value), 8) * sign_max, zeroed_pval = signed_pval * (fdr< .1))
+```
+
+    ## Joining, by = c("response", "voi", "model_type", "specification")
+
+``` r
+per_type_nest = per_type_fdr %>% select(voi, response, zeroed_pval, model_type, specification) %>% tidyr::nest(data = c(zeroed_pval, voi, response))
+
+per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi, names_from = response, values_from = zeroed_pval) %>% enmatrix('voi'))
+
+per_type_nest %>% rowwise() %>% mutate(n_edges = sum(abs(adj_matrix)>0)) %>% select(model_type, specification, n_edges)
+```
+
+    ## Source: local data frame [9 x 3]
+    ## Groups: <by row>
     ## 
-    ## Total runtime:
+    ## # A tibble: 9 x 3
+    ##   model_type    specification n_edges
+    ##   <chr>         <chr>           <int>
+    ## 1 logit         mod_only          100
+    ## 2 duration      mod_only          166
+    ## 3 time_to_event mod_only           39
+    ## 4 logit         baseline            0
+    ## 5 duration      baseline           41
+    ## 6 time_to_event baseline           44
+    ## 7 logit         full                0
+    ## 8 duration      full               49
+    ## 9 time_to_event full               15
 
 ``` r
-cat(difftime(Sys.time(), start.time, units = "hours"))
-```
+#Bipartite Graph of CST vs Immunome Results
 
-    ## 0.01567103
+#Load packages (Probably don't even need half of them - I tried a lot of things before I settled on this relatively simple solution.)
+library(ggplot2)
+library(network)
+library(GGally)
+library(RColorBrewer)
 
-``` r
-cat("\n\n\n")
-```
+#Define constants
 
-The warnings we see about 0/1 fitted values indicate that we need to use
-LRT tests, and be careful with coefficient estimates at the
-boundary.
+set.seed(11)
 
-# Analysis of CST Occurrence vs Immunological Parameters - Survival Time to Occurrence
+rec_csts = c("REC_4", "REC_1", "REC_2", "REC_9", "REC_10", "REC_5", "REC_8", "REC_6", "REC_3", "REC_13", "REC_7", "REC_11", "REC_12")
+nas_csts = c("NAS_4", "NAS_1", "NAS_2", "NAS_9", "NAS_10", "NAS_5", "NAS_8", "NAS_6", "NAS_3", "NAS_13", "NAS_7", "NAS_11", "NAS_12")
+#tests = c("logit", "surv", "binom", "alt_binom")
+# tests = c("logit", "alt_surv")
 
-Iterates through every pairwise combination of CST and immunological
-parameter (either IST or metacluster abundance at one of the three
-timepoints) and tests for a significant associations between the immune
-parameter and how low it takes a subject to initially transition into a
-CST (or out of a CST, in the cases of REC 1 and NAS 1)
 
-Similar as the quasi-Poisson duration and logistic above, except fitting
-a different model and not comparing a full and null model to assess
-significance. The p-value of the term of interest in the full model only
-is used to assess significance.
 
-``` r
-#Start time
-start.time <- Sys.time()
-
-library(survival)
-library(icenReg)
-```
-
-    ## Warning: package 'icenReg' was built under R version 3.5.2
-
-    ## Loading required package: Rcpp
-
-    ## Warning: package 'Rcpp' was built under R version 3.5.2
-
-    ## Loading required package: coda
-
-    ## Warning: package 'coda' was built under R version 3.5.2
-
-``` r
-library(readr)
-
-type <- "surv"
-
-sites = c("REC", "NAS")
-
-for (site in sites) {
-  #Read in metadata and CST occurrence interval information
-  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
+#Loop through the sites and make a figure for each as the target site (i.e. predicted by the CSTs of the other two sites)
+for (test in seq_len(nrow(per_type_nest))){
   
-  raw_table <- read_tsv(file.path(refined, sprintf("%s_Surv_Input.txt", site)))
+  #Read in the site-specific adjacency matrix specifying associations between taxa and the CSTs of the other body sites
+  adj.matrix = per_type_nest$adj_matrix[[test]]
+    
+  #Use that adjacency matrix to construct a network object that is bipartite
+  net.obj <- network(adj.matrix, matrix.type = "bipartite", ignore.eval = FALSE, names.eval = "weights")
   
-  mapping_length <- ncol(mapping)
+  #Color the CST vertices according to the body site they represent
+  network::set.vertex.attribute(net.obj, "color", ifelse(net.obj %v% "vertex.names" %in% rec_csts, "red", ifelse(net.obj %v% "vertex.names" %in% nas_csts, "blue", ifelse(grepl("TPHE", net.obj %v% "vertex.names"), "orange", "green"))))
   
-  table_length <- ncol(raw_table)
+  #Shape the vertices according to the visit they represent
+  network::set.vertex.attribute(net.obj, "shape", ifelse(grepl("Birth", net.obj %v% "vertex.names"), 19, ifelse(grepl("Disch", net.obj %v% "vertex.names"), 17, ifelse(grepl("OneYear", net.obj %v% "vertex.names"), 15, 18))))
   
-  for (cst_i in 3:table_length) {
-    
-    tmp.time <- Sys.time()
-    
-    cst <- colnames(raw_table[,cst_i])
-    
-    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
-    
-    cst_in <- cst_in[complete.cases(cst_in[,]),]
-    #Lists to store results
-    var_names <- list()
-    voi_names <- list()
-    var_coeffs <- list()
-    var_exp_coeffs <- list()
-    variable_pvals <- list()
-    k <- 1
-    
-    for (var_i in 4:mapping_length) {
-      
-      var <- colnames(mapping[,var_i])
-      
-      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
-      
-      fac = FALSE
-      #Join metadata and CST occurrence info by Subject
-      working_table <- merge(mapping_in, cst_in, by = "Subject")
-      
-      working_table <- working_table[complete.cases(working_table[,]), ]
-      
-      #If the immune parameter is IST, remove any ISTs that occur less than ten times at the given time point.
-      if (typeof(working_table[[var]]) == "character") {
-        
-        fac = TRUE
-        
-        tmp_table <- as.data.frame(table(working_table[[var]]))
-        
-        rare_cats <- list()
-        n <- 1
-        
-        for (cat_i in 1:nrow(tmp_table)) {
-          
-          if (tmp_table[[2]][cat_i] < 10) {
-            
-            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
-            n <- n + 1
-            
-          }
-          
-        }
-        
-        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
-        
-      }
-      
-      #If fewer than 20 subjects remain having entered the CST, skip this comparison
-      if ((nrow(working_table) < 20) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
-        
-        next
-        
-      }
-      
-      working_table$cst_obs <- working_table[[cst]]
-      
-      #Convert the immune parameter to a factor if it's an IST, otherwise center and scale the metacluster abundance
-      if (fac) {
-        
-        working_table$voi <- factor(working_table[[var]])
-        
-      } else {
-        
-        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
-        
-      }
-      
-      #Center and scale GA at birth
-      working_table$GAB <- ((working_table$gaBirth)/37) - 1
-      
-      #Define the interval in which initial transition into a CST must have occurred
-      cst_surv <- Surv(working_table$PrevSampleDOL, working_table$cst_obs, type = "interval2")
-      
-      #Fit the model
-      fit <- ic_par(cst_surv ~ MOD + GAB + voi, data = working_table, model = "aft", dist = "loglogistic")
-      
-      #Collect resulting parameters
-      fit_summary <- summary(fit)
-      
-      for (p in 5:nrow(fit_summary$summaryParameters)) {
-        
-        var_names[[k]] <- var
-        voi_names[[k]] <- rownames(fit_summary$summaryParameters)[p]
-        var_coeffs[[k]] <- fit_summary$summaryParameters[p, 1]
-        var_exp_coeffs[[k]] <- fit_summary$summaryParameters[p, 2]
-        variable_pvals[[k]] <- fit_summary$summaryParameters[p, 5]
-        k <- k + 1
-        
-      }
-    
-      #Write the model summary
-      if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", type))))
-  dir.create(pth)
-      
-      cat("Current Variable: ", file = file.path(refined,  sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-     cat(var, file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      capture.output(summary(fit), file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n###\n###\n###\n\n', file = file.path(refined, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-    }
-    
-    #Perform multiple test correction and write the results
-    adj_variable_pvals <- p.adjust(variable_pvals, method = "fdr")
-    results <- cbind(var_names, voi_names, var_coeffs, var_exp_coeffs, variable_pvals, adj_variable_pvals)
-    
-    write.csv(results, file.path(refined, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
-    
-    cat("\nTime taken to complete last CST: ")
-    cat(difftime(Sys.time(), tmp.time, units = "mins"))
-    
-  }
+  #Make non-significant associations invisible
+  network::set.edge.attribute(net.obj, "alpha", ifelse(net.obj %e% "weight" == 0.0, 0, 1))
   
+  if(sum(network::has.edges(net.obj)) == 0) next
+  connected.net = network::get.inducedSubgraph(net.obj, which(network::has.edges(net.obj)))
+  
+  #Make a color gradient that will be used to color the edges
+  rbPal <- colorRampPalette(c('darkblue', 'cyan', 'white', 'yellow', 'red'))
+  
+  #Map edge weights (signed log10 FDR adjusted p-vals) to colors in the gradient
+  ecols <- rbPal(10)[as.numeric(cut(network::get.edge.attribute(net.obj, "weights"), breaks = 10))]
+  
+  print(ggnet2(connected.net, color = "color", shape = "shape", edge.color = ecols, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1,layout.par = list(niter = 1000))  + 
+          ggtitle(paste0(per_type_nest[test,'model_type'], ':', per_type_nest[test,'specification'])))
+
 }
 ```
 
-    ## Parsed with column specification:
-    ## cols(
-    ##   .default = col_double(),
-    ##   Subject = col_character(),
-    ##   MOD = col_character(),
-    ##   TPHE_IST_Birth = col_character(),
-    ##   TPHE_IST_Disch = col_character(),
-    ##   TPHE_IST_1YR = col_character(),
-    ##   ICS_IST_Birth = col_character(),
-    ##   ICS_IST_Disch = col_character(),
-    ##   ICS_IST_1YR = col_character()
-    ## )
-
-    ## See spec(...) for full column specifications.
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Subject = col_character(),
-    ##   PrevSampleDOL = col_integer(),
-    ##   REC_2 = col_integer(),
-    ##   REC_3 = col_integer(),
-    ##   REC_9 = col_integer(),
-    ##   REC_1 = col_integer(),
-    ##   REC_6 = col_integer(),
-    ##   REC_8 = col_integer(),
-    ##   REC_11 = col_integer(),
-    ##   REC_7 = col_integer(),
-    ##   REC_4 = col_integer(),
-    ##   REC_5 = col_integer(),
-    ##   REC_12 = col_integer(),
-    ##   REC_13 = col_integer(),
-    ##   REC_10 = col_integer()
-    ## )
-
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-
-    ## 
-    ## Time taken to complete last CST: 0.03383714
-    ## Time taken to complete last CST: 0.03054432
-    ## Time taken to complete last CST: 0.03068927
-    ## Time taken to complete last CST: 0.04457994
-    ## Time taken to complete last CST: 0.02803228
-    ## Time taken to complete last CST: 0.02785612
-    ## Time taken to complete last CST: 0.02729083
-    ## Time taken to complete last CST: 0.02734911
-    ## Time taken to complete last CST: 0.02776447
-    ## Time taken to complete last CST: 0.02740963
-    ## Time taken to complete last CST: 0.02640962
-    ## Time taken to complete last CST: 0.02767125
-    ## Time taken to complete last CST: 0.003057337
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   .default = col_double(),
-    ##   Subject = col_character(),
-    ##   MOD = col_character(),
-    ##   TPHE_IST_Birth = col_character(),
-    ##   TPHE_IST_Disch = col_character(),
-    ##   TPHE_IST_1YR = col_character(),
-    ##   ICS_IST_Birth = col_character(),
-    ##   ICS_IST_Disch = col_character(),
-    ##   ICS_IST_1YR = col_character()
-    ## )
-
-    ## See spec(...) for full column specifications.
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Subject = col_character(),
-    ##   PrevSampleDOL = col_integer(),
-    ##   NAS_1 = col_integer(),
-    ##   NAS_7 = col_integer(),
-    ##   NAS_4 = col_integer(),
-    ##   NAS_5 = col_integer(),
-    ##   NAS_11 = col_integer(),
-    ##   NAS_6 = col_integer(),
-    ##   NAS_9 = col_integer(),
-    ##   NAS_13 = col_integer(),
-    ##   NAS_2 = col_integer(),
-    ##   NAS_8 = col_integer(),
-    ##   NAS_12 = col_integer(),
-    ##   NAS_3 = col_integer(),
-    ##   NAS_10 = col_integer()
-    ## )
-
-    ## 
-    ## Time taken to complete last CST: 0.02896803
-    ## Time taken to complete last CST: 0.03063723
-    ## Time taken to complete last CST: 0.03217995
-    ## Time taken to complete last CST: 0.0308751
-    ## Time taken to complete last CST: 0.02984157
-    ## Time taken to complete last CST: 0.02787715
-    ## Time taken to complete last CST: 0.02841572
-    ## Time taken to complete last CST: 0.02923811
-    ## Time taken to complete last CST: 0.02755238
-    ## Time taken to complete last CST: 0.02678901
-    ## Time taken to complete last CST: 0.02796894
-    ## Time taken to complete last CST: 0.0214157
-    ## Time taken to complete last CST: 0.02630523
+![](02_network_modeling_files/figure-gfm/networks-1.png)<!-- -->![](02_network_modeling_files/figure-gfm/networks-2.png)<!-- -->![](02_network_modeling_files/figure-gfm/networks-3.png)<!-- -->![](02_network_modeling_files/figure-gfm/networks-4.png)<!-- -->![](02_network_modeling_files/figure-gfm/networks-5.png)<!-- -->![](02_network_modeling_files/figure-gfm/networks-6.png)<!-- -->![](02_network_modeling_files/figure-gfm/networks-7.png)<!-- -->
 
 ``` r
-#Print total runtime
-cat("\nTotal runtime:")
-```
+#ggplot2.multiplot(nas_graph, rec_graph, thr_graph, cols = 2)
 
-    ## 
-    ## Total runtime:
-
-``` r
-cat(difftime(Sys.time(), start.time, units = "hours"))
-```
-
-    ## 0.01250218
-
-``` r
-cat("\n\n\n")
+#ggsave(paste(workDir, sprintf("%s_graph.pdf", site), sep = "/"), width = 15, height = 15, units = "in")
 ```
 
 # Targeted analysis of Alloiococcus abundance, Tphe5, and acute illness
@@ -1104,39 +1675,7 @@ cat("\n\n\n")
 ``` r
 library("readr")
 library("tidyverse")
-```
-
-    ## ── Attaching packages ─────────────────────────────────────────────────────────────── tidyverse 1.2.1 ──
-
-    ## ✔ ggplot2 3.0.0     ✔ purrr   0.2.5
-    ## ✔ tibble  2.1.3     ✔ dplyr   0.8.3
-    ## ✔ tidyr   0.8.1     ✔ stringr 1.3.1
-    ## ✔ ggplot2 3.0.0     ✔ forcats 0.3.0
-
-    ## Warning: package 'tibble' was built under R version 3.5.2
-
-    ## Warning: package 'dplyr' was built under R version 3.5.2
-
-    ## ── Conflicts ────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-    ## ✖ dplyr::filter() masks stats::filter()
-    ## ✖ dplyr::lag()    masks stats::lag()
-
-``` r
 library(lme4)
-```
-
-    ## Warning: package 'lme4' was built under R version 3.5.2
-
-    ## Loading required package: Matrix
-
-    ## 
-    ## Attaching package: 'Matrix'
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     expand
-
-``` r
 library(geepack)
 
 #Read in mapping file with metadata including Alloiococcus abundance, Tphe5 at birth or discharge, and acute illness
@@ -1147,10 +1686,10 @@ md.nas <- read_delim(file.path(refined, "NAS_Focused_Mapping.txt"), "\t", escape
     ## cols(
     ##   SampleID = col_character(),
     ##   Subject = col_character(),
-    ##   DOL = col_integer(),
+    ##   DOL = col_double(),
     ##   MOD = col_character(),
     ##   gaBirth = col_double(),
-    ##   Reads = col_integer(),
+    ##   Reads = col_double(),
     ##   PostInitialDischarge = col_character(),
     ##   IllnessVisit = col_character(),
     ##   TPHE_5 = col_character(),
@@ -1329,16 +1868,17 @@ summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5, id = Subject, corstr = "e
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
+    ## Correlation structure = exchangeable 
     ## Estimated Scale Parameters:
+    ## 
     ##             Estimate Std.err
     ## (Intercept)    15666    2282
-    ## 
-    ## Correlation: Structure = exchangeable  Link = identity 
+    ##   Link = identity 
     ## 
     ## Estimated Correlation Parameters:
     ##       Estimate Std.err
     ## alpha   0.2465 0.04085
-    ## Number of clusters:   141   Maximum cluster size: 16
+    ## Number of clusters:   141  Maximum cluster size: 16
 
 ``` r
 summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
@@ -1362,16 +1902,17 @@ summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + IllnessVisit, id = Subject, corst
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
+    ## Correlation structure = exchangeable 
     ## Estimated Scale Parameters:
+    ## 
     ##             Estimate Std.err
     ## (Intercept)    16563    2520
-    ## 
-    ## Correlation: Structure = exchangeable  Link = identity 
+    ##   Link = identity 
     ## 
     ## Estimated Correlation Parameters:
     ##       Estimate Std.err
     ## alpha    0.287  0.0488
-    ## Number of clusters:   141   Maximum cluster size: 16
+    ## Number of clusters:   141  Maximum cluster size: 16
 
 ``` r
 summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
@@ -1396,13 +1937,14 @@ summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subje
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
+    ## Correlation structure = exchangeable 
     ## Estimated Scale Parameters:
+    ## 
     ##             Estimate Std.err
     ## (Intercept)    15115    2158
-    ## 
-    ## Correlation: Structure = exchangeable  Link = identity 
+    ##   Link = identity 
     ## 
     ## Estimated Correlation Parameters:
     ##       Estimate Std.err
     ## alpha    0.254  0.0427
-    ## Number of clusters:   141   Maximum cluster size: 16
+    ## Number of clusters:   141  Maximum cluster size: 16

@@ -4,7 +4,7 @@ output: github_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = TRUE, autodep = TRUE)
 refined = 'intermediates'
 private = 'private'
 data = 'data'
@@ -34,17 +34,13 @@ refined = 'intermediates'
 # null_formula should include all confounders
 # regression_fcn(formula, data) returns an object that permits an anova test and tidy method
 # result_id?
-pairwise_regression = function(joined_tbl, ist_fields, microbe_fields, null_formula, regression_fcn, result_id){
+pairwise_regression = function(joined_tbl, ist_fields, microbe_fields, null_formula, regression_fcn){
   ist_tbl = joined_tbl[ist_fields]
   response_tbl = joined_tbl[microbe_fields]
   extra_tbl = joined_tbl[setdiff(names(joined_tbl), c(ist_fields, microbe_fields))]
   
   table_length <- ncol(response_tbl) 
   full_formula = update(null_formula, . ~ . + voi)
-  
-  
-  if(! dir.exists(pth <- file.path(refined,  sprintf("%s_results", result_id))))
-    dir.create(pth)
   
   all_results = list()
   i = 1
@@ -56,6 +52,7 @@ pairwise_regression = function(joined_tbl, ist_fields, microbe_fields, null_form
       this_data = tibble(response = response_tbl[[cst_i]], voi = ist_tbl[[voi_i]]) %>% 
         bind_cols(extra_tbl) %>% na.omit()
       if(is.numeric(this_data$voi)){
+        if(var(this_data$voi, na.rm = TRUE) < 1e-6) next
         this_data$voi = scale(this_data$voi)
       }
       try({
@@ -74,18 +71,40 @@ pairwise_regression = function(joined_tbl, ist_fields, microbe_fields, null_form
  bind_rows(all_results )
 }
 
+
+`tidy.loglogistic aft` = function(x, ...){
+  fit_summary <- summary(x)
+  tidy_tbl = as.data.frame(fit_summary$summaryParameters)
+  tidy_tbl$term = rownames(tidy_tbl)
+  select(tidy_tbl, estimate = Estimate, 
+         std.error = Std.Error,
+         statistic = `z-value`,
+         p.value = p, term)
+}
+
+`anova.loglogistic aft` = function(object, ...){
+  full = list(...)[[1]]
+  ll0 = object$llk
+  ll1 = full$llk
+  res = data.frame(stat = ll0 - ll1, dof = nrow(full$var) - nrow(object$var))
+  res = cbind(res, `Pr(>Chi)` = 1 - pchisq(-2*res[,'stat'], df = res[,'dof']))
+  rbind(res, res) # pad so that we can index into second row, analoguous to anova.glm
+}
+
+
 ```
 
 ```{r, results = 'asis'}
 to_fit = expand.grid(site = c('REC', 'NAS'), #microbiome sampling site
                      model_type = c('logit', 'duration', 'time_to_event'), #type of association. logit = odds of CST ever, duration = number of days in CST, time_to_event = rate of first entry to CST
-                     specification = c('baseline', # baseline = MOD, GAB,
+                     specification = c('mod_only', 
+                                       'baseline', # MOD, GAB
                                        'full'),# full = MOD, GAB, ABX, MILK
                      stringsAsFactors = FALSE
                      ) 
 
-logit =  function(form_, data_) glm(form_, family = 'binomial', data = data_)
-duration = function(form_, data_) glm(form_, family = 'quasipoisson', data = data_)
+logit =  function(form_, data_) arm::bayesglm(form_, family = 'binomial', data = data_)
+duration = function(form_, data_) arm::bayesglm(form_, family = 'quasipoisson', data = data_)
 time_to_event = function(form_, data_){
   data_ = dplyr::filter(data_, !is.na(response))
   data_$response = Surv(data_$PrevSampleDOL, data_$response, type = "interval2")
@@ -115,10 +134,13 @@ Set up confounders (Antibiotics and Milk).  Both are centered.  Hospital antibio
 
 
 ```{r}
+network_results_path = file.path(refined, 'network_results')
+if(!dir.exists(network_results_path)) dir.create(network_results_path)
+
 fit_scenario_result = list()
 for(i in seq_len(nrow(to_fit))){
   this_fit = to_fit[i,]
-  ist_extra_tbl <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", this_fit$site)))
+  ist_extra_tbl <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", this_fit$site))) %>% mutate(gaBirth = gaBirth - 37)
   
   # Get response data and
   if(this_fit$model_type == 'logit'){ # Logistic
@@ -134,10 +156,12 @@ for(i in seq_len(nrow(to_fit))){
   joined_tbl = left_join(microbe_tbl, ist_extra_tbl, by = 'Subject')
   regr_fcn = get(this_fit$model_type)
   
-  # baseline
-  this_formula = formula(response ~  MOD + gaBirth)
+  # mod_only
+  this_formula = formula(response ~  MOD)
   if(this_fit$specification == 'full'){
-    this_formula = update(this_formula, . ~ . +  milk_perinatal + milk_months + abx_hospital + abx_discharge)
+    this_formula = update(this_formula, . ~ . +  milk_perinatal + milk_months + abx_hospital + abx_discharge + gaBirth)
+  } else if(this_fit$specification == 'baseline'){
+     this_formula = update(this_formula, . ~ . + gaBirth)
   }
   
   # Total used as offset
@@ -155,7 +179,11 @@ for(i in seq_len(nrow(to_fit))){
     left_join(milk) %>%
     left_join(nabx_polish)
   
-  fit_scenario_result[[i]] = pairwise_regression(joined_tbl2, ist_fields = ist_fields, microbe_fields = microbe_fields, null_formula = this_formula, regression_fcn = regr_fcn, do.call(paste, c(list(sep = '_'), this_fit)))
+  message("Fitting ", paste0(this_fit, collapse = "-"))
+  fit_scenario_result[[i]] = pairwise_regression(joined_tbl2, ist_fields = ist_fields, microbe_fields = microbe_fields, null_formula = this_formula, regression_fcn = regr_fcn)
+  result_file = stringr::str_c(do.call(paste, c(list(sep = '_'), this_fit)), "_results.csv")
+   
+  write_csv(fit_scenario_result[[i]], file.path(network_results_path, result_file))
  
 }
 
@@ -165,64 +193,76 @@ Fit all the scenarios.
 
 # Top interactions
 
-```{r}
-library(ggplot2)
-all_fits = bind_rows(fit_scenario_result, .id = 'scenario') %>% left_join(to_fit %>% mutate(scenario = as.character(seq_along(site))))
-
-top = all_fits %>% filter(term == 'anova') %>% group_by(site, model_type) %>% arrange(p.value) %>% do(head(., n = 1))
-
-top_coefs = semi_join(all_fits, top[c('scenario', 'voi', 'response')]) %>% anti_join(tibble(term = c('anova', '(Intercept)')))
-
-clamp = function (x, modulus = 5) 
-{
+```{r, fig.width = 8, fig.height = 8}
+clamp = function (x, modulus = 5) {
     x[x < -modulus] = -modulus
     x[x > modulus] = modulus
     x
 }
 
-ggplot(top_coefs, aes(x = term, y = estimate, ymin = estimate - std.error, ymax = estimate + std.error, color = clamp(-log10(p.value)))) + geom_pointrange() + facet_wrap(~model_type  + voi + response, scales = 'free') + coord_flip()
-```
-
-
-# Network plot figures
-
-```{r networks}
-sign_max = function(x){
+sign_max = function(x) {
   sign(x[which.max(abs(x))])
 }
 
-enmatrix = function(x, rownames_from){
-  y = x[,setdiff(names(x), rownames_from)]
-  y = as.matrix(y)
-  rownames(y) = x[[rownames_from]]
-  y
-}
+
+library(ggplot2)
+all_fits = bind_rows(fit_scenario_result, .id = 'scenario') %>% left_join(to_fit %>% mutate(scenario = as.character(seq_along(site))))
 
 per_type_fdr = filter(all_fits, term == 'anova')  %>% group_by(model_type, specification)%>% mutate(fdr = p.adjust(p.value, 'fdr'))
 
 per_type_sign = all_fits %>%  filter(stringr::str_detect(term, stringr::fixed('voi'))) %>% group_by(model_type, specification, voi, response) %>% summarize(sign_max = sign_max(estimate))
 
-per_type_fdr = left_join(per_type_fdr, per_type_sign) %>% mutate(signed_fdr = clamp(-log10(fdr), 5) * sign_max, zeroed_fdr = signed_fdr * (fdr< .1))
+all_fits = all_fits %>%left_join(per_type_sign) %>% left_join(per_type_fdr[c('fdr', intersect(names(per_type_sign), names(per_type_fdr)))])
+
+top = all_fits %>% filter(term == 'anova') %>% group_by(site, model_type) %>% arrange(p.value) %>% do(head(., n = 1))
+
+top_coefs = semi_join(all_fits, top[c('scenario', 'voi', 'response')]) %>% anti_join(tibble(term = c('anova', '(Intercept)')))
 
 
 
-per_type_nest = per_type_fdr %>% select(voi, response, zeroed_fdr, model_type, specification) %>% tidyr::nest(data = c(zeroed_fdr, voi, response))
+ggplot(top_coefs, aes(x = term, y = estimate, ymin = estimate - std.error, ymax = estimate + std.error, color = clamp(-log10(p.value)))) + geom_pointrange() + facet_wrap(~model_type  + voi + response, scales = 'free') + coord_flip()
 
-per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi, names_from = response, values_from = zeroed_fdr) %>% enmatrix('voi'))
+
+of_interest = tibble(response = c("NAS_8", 'REC_10'), voi = c('TPHE_IST_Disch', 'ICS_IST_OneYear'))
+
+write_csv(semi_join(all_fits, of_interest), path = 'intermediates/selected_network_effects.csv')
+```
+
+[Coefficients / etc for NAS_8 and REC_10](intermediates/selected_network_effects.csv)
+
+[Full results](intermediates/network_results)
+
+# Network plot figures
+
+```{r}
+enmatrix = function(x, rownames_from){
+  y = x[,setdiff(names(x), rownames_from)]
+  y = as.matrix(y)
+  rownames(y) = x[[rownames_from]]
+  y[is.na(y)] = 0
+  y
+}
+
+per_type_fdr = left_join(per_type_fdr, per_type_sign) %>% mutate(signed_pval = clamp(-log10(p.value), 8) * sign_max, zeroed_pval = signed_pval * (fdr< .1))
+
+
+per_type_nest = per_type_fdr %>% select(voi, response, zeroed_pval, model_type, specification) %>% tidyr::nest(data = c(zeroed_pval, voi, response))
+
+per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi, names_from = response, values_from = zeroed_pval) %>% enmatrix('voi'))
+
+per_type_nest %>% rowwise() %>% mutate(n_edges = sum(abs(adj_matrix)>0)) %>% select(model_type, specification, n_edges)
+
+```
+
+```{r networks, dev = c('png', 'pdf'), fig.width = 6, fig.height = 6}
 
 #Bipartite Graph of CST vs Immunome Results
 
 #Load packages (Probably don't even need half of them - I tried a lot of things before I settled on this relatively simple solution.)
 library(ggplot2)
 library(network)
-library(igraph)
-library(sna)
-library(ggnetwork)
 library(GGally)
-library(ergm)
-library(intergraph)
 library(RColorBrewer)
-library(easyGgplot2)
 
 #Define constants
 
@@ -231,16 +271,16 @@ set.seed(11)
 rec_csts = c("REC_4", "REC_1", "REC_2", "REC_9", "REC_10", "REC_5", "REC_8", "REC_6", "REC_3", "REC_13", "REC_7", "REC_11", "REC_12")
 nas_csts = c("NAS_4", "NAS_1", "NAS_2", "NAS_9", "NAS_10", "NAS_5", "NAS_8", "NAS_6", "NAS_3", "NAS_13", "NAS_7", "NAS_11", "NAS_12")
 #tests = c("logit", "surv", "binom", "alt_binom")
-tests = c("logit", "alt_surv")
+# tests = c("logit", "alt_surv")
 
-figs <- list()
+
 
 #Loop through the sites and make a figure for each as the target site (i.e. predicted by the CSTs of the other two sites)
-for (test in tests) {
-
-  #Read in the site-specific adjacency matrix specifying associations between taxa and the CSTs of the other body sites
-  adj.matrix <- read.table(file = paste(workDir, sprintf("renamed_adjusted_%s_input.csv", test), sep = "/"), header= T, sep= ",", row.names= 1)
+for (test in seq_len(nrow(per_type_nest))){
   
+  #Read in the site-specific adjacency matrix specifying associations between taxa and the CSTs of the other body sites
+  adj.matrix = per_type_nest$adj_matrix[[test]]
+    
   #Use that adjacency matrix to construct a network object that is bipartite
   net.obj <- network(adj.matrix, matrix.type = "bipartite", ignore.eval = FALSE, names.eval = "weights")
   
@@ -253,13 +293,17 @@ for (test in tests) {
   #Make non-significant associations invisible
   network::set.edge.attribute(net.obj, "alpha", ifelse(net.obj %e% "weight" == 0.0, 0, 1))
   
+  if(sum(network::has.edges(net.obj)) == 0) next
+  connected.net = network::get.inducedSubgraph(net.obj, which(network::has.edges(net.obj)))
+  
   #Make a color gradient that will be used to color the edges
   rbPal <- colorRampPalette(c('darkblue', 'cyan', 'white', 'yellow', 'red'))
   
   #Map edge weights (signed log10 FDR adjusted p-vals) to colors in the gradient
   ecols <- rbPal(10)[as.numeric(cut(network::get.edge.attribute(net.obj, "weights"), breaks = 10))]
   
-  figs[[test]] <- ggnet2(net.obj, color = "color", shape = "shape", edge.color = ecols, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1, layout.par = list(niter = 1000, cell.jitter = 0.25))
+  print(ggnet2(connected.net, color = "color", shape = "shape", edge.color = ecols, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1,layout.par = list(niter = 1000))  + 
+          ggtitle(paste0(per_type_nest[test,'model_type'], ':', per_type_nest[test,'specification'])))
 
 }
 
