@@ -1,6 +1,9 @@
-source("/Volumes/nlaniewski/R_source/workflow_20190403.R")
+source("flowcytometry/source_R/fSOM.functions_NGL.R")
 library(grid)
 library(gridExtra)
+library(dplyr)
+library(pheatmap)
+library(viridis)
 
 #### fsom (metacluster) heatmaps
 ## need to reorder based on original heatmaps
@@ -11,18 +14,18 @@ col_order <- list(ics.cd4 = c("CD45RA", "IL8", "IL2", "TNFA", "IL4", "IL17", "IF
                   tphe.cd8 = c("CD122", "CD127", "FOXP3", "CD31", "CD28", "CD45RO", "CD197", "CD185", "CD57", "GRZB", "PERFORIN")
 )
 
-row_order <- list(ics.cd4 = read.csv("./results_R/fSOMs/TPHE_ICS/meta_cluster.row_order.ics_CD4.csv")[, 1],
-                  ics.cd8 = read.csv("./results_R/fSOMs/TPHE_ICS/meta_cluster.row_order.ics_CD8.csv")[, 1],
-                  tphe.cd4 = read.csv("./results_R/fSOMs/TPHE_ICS/meta_cluster.row_order.tphe_CD4.csv")[, 1],
-                  tphe.cd8 = read.csv("./results_R/fSOMs/TPHE_ICS/meta_cluster.row_order.tphe_CD8.csv")[, 1]
+row_order <- list(ics.cd4 = read.csv("flowcytometry/intermediates/meta_cluster.row_order.ics_CD4.csv")[, 1],
+                  ics.cd8 = read.csv("flowcytometry/intermediates/meta_cluster.row_order.ics_CD8.csv")[, 1],
+                  tphe.cd4 = read.csv("flowcytometry/intermediates/meta_cluster.row_order.tphe_CD4.csv")[, 1],
+                  tphe.cd8 = read.csv("flowcytometry/intermediates/meta_cluster.row_order.tphe_CD8.csv")[, 1]
 )
 row_order$tphe.cd4 <- row_order$tphe.cd4[-which(row_order$tphe.cd4 %in% 7)]
 
 ## read in fsoms to generate median expression for heatmaps
-fsom <- list(ics.cd4 = readRDS("./analyses_R/FSOM_analysis/03_CD4_fSOM.CD4Cytokines.rds"),
-              ics.cd8 = readRDS("./analyses_R/FSOM_analysis/03B_CD8_fSOM.CD8Cytokines.RDS"),
-              tphe.cd4 = readRDS("./results_R/fSOMs/TPHE/2018-11-14.fSOM_PASS3_CD4p_rerun.rds"),
-              tphe.cd8 = readRDS("./results_R/fSOMs/TPHE/2019-01-18.fSOM_PASS3_CD8p.rds")
+fsom <- list(ics.cd4 = readRDS("flowcytometry/intermediates/03_CD4_fSOM.CD4Cytokines.rds"),
+              ics.cd8 = readRDS("flowcytometry/intermediates/03B_CD8_fSOM.CD8Cytokines.RDS"),
+              tphe.cd4 = readRDS("flowcytometry/intermediates/2018-11-14.fSOM_PASS3_CD4p_rerun.rds"),
+              tphe.cd8 = readRDS("flowcytometry/intermediates/2019-01-18.fSOM_PASS3_CD8p.rds")
 )
 fsom$ics.cd8 <- nodes.to.meta_fSOM(fsom$ics.cd8, grep("^12$|^13$", fsom$ics.cd8$metaclustering))
 

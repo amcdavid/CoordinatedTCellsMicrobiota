@@ -5,6 +5,24 @@ savefsom <- function(fSOM.object,fSOM.name){
   saveRDS(tmp, file = fSOM.name)
 }
 
+descale.fsom <- function(fsom) {
+  expr <- list()
+  if(fsom$scale) {
+    tmp <- sapply(colnames(fsom$map$medianValues), function(i) {
+      fsom$map$medianValues[, i] <- fsom$map$medianValues[, i] * fsom$scaled.scale[i] + fsom$scaled.center[i]
+    })
+  } else {
+    tmp <- fsom$map$medianValues
+  }
+  colnames(tmp) <- fsom$markers
+  expr$input <- tmp
+  expr$ranges <- matrixStats::colQuantiles(tmp, probs = c(0.01, 0.99))
+  expr$input.scaled01 <- t((t(tmp) - expr$ranges[, 1]) / (expr$ranges[, 2] - expr$ranges[, 1]))
+  expr$input.scaled01[expr$input.scaled01 < 0] <- 0
+  expr$input.scaled01[expr$input.scaled01 > 1] <- 1
+  expr
+}
+
 fsom.mapping.elgcl <- function(fSOM.object, meta.cluster = NULL, FCS.paths, trim = TRUE, basefolder.name, fcsfolder.name, write.count.files = FALSE, write.fcs.files = FALSE) {
   
   if(!dir.exists(file.path(basefolder.name))) {
