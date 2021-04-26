@@ -1557,7 +1557,7 @@ ggplot(top_coefs, aes(x = term, y = estimate, ymin = estimate - std.error, ymax 
 ![](02_network_modeling_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
 
 ``` r
-of_interest = tibble(response = c("NAS_8", 'REC_10'), voi = c('TPHE_IST_Disch', 'ICS_IST_OneYear'))
+of_interest = tibble(response = c("NAS_8", 'REC_10'), voi = c('TPHE_IST_Disch', 'ICS_IST_1YR'))
 
 write_csv(semi_join(all_fits, of_interest), path = 'intermediates/selected_network_effects.csv')
 ```

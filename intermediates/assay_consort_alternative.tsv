@@ -1,0 +1,8 @@
+                  "assays" "ICS" "TPHE" "ICS_TPHE"
+"n" "BirthCohort"                                 
+"1" "FullTerm"                 0      1          6
+    "PreTerm"                  1      2         10
+"2" "FullTerm"                 5      0         36
+    "PreTerm"                  2      4         47
+"3" "FullTerm"                 0      2         37
+    "PreTerm"                  1      1         30

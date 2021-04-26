@@ -10,7 +10,7 @@ library("tidyverse")
 
     ## Warning: package 'tidyverse' was built under R version 3.5.2
 
-    ## ── Attaching packages ───────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.0     ✓ dplyr   0.8.5
     ## ✓ tibble  2.1.3     ✓ stringr 1.4.0
@@ -31,7 +31,7 @@ library("tidyverse")
 
     ## Warning: package 'forcats' was built under R version 3.5.2
 
-    ## ── Conflicts ──────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -423,11 +423,9 @@ ics_tphe = bind_rows(ICS = ics, TPHE = tphe, .id = 'assay')
 
     ## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
 
-    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-    ## into character vector
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
     
-    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing
-    ## into character vector
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
 
 ``` r
 assays_avail = ics_tphe %>% group_by(Subject, Visit, BirthCohort) %>% summarize(assays = str_c(assay, collapse = '_')) %>% mutate(assays = factor(assays, levels = c('ICS', 'TPHE', 'ICS_TPHE')))
@@ -888,6 +886,8 @@ library(data.table)
 
     ## Warning: package 'data.table' was built under R version 3.5.2
 
+    ## data.table 1.12.8 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com
+
     ## 
     ## Attaching package: 'data.table'
 
@@ -1140,7 +1140,7 @@ cat("\nTotal runtime:")
 cat(difftime(Sys.time(), start.time, units = "hours"))
 ```
 
-    ## 0.0005906583
+    ## 0.0005997833
 
 ``` r
 cat("\n\n\n")
