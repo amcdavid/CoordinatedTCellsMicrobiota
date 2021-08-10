@@ -117,14 +117,35 @@ library(ggplot2)
 library(tidyverse)
 library(ggbeeswarm)
 
+
+
+
+# To get CGA at timepoints
+timeline = read_csv(file.path('data', 'subject_timeline.csv')) %>% mutate(SampleID = str_c(Subject, '_',  `Sequence Num`))
+subject = read_csv(file.path('data', 'subject_covariates.csv')) %>% mutate(GAB = 37 - preterm_weeks, BirthCohort = ifelse(preterm_weeks > 0, 'Pre-term', 'Full-term'))
+timeline = left_join(timeline, subject)
+# recode by mean CGA
 recode_ist = function(tab){
   s = tab %>% group_by(IST) %>% summarize(mcga = mean(CGA)) %>% arrange(mcga)
   s = s %>% mutate(oIST = fct_reorder(factor(str_c('oIST_', seq_len(nrow(.)))), mcga), oIST_num = as.numeric(oIST))
   left_join(tab, s)
 }
 
-ics <- read_tsv(file.path(pth, "ics_basic.txt")) %>% recode_ist()
-tphe <- read_tsv(file.path(pth, "tphe_basic.txt")) %>% recode_ist()
+# ICS by Subject and timepoint
+pth = file.path(refined, 'dmn')
+tphe <- read_delim(file.path(pth, "tphe_md.txt"), "\t", escape_double = FALSE, trim_ws = TRUE, guess_max = 3600) %>% 
+  mutate(IST = gsub('TPHE IST ([0-9])', 'TPHE_\\1', `TPHE IST`)) %>% left_join(timeline)%>% select(Subject, CGA = cga, IST, GAB, Visit = `Sequence Num`, BirthCohort) %>% recode_ist
+
+ics <- read_delim(file.path(pth, "ics_md.txt"), "\t", escape_double = FALSE, trim_ws = TRUE, guess_max = 3600)%>% 
+  mutate(IST = gsub('ICS IST ([0-9])', 'ICS_\\1', `ICS IST`)) %>% left_join(timeline) %>% select(Subject, CGA = cga, IST, GAB,Visit = `Sequence Num`, BirthCohort) %>% recode_ist
+
+
+
+
+
+
+# ics <- read_tsv(file.path(pth, "ics_basic.txt")) %>% recode_ist()
+# tphe <- read_tsv(file.path(pth, "tphe_basic.txt")) %>% recode_ist()
 
 
 ggplot(ics, aes(y=CGA, x=oIST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
@@ -170,8 +191,7 @@ Number of subjects with 1, 2 or 3 samples of the various assays, stratified by T
 ics_tphe = ics_tphe %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
 traj_plot = ggplot(ics_tphe, aes(y = Subjectf, x = CGA, fill = oIST_num)) + 
   geom_point(pch = 22) + scale_fill_distiller('IST', palette = 'GnBu') + facet_wrap(~assay) + 
-  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') +
-  theme(legend.position = 'bottom')
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + geom_text(aes(label = oIST_num), size = 1.5) + theme(legend.position = 'bottom')
 trajs = ics_tphe %>% group_by(assay) %>% do(plot = {
  out = traj_plot %+% .
   print(out)
@@ -286,7 +306,7 @@ rec_nas = bind_rows(REC = rec, NAS = nas, .id = 'assay') %>% rename(GAB = gaBirt
 rec_nas = rec_nas %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
 traj_plot = ggplot(rec_nas, aes(y = Subjectf, x = CGA, fill = oCST_num)) + 
   geom_point(pch = 22) + scale_fill_distiller('CST', palette = 'GnBu') + facet_wrap(~assay) + 
-  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + 
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + geom_text(aes(label = oCST_num), size = 1.5) + 
   theme(legend.position = 'bottom')
 trajs2 = rec_nas %>% group_by(assay) %>% do(plot = {
   out = traj_plot %+% .
@@ -295,8 +315,9 @@ trajs2 = rec_nas %>% group_by(assay) %>% do(plot = {
 })
 ```
 
-```{r combined_traj, dev = c('png', 'pdf'), fig.width=8, fig.height=10}
-cowplot::plot_grid(plotlist = bind_rows(trajs, trajs2)$plot)
+```{r combined_traj, dev = c('png', 'pdf'), fig.width=8, fig.height=6}
+cowplot::plot_grid(plotlist = trajs$plot, ncol = 2)
+cowplot::plot_grid(plotlist = trajs2$plot, ncol = 2)
 ```
 
 #Supplementary Figure 3 PCoA Plots

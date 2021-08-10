@@ -10,7 +10,7 @@ library("tidyverse")
 
     ## Warning: package 'tidyverse' was built under R version 3.5.2
 
-    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
 
     ## ✓ ggplot2 3.3.0     ✓ dplyr   0.8.5
     ## ✓ tibble  2.1.3     ✓ stringr 1.4.0
@@ -31,7 +31,7 @@ library("tidyverse")
 
     ## Warning: package 'forcats' was built under R version 3.5.2
 
-    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
     ## x dplyr::filter() masks stats::filter()
     ## x dplyr::lag()    masks stats::lag()
 
@@ -297,55 +297,92 @@ library(ggplot2)
 library(tidyverse)
 library(ggbeeswarm)
 
+
+
+
+# To get CGA at timepoints
+timeline = read_csv(file.path('data', 'subject_timeline.csv')) %>% mutate(SampleID = str_c(Subject, '_',  `Sequence Num`))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   `Sequence Num` = col_double(),
+    ##   DOL = col_double(),
+    ##   cga = col_double(),
+    ##   Subject = col_character()
+    ## )
+
+``` r
+subject = read_csv(file.path('data', 'subject_covariates.csv')) %>% mutate(GAB = 37 - preterm_weeks, BirthCohort = ifelse(preterm_weeks > 0, 'Pre-term', 'Full-term'))
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Gender = col_character(),
+    ##   Race = col_character(),
+    ##   `Birth Season` = col_character(),
+    ##   preterm_weeks = col_double(),
+    ##   auc14 = col_double(),
+    ##   PRD = col_character(),
+    ##   preg_antibiotics = col_character(),
+    ##   mode_delivery = col_character(),
+    ##   cchorio = col_character(),
+    ##   preg_membrane_18hr = col_character(),
+    ##   birth_wt_gms = col_double(),
+    ##   `cmv test` = col_character(),
+    ##   Subject = col_character()
+    ## )
+
+``` r
+timeline = left_join(timeline, subject)
+```
+
+    ## Joining, by = "Subject"
+
+``` r
+# recode by mean CGA
 recode_ist = function(tab){
   s = tab %>% group_by(IST) %>% summarize(mcga = mean(CGA)) %>% arrange(mcga)
   s = s %>% mutate(oIST = fct_reorder(factor(str_c('oIST_', seq_len(nrow(.)))), mcga), oIST_num = as.numeric(oIST))
   left_join(tab, s)
 }
 
-ics <- read_tsv(file.path(pth, "ics_basic.txt")) %>% recode_ist()
+# ICS by Subject and timepoint
+pth = file.path(refined, 'dmn')
+tphe <- read_delim(file.path(pth, "tphe_md.txt"), "\t", escape_double = FALSE, trim_ws = TRUE, guess_max = 3600) %>% 
+  mutate(IST = gsub('TPHE IST ([0-9])', 'TPHE_\\1', `TPHE IST`)) %>% left_join(timeline)%>% select(Subject, CGA = cga, IST, GAB, Visit = `Sequence Num`, BirthCohort) %>% recode_ist
 ```
 
     ## Parsed with column specification:
     ## cols(
     ##   SampleID = col_character(),
-    ##   Subject = col_character(),
-    ##   Visit = col_character(),
-    ##   IST = col_character(),
-    ##   Renamed_IST = col_character(),
-    ##   Sex = col_character(),
-    ##   Cohort = col_character(),
-    ##   MOD = col_character(),
-    ##   GAB = col_double(),
-    ##   BirthCohort = col_character(),
-    ##   DOL = col_double(),
-    ##   CGA = col_double()
+    ##   `TPHE IST` = col_character()
     ## )
+
+    ## Joining, by = "SampleID"
 
     ## Joining, by = "IST"
 
 ``` r
-tphe <- read_tsv(file.path(pth, "tphe_basic.txt")) %>% recode_ist()
+ics <- read_delim(file.path(pth, "ics_md.txt"), "\t", escape_double = FALSE, trim_ws = TRUE, guess_max = 3600)%>% 
+  mutate(IST = gsub('ICS IST ([0-9])', 'ICS_\\1', `ICS IST`)) %>% left_join(timeline) %>% select(Subject, CGA = cga, IST, GAB,Visit = `Sequence Num`, BirthCohort) %>% recode_ist
 ```
 
     ## Parsed with column specification:
     ## cols(
     ##   SampleID = col_character(),
-    ##   Subject = col_character(),
-    ##   Visit = col_character(),
-    ##   IST = col_character(),
-    ##   Renamed_IST = col_character(),
-    ##   Sex = col_character(),
-    ##   Cohort = col_character(),
-    ##   MOD = col_character(),
-    ##   GAB = col_double(),
-    ##   BirthCohort = col_character(),
-    ##   DOL = col_double(),
-    ##   CGA = col_double()
+    ##   `ICS IST` = col_character()
     ## )
+
+    ## Joining, by = "SampleID"
+
     ## Joining, by = "IST"
 
 ``` r
+# ics <- read_tsv(file.path(pth, "ics_basic.txt")) %>% recode_ist()
+# tphe <- read_tsv(file.path(pth, "tphe_basic.txt")) %>% recode_ist()
+
+
 ggplot(ics, aes(y=CGA, x=oIST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
 ```
 
@@ -364,22 +401,24 @@ summary(lm(CGA ~ IST, data = ics))
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -53.992  -6.439  -0.302   1.880  58.128 
+    ## -53.997  -7.202  -0.354   2.285  58.074 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)   35.535      1.484  23.951  < 2e-16 ***
-    ## ISTICS_2      11.332      2.149   5.274 2.20e-07 ***
-    ## ISTICS_3      58.596      2.185  26.818  < 2e-16 ***
-    ## ISTICS_4       3.767      2.243   1.679   0.0939 .  
-    ## ISTICS_5       2.880      2.437   1.182   0.2380    
-    ## ISTICS_6      21.800      2.897   7.525 3.55e-13 ***
+    ## (Intercept)   34.022      2.133  15.948  < 2e-16 ***
+    ## ISTICS_2       2.684      2.901   0.925   0.3554    
+    ## ISTICS_3       5.264      3.001   1.754   0.0801 .  
+    ## ISTICS_4       5.332      2.901   1.838   0.0668 .  
+    ## ISTICS_5      12.821      3.090   4.150 4.08e-05 ***
+    ## ISTICS_6      14.015      2.767   5.066 6.25e-07 ***
+    ## ISTICS_7      28.148      3.525   7.984 1.55e-14 ***
+    ## ISTICS_8      60.115      2.705  22.221  < 2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 14.08 on 398 degrees of freedom
-    ## Multiple R-squared:  0.7014, Adjusted R-squared:  0.6976 
-    ## F-statistic:   187 on 5 and 398 DF,  p-value: < 2.2e-16
+    ## Residual standard error: 14.31 on 396 degrees of freedom
+    ## Multiple R-squared:  0.6883, Adjusted R-squared:  0.6828 
+    ## F-statistic: 124.9 on 7 and 396 DF,  p-value: < 2.2e-16
 
 ``` r
 ggplot(tphe, aes(y=CGA, x=oIST, color=GAB )) + scale_color_gradient2(midpoint=37, low="red", mid="blue", high="darkblue", space ="Lab" ) + geom_quasirandom() + coord_flip()
@@ -397,23 +436,23 @@ summary(lm(CGA ~ IST, data = tphe))
     ## 
     ## Residuals:
     ##     Min      1Q  Median      3Q     Max 
-    ## -44.529  -3.258   0.278   2.129  50.330 
+    ## -42.376  -3.280   0.068   1.880  49.829 
     ## 
     ## Coefficients:
     ##             Estimate Std. Error t value Pr(>|t|)    
-    ## (Intercept)   95.398      1.083  88.077  < 2e-16 ***
-    ## ISTTPHE_2    -57.237      1.532 -37.367  < 2e-16 ***
-    ## ISTTPHE_3    -62.529      1.547 -40.425  < 2e-16 ***
-    ## ISTTPHE_4    -57.108      1.619 -35.273  < 2e-16 ***
-    ## ISTTPHE_5    -49.298      1.773 -27.798  < 2e-16 ***
-    ## ISTTPHE_6    -55.966      1.838 -30.442  < 2e-16 ***
-    ## ISTTPHE_7    -15.579      2.177  -7.157 3.88e-12 ***
+    ## (Intercept)   33.411      1.150  29.047  < 2e-16 ***
+    ## ISTTPHE_2      4.872      1.611   3.024 0.002654 ** 
+    ## ISTTPHE_3      6.075      1.701   3.571 0.000398 ***
+    ## ISTTPHE_4      6.096      1.928   3.162 0.001686 ** 
+    ## ISTTPHE_5     13.184      1.861   7.085 6.16e-12 ***
+    ## ISTTPHE_6     45.535      2.247  20.268  < 2e-16 ***
+    ## ISTTPHE_7     61.853      1.611  38.389  < 2e-16 ***
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
-    ## Residual standard error: 9.627 on 406 degrees of freedom
-    ## Multiple R-squared:  0.8605, Adjusted R-squared:  0.8585 
-    ## F-statistic: 417.5 on 6 and 406 DF,  p-value: < 2.2e-16
+    ## Residual standard error: 10.03 on 407 degrees of freedom
+    ## Multiple R-squared:  0.847,  Adjusted R-squared:  0.8447 
+    ## F-statistic: 375.5 on 6 and 407 DF,  p-value: < 2.2e-16
 
 ## Co-occurance of t cell measures
 
@@ -424,7 +463,7 @@ ics_tphe = bind_rows(ICS = ics, TPHE = tphe, .id = 'assay')
     ## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
 
     ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
-    
+
     ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
 
 ``` r
@@ -440,27 +479,25 @@ ftab
 
     ##               assays ICS TPHE ICS_TPHE
     ## n BirthCohort                         
-    ## 1 FullTerm             0    1        6
-    ##   PreTerm              1    2       10
-    ## 2 FullTerm             5    0       36
-    ##   PreTerm              2    4       47
-    ## 3 FullTerm             0    2       37
-    ##   PreTerm              1    1       30
+    ## 1 Full-term            0    2        5
+    ##   Pre-term             1    2       10
+    ## 2 Full-term            5    0       36
+    ##   Pre-term             2    4       47
+    ## 3 Full-term            0    2       37
+    ##   Pre-term             1    1       30
 
 ``` r
 write.ftable(ftab, file.path(refined, 'assay_consort_alternative.txt'))
 ```
 
 Number of subjects with 1, 2 or 3 samples of the various assays,
-stratified by
-Term.
+stratified by Term.
 
 ``` r
 ics_tphe = ics_tphe %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
 traj_plot = ggplot(ics_tphe, aes(y = Subjectf, x = CGA, fill = oIST_num)) + 
   geom_point(pch = 22) + scale_fill_distiller('IST', palette = 'GnBu') + facet_wrap(~assay) + 
-  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') +
-  theme(legend.position = 'bottom')
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + geom_text(aes(label = oIST_num), size = 1.5) + theme(legend.position = 'bottom')
 trajs = ics_tphe %>% group_by(assay) %>% do(plot = {
  out = traj_plot %+% .
   print(out)
@@ -707,7 +744,7 @@ rec_nas = bind_rows(REC = rec, NAS = nas, .id = 'assay') %>% rename(GAB = gaBirt
 rec_nas = rec_nas %>% mutate(Subjectf = fct_reorder(factor(Subject), GAB))
 traj_plot = ggplot(rec_nas, aes(y = Subjectf, x = CGA, fill = oCST_num)) + 
   geom_point(pch = 22) + scale_fill_distiller('CST', palette = 'GnBu') + facet_wrap(~assay) + 
-  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + 
+  theme_minimal() + scale_y_discrete(breaks = NULL) + ylab("Subjects") + xlab('PMA') + geom_text(aes(label = oCST_num), size = 1.5) + 
   theme(legend.position = 'bottom')
 trajs2 = rec_nas %>% group_by(assay) %>% do(plot = {
   out = traj_plot %+% .
@@ -719,17 +756,22 @@ trajs2 = rec_nas %>% group_by(assay) %>% do(plot = {
 ![](02_ist_cst_results_files/figure-gfm/cst_traj-1.png)<!-- -->![](02_ist_cst_results_files/figure-gfm/cst_traj-2.png)<!-- -->
 
 ``` r
-cowplot::plot_grid(plotlist = bind_rows(trajs, trajs2)$plot)
+cowplot::plot_grid(plotlist = trajs$plot, ncol = 2)
 ```
 
 ![](02_ist_cst_results_files/figure-gfm/combined_traj-1.png)<!-- -->
+
+``` r
+cowplot::plot_grid(plotlist = trajs2$plot, ncol = 2)
+```
+
+![](02_ist_cst_results_files/figure-gfm/combined_traj-2.png)<!-- -->
 
 \#Supplementary Figure 3 PCoA Plots
 
 Runs in qiime.
 
 ``` sh
-
 
 
 qiime diversity core-metrics-phylogenetic --i-phylogeny nas_rooted_tree.qza --i-table nas_table.qza --p-sampling-depth 1200 --m-metadata-file nas_basic.txt  --output-dir nas_cda --p-n-jobs 24
@@ -1140,7 +1182,7 @@ cat("\nTotal runtime:")
 cat(difftime(Sys.time(), start.time, units = "hours"))
 ```
 
-    ## 0.0005997833
+    ## 0.0004568417
 
 ``` r
 cat("\n\n\n")
