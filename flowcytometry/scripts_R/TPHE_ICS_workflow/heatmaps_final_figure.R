@@ -35,6 +35,7 @@ fsom_expr <- list(descaled = lapply(fsom, function(i) data.frame(descale.fsom(i)
                                       %>% group_by(cell_clustering) %>% summarize_all(list(median)))
 )
 
+saveRDS(fsom_expr, 'flowcytometry/intermediates/metacluster_mfi.rds')
 reorder.expr <- function(expr, row.order, col.order){
   expr <- as.data.frame(expr[row.order, col.order])
   rownames(expr) <- row.order
@@ -173,15 +174,15 @@ dev.off()
 
 #### IST composition heatmaps
 
-ist.md <- list(tphe = read.csv("./ISTs/tphe_md.txt", sep = "\t", row.names = 1),
-               ics = read.csv("./ISTs/ics_md.txt", sep = "\t", row.names = 1))
+ist.md <- list(tphe = read.csv("intermediates/dmn/tphe_md.txt", sep = "\t", row.names = 1),
+               ics = read.csv("intermediates/dmn/ics_md.txt", sep = "\t", row.names = 1))
 
 ist.md <- lapply(ist.md, function(i) i[order(i), , drop = F])
 
-ist <- list(tphe.cd4 = read.csv("./ISTs/tphe_cd4_comp.txt", sep = "\t", row.names = 1),
-            tphe.cd8 = read.csv("./ISTs/tphe_cd8_comp.txt", sep = "\t", row.names = 1),
-            ics.cd4 = read.csv("./ISTs/ics_cd4_comp.txt", sep = "\t", row.names = 1),
-            ics.cd8 = read.csv("./ISTs/ics_cd8_comp.txt", sep = "\t", row.names = 1))
+ist <- list(tphe.cd4 = read.csv("intermediates/dmn/tphe_cd4_comp.txt", sep = "\t", row.names = 1),
+            tphe.cd8 = read.csv("intermediates/dmn/tphe_cd8_comp.txt", sep = "\t", row.names = 1),
+            ics.cd4 = read.csv("intermediates/dmn/ics_cd4_comp.txt", sep = "\t", row.names = 1),
+            ics.cd8 = read.csv("intermediates/dmn/ics_cd8_comp.txt", sep = "\t", row.names = 1))
 
 ist[grep("tphe", names(ist))] <- lapply(ist[grep("tphe", names(ist))], function(i) i[, rownames(ist.md[[grep("tphe", names(ist.md))]])]) # order by IST
 ist[grep("ics", names(ist))] <- lapply(ist[grep("ics", names(ist))], function(i) i[, rownames(ist.md[[grep("ics", names(ist.md))]])]) # order by IST
@@ -244,9 +245,11 @@ ist.heatmaps <- list(ics.cd4 = pheatmap(ist.scale$ics.cd4,
 
 
 #### combined plots
+## ICS subjects by metacluster proportions (?)
 grid.arrange(arrangeGrob(grobs = list(ist.heatmaps$ics.cols)),
              arrangeGrob(grobs = lapply(ist.heatmaps[grep("ics.cd", names(ist.heatmaps))], `[[`, "gtable")), 
              heights = c(1,11))
+## ICS Marker composition
 grid.arrange(arrangeGrob(grobs = list(fsom.heatmaps$ics.cols)),
              arrangeGrob(grobs = lapply(fsom.heatmaps[grep("ics.cd", names(fsom.heatmaps))], `[[`, "gtable")), 
              heights = c(1,11))
