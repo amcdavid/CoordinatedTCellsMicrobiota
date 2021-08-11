@@ -2,8 +2,7 @@ Network modeling
 ================
 
 These analyses were used to generate the network plots in figure 6, as
-well
-as
+well as
 
 # Analysis of CST Occurrence vs Immunological Parameters - quasi-Poisson Duration
 
@@ -34,7 +33,7 @@ knitr::kable(to_fit)
 ```
 
 | site | model\_type     | specification |
-| :--- | :-------------- | :------------ |
+|:-----|:----------------|:--------------|
 | REC  | logit           | mod\_only     |
 | NAS  | logit           | mod\_only     |
 | REC  | duration        | mod\_only     |
@@ -353,69 +352,69 @@ for(i in seq_len(nrow(to_fit))){
     ## Fitting REC-time_to_event-mod_only
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
     ## Error in solve.default(fit$hessian) : 
     ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
     ## Error in solve.default(fit$hessian) : 
     ##   Lapack routine dgesv: system is exactly singular: U[4,4] = 0
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
     ## Error in solve.default(fit$hessian) : 
@@ -427,7 +426,7 @@ for(i in seq_len(nrow(to_fit))){
     ##   covariate matrix is computationally singular! Make sure not to add intercept to model, also make sure every factor has observations at every level
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
     ## Parsed with column specification:
@@ -665,164 +664,150 @@ for(i in seq_len(nrow(to_fit))){
     ## Fitting REC-time_to_event-baseline
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-
-    ## Error in solve.default(fit$hessian) : 
-    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
-    ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
-    ## Error in solve.default(fit$hessian) : 
-    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
@@ -830,7 +815,21 @@ for(i in seq_len(nrow(to_fit))){
     ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
+    ## Error in solve.default(fit$hessian) : 
+    ##   Lapack routine dgesv: system is exactly singular: U[1,1] = 0
+
+    ## Warning in sqrt(diag(fit$var)): NaNs produced
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
     ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
@@ -1073,41 +1072,41 @@ for(i in seq_len(nrow(to_fit))){
     ## Fitting REC-time_to_event-full
 
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
-    
+
     ## Warning in sqrt(diag(fit$var)): NaNs produced
 
     ## Error in ic_par(form_, data = data_, model = "aft", dist = "loglogistic") : 
@@ -1521,12 +1520,20 @@ sign_max = function(x) {
 
 
 library(ggplot2)
+```
+
+    ## Warning: package 'ggplot2' was built under R version 3.5.2
+
+``` r
 all_fits = bind_rows(fit_scenario_result, .id = 'scenario') %>% left_join(to_fit %>% mutate(scenario = as.character(seq_along(site))))
 ```
 
     ## Joining, by = "scenario"
 
 ``` r
+all_fits  = all_fits %>% mutate(voi_full = str_replace(voi, 'TPHE_(C[1-9]+)', 'TPHE_CD4_\\1'),
+                                voi_full = str_replace(voi_full, '(?<!TPHE)(_CD[48]_C[1-9]+)', '_ICS\\1'))
+
 per_type_fdr = filter(all_fits, term == 'anova')  %>% group_by(model_type, specification)%>% mutate(fdr = p.adjust(p.value, 'fdr'))
 
 per_type_sign = all_fits %>%  filter(stringr::str_detect(term, stringr::fixed('voi'))) %>% group_by(model_type, specification, voi, response) %>% summarize(sign_max = sign_max(estimate))
@@ -1586,9 +1593,9 @@ per_type_fdr = left_join(per_type_fdr, per_type_sign) %>% mutate(signed_pval = c
     ## Joining, by = c("response", "voi", "model_type", "specification")
 
 ``` r
-per_type_nest = per_type_fdr %>% select(voi, response, zeroed_pval, model_type, specification) %>% tidyr::nest(data = c(zeroed_pval, voi, response))
+per_type_nest = per_type_fdr %>% select(voi_full, response, zeroed_pval, model_type, specification) %>% tidyr::nest(data = c(zeroed_pval, voi_full, response))
 
-per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi, names_from = response, values_from = zeroed_pval) %>% enmatrix('voi'))
+per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi_full, names_from = response, values_from = zeroed_pval) %>% enmatrix('voi_full'))
 
 per_type_nest %>% rowwise() %>% mutate(n_edges = sum(abs(adj_matrix)>0)) %>% select(model_type, specification, n_edges)
 ```
@@ -1610,14 +1617,80 @@ per_type_nest %>% rowwise() %>% mutate(n_edges = sum(abs(adj_matrix)>0)) %>% sel
     ## 9 time_to_event full               15
 
 ``` r
+mc_suffix = dplyr::tibble(Family = c('TPHE4', 'TPHE8', 'ICS4', 'ICS8'), 
+                   suffix = c('t4', 't8', 'i4', 'i8'),
+                   voi3_prefix = c('TPHE_CD4', 'TPHE_CD8', 'ICS_CD4', 'ICS_CD8'))
+# Descriptive names for T cell subpop
+metacluster_rn = readr::read_csv('intermediates/Metacluster Identities.csv') %>% select(-X5) %>% mutate(Family = Family %>% toupper(), Family = str_replace_all(Family, ' ', '')) %>% left_join(mc_suffix) %>% mutate(marker = str_c('Meta.Cluster_', Cluster, '_', suffix), voi3 = str_c(voi3_prefix, '_C', Cluster), Identity = make.unique(Identity))
+```
+
+    ## Warning: Missing column names filled in: 'X5' [5]
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Family = col_character(),
+    ##   Cluster = col_double(),
+    ##   Category = col_character(),
+    ##   Identity = col_character(),
+    ##   X5 = col_logical()
+    ## )
+
+    ## Joining, by = "Family"
+
+``` r
 #Bipartite Graph of CST vs Immunome Results
 
 #Load packages (Probably don't even need half of them - I tried a lot of things before I settled on this relatively simple solution.)
 library(ggplot2)
 library(network)
-library(GGally)
-library(RColorBrewer)
+```
 
+    ## network: Classes for Relational Data
+    ## Version 1.16.1 created on 2020-10-06.
+    ## copyright (c) 2005, Carter T. Butts, University of California-Irvine
+    ##                     Mark S. Handcock, University of California -- Los Angeles
+    ##                     David R. Hunter, Penn State University
+    ##                     Martina Morris, University of Washington
+    ##                     Skye Bender-deMoll, University of Washington
+    ##  For citation information, type citation("network").
+    ##  Type help("network-package") to get started.
+
+``` r
+library(GGally)
+```
+
+    ## 
+    ## Attaching package: 'GGally'
+
+    ## The following object is masked from 'package:dplyr':
+    ## 
+    ##     nasa
+
+``` r
+library(RColorBrewer)
+library(tidyverse)
+```
+
+    ## Warning: package 'tidyverse' was built under R version 3.5.2
+
+    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
+
+    ## ✓ tibble  2.1.3     ✓ purrr   0.3.3
+    ## ✓ tidyr   1.0.2     ✓ forcats 0.5.0
+
+    ## Warning: package 'tibble' was built under R version 3.5.2
+
+    ## Warning: package 'tidyr' was built under R version 3.5.2
+
+    ## Warning: package 'purrr' was built under R version 3.5.2
+
+    ## Warning: package 'forcats' was built under R version 3.5.2
+
+    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
+    ## x dplyr::filter() masks stats::filter()
+    ## x dplyr::lag()    masks stats::lag()
+
+``` r
 #Define constants
 
 set.seed(11)
@@ -1627,8 +1700,20 @@ nas_csts = c("NAS_4", "NAS_1", "NAS_2", "NAS_9", "NAS_10", "NAS_5", "NAS_8", "NA
 #tests = c("logit", "surv", "binom", "alt_binom")
 # tests = c("logit", "alt_surv")
 
+to_plot = tibble(
+  response = c('REC_10', 'NAS_3', 'NAS_8', 'NAS_9'),
+  model_type = 'duration',
+  specification = 'full')
+  
+to_plot_response = semi_join(per_type_nest, to_plot) %>%  select(-adj_matrix) %>% unnest(cols = c(data)) %>% ungroup() %>% 
+  inner_join(to_plot) %>% filter(!is.na(zeroed_pval) & abs(zeroed_pval) > 0) 
+```
 
+    ## Joining, by = c("model_type", "specification")
 
+    ## Joining, by = c("model_type", "specification", "response")
+
+``` r
 #Loop through the sites and make a figure for each as the target site (i.e. predicted by the CSTs of the other two sites)
 for (test in seq_len(nrow(per_type_nest))){
   
@@ -1651,13 +1736,27 @@ for (test in seq_len(nrow(per_type_nest))){
   connected.net = network::get.inducedSubgraph(net.obj, which(network::has.edges(net.obj)))
   
   #Make a color gradient that will be used to color the edges
-  rbPal <- colorRampPalette(c('darkblue', 'cyan', 'white', 'yellow', 'red'))
+  rbPalFun0 <- colorRamp(c('darkblue', 'grey70',  'red'), space = 'Lab')
   
   #Map edge weights (signed log10 FDR adjusted p-vals) to colors in the gradient
-  ecols <- rbPal(10)[as.numeric(cut(network::get.edge.attribute(net.obj, "weights"), breaks = 10))]
+  weights = network::get.edge.attribute(net.obj, "weights")
+  rbPalFun = function(x){
+    sx = x*.5/max(abs(x)) + .5
+    #sx = (x-max(abs(weights))/(max(weights)-min(weights)))
+    rgb(rbPalFun0(sx)/255)
+  }
+  ecols <- rbPalFun(weights)
   
   print(ggnet2(connected.net, color = "color", shape = "shape", edge.color = ecols, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1,layout.par = list(niter = 1000))  + 
           ggtitle(paste0(per_type_nest[test,'model_type'], ':', per_type_nest[test,'specification'])))
+  
+  if(per_type_nest[test,'model_type'] == 'duration' && per_type_nest[test, 'specification'] == 'full'){
+    to_plot_v = which((connected.net %v% "vertex.names") %in% to_plot$response)
+    to_plot_neigh =  do.call(c, lapply(to_plot_v, network::get.neighborhood, x = connected.net))
+    #subnet = network::get.inducedSubgraph(net.obj,  to_plot_v, alters = setdiff(seq_along(net.obj %v% "vertex.names"), to_plot_v))
+    subnet = network::get.inducedSubgraph(connected.net,  union(to_plot_v, to_plot_neigh))
+      ecols_sub <- rbPalFun(subnet %eattr% "weights")
+  }
 
 }
 ```
@@ -1670,14 +1769,87 @@ for (test in seq_len(nrow(per_type_nest))){
 #ggsave(paste(workDir, sprintf("%s_graph.pdf", site), sep = "/"), width = 15, height = 15, units = "in")
 ```
 
+``` r
+ print(ggnet2(subnet, color = "color", shape = "shape", edge.color = ecols_sub, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1,layout.par = list(niter = 1000))  + 
+          ggtitle('duration:full (selected nodes)'))
+```
+
+![](02_network_modeling_files/figure-gfm/core_network-1.png)<!-- -->
+
+``` r
+cleanup_coefs = . %>%
+  filter(str_detect(term, 'voi')) %>%
+  mutate(is_anova = !str_detect(term, '^voi$'),
+    voi2 = ifelse(is_anova, str_replace(term, 'voi', ''), voi_full),
+         tp = str_extract(voi, 'OneYear|Disch|Birth'),
+         voi3 = str_replace(voi2, '_?(OneYear(_)?|Disch(arge)?(_)?|Birth(_)?)', ''),
+         cut_fdr = cut(-log10(ifelse(is.na(fdr), 1, fdr)), breaks = c(0, 1, 2, Inf), include.lowest = TRUE)
+         ) %>%
+  left_join(metacluster_rn) %>% mutate(metacluster_nm = coalesce(Identity, voi3))
+
+to_plot_coefse_all = semi_join(all_fits, to_plot_response, by = c('model_type', 'specification', 'response')) %>% semi_join(to_plot_response, by = 'voi_full') %>% cleanup_coefs
+```
+
+    ## Joining, by = "voi3"
+
+``` r
+to_plot_coefse_sub = semi_join(all_fits, to_plot_response) %>% cleanup_coefs %>% mutate(metacluster_nm = factor(metacluster_nm, levels = unique(metacluster_nm[order(voi3)])))
+```
+
+    ## Joining, by = c("response", "model_type", "specification", "voi_full")
+    ## Joining, by = "voi3"
+
+``` r
+plt = ggplot(to_plot_coefse_all, aes(y = clamp(estimate, 2), ymin = estimate-1.96*std.error, ymax = estimate + std.error*1.96, x = voi3, color = tp))+ facet_grid(is_anova ~ response,  space = 'free_y', scales = 'free', ) + xlab('') + ylab('Log Fold Change') + geom_pointrange(position = position_dodge(width = .4)) + geom_hline(yintercept = 0, lty = 2) + theme_minimal()  + coord_flip(ylim = c(-2, 2)) + scale_color_discrete('Time point')
+
+plt + aes(alpha = cut_fdr) + scale_alpha_manual(values = c('[0,1]'=.3, '(1,2]'=.7, '(2,Inf]'=1))
+```
+
+![](02_network_modeling_files/figure-gfm/core_network-2.png)<!-- -->
+
+``` r
+plt %+% to_plot_coefse_sub
+```
+
+![](02_network_modeling_files/figure-gfm/core_network-3.png)<!-- -->
+
+``` r
+(plt  %+% to_plot_coefse_sub) + aes(x = metacluster_nm)
+```
+
+![](02_network_modeling_files/figure-gfm/core_networks_mc-1.png)<!-- -->
+
+``` r
+fsom_expr = readRDS('flowcytometry/intermediates/metacluster_mfi.rds')
+descaled = bind_rows(fsom_expr$descaled, .id = 'population') %>% pivot_longer(cols = c(-cell_clustering, -population)) %>% filter(!is.na(value))
+```
+
 # Targeted analysis of Alloiococcus abundance, Tphe5, and acute illness
 
 ``` r
 library("readr")
-library("tidyverse")
-library(lme4)
-library(geepack)
 
+library(lme4)
+```
+
+    ## Warning: package 'lme4' was built under R version 3.5.2
+
+    ## Loading required package: Matrix
+
+    ## 
+    ## Attaching package: 'Matrix'
+
+    ## The following objects are masked from 'package:tidyr':
+    ## 
+    ##     expand, pack, unpack
+
+``` r
+library(geepack)
+```
+
+    ## Warning: package 'geepack' was built under R version 3.5.2
+
+``` r
 #Read in mapping file with metadata including Alloiococcus abundance, Tphe5 at birth or discharge, and acute illness
 md.nas <- read_delim(file.path(refined, "NAS_Focused_Mapping.txt"), "\t", escape_double = FALSE, trim_ws = TRUE, guess_max = 3600)
 ```
@@ -1724,8 +1896,7 @@ md.post$allo_freq <- round(md.post$Reads*md.post$Alloiococcus) #Convert Alloioco
 summary(glmer(IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
 ```
 
-    ## Generalized linear mixed model fit by maximum likelihood (Laplace
-    ##   Approximation) [glmerMod]
+    ## Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
     ##  Family: binomial  ( logit )
     ## Formula: IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + (1 | Subject)
     ##    Data: md.post
@@ -1765,8 +1936,7 @@ summary(glmer(IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + (1|Subject), data
 summary(glmer(IllnessVisit ~ TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
 ```
 
-    ## Generalized linear mixed model fit by maximum likelihood (Laplace
-    ##   Approximation) [glmerMod]
+    ## Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
     ##  Family: binomial  ( logit )
     ## Formula: IllnessVisit ~ TPHE_5 + nDOL + GAB + MOD + (1 | Subject)
     ##    Data: md.post
@@ -1806,11 +1976,9 @@ summary(glmer(IllnessVisit ~ TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.
 summary(glmer(IllnessVisit ~ Alloiococcus + TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
 ```
 
-    ## Generalized linear mixed model fit by maximum likelihood (Laplace
-    ##   Approximation) [glmerMod]
+    ## Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
     ##  Family: binomial  ( logit )
-    ## Formula: IllnessVisit ~ Alloiococcus + TPHE_5 + nDOL + GAB + MOD + (1 |  
-    ##     Subject)
+    ## Formula: IllnessVisit ~ Alloiococcus + TPHE_5 + nDOL + GAB + MOD + (1 |      Subject)
     ##    Data: md.post
     ## 
     ##      AIC      BIC   logLik deviance df.resid 

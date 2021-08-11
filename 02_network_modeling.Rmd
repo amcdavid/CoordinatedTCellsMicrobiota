@@ -19,6 +19,7 @@ Iterates through every pairwise combination of CST and immunological parameter (
 ```{r, echo = FALSE, include = FALSE}
 library(readr)
 library(dplyr)
+library(stringr)
 library(broom)
 library(survival)
 library(icenReg)
@@ -208,6 +209,9 @@ sign_max = function(x) {
 library(ggplot2)
 all_fits = bind_rows(fit_scenario_result, .id = 'scenario') %>% left_join(to_fit %>% mutate(scenario = as.character(seq_along(site))))
 
+all_fits  = all_fits %>% mutate(voi_full = str_replace(voi, 'TPHE_(C[1-9]+)', 'TPHE_CD4_\\1'),
+                                voi_full = str_replace(voi_full, '(?<!TPHE)(_CD[48]_C[1-9]+)', '_ICS\\1'))
+
 per_type_fdr = filter(all_fits, term == 'anova')  %>% group_by(model_type, specification)%>% mutate(fdr = p.adjust(p.value, 'fdr'))
 
 per_type_sign = all_fits %>%  filter(stringr::str_detect(term, stringr::fixed('voi'))) %>% group_by(model_type, specification, voi, response) %>% summarize(sign_max = sign_max(estimate))
@@ -246,16 +250,20 @@ enmatrix = function(x, rownames_from){
 per_type_fdr = left_join(per_type_fdr, per_type_sign) %>% mutate(signed_pval = clamp(-log10(p.value), 8) * sign_max, zeroed_pval = signed_pval * (fdr< .1))
 
 
-per_type_nest = per_type_fdr %>% select(voi, response, zeroed_pval, model_type, specification) %>% tidyr::nest(data = c(zeroed_pval, voi, response))
+per_type_nest = per_type_fdr %>% select(voi_full, response, zeroed_pval, model_type, specification) %>% tidyr::nest(data = c(zeroed_pval, voi_full, response))
 
-per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi, names_from = response, values_from = zeroed_pval) %>% enmatrix('voi'))
+per_type_nest$adj_matrix = purrr::map(per_type_nest$data, ~ tidyr::pivot_wider(.x, voi_full, names_from = response, values_from = zeroed_pval) %>% enmatrix('voi_full'))
 
 per_type_nest %>% rowwise() %>% mutate(n_edges = sum(abs(adj_matrix)>0)) %>% select(model_type, specification, n_edges)
 
 ```
 
 ```{r networks, dev = c('png', 'pdf'), fig.width = 6, fig.height = 6}
-
+mc_suffix = dplyr::tibble(Family = c('TPHE4', 'TPHE8', 'ICS4', 'ICS8'), 
+                   suffix = c('t4', 't8', 'i4', 'i8'),
+                   voi3_prefix = c('TPHE_CD4', 'TPHE_CD8', 'ICS_CD4', 'ICS_CD8'))
+# Descriptive names for T cell subpop
+metacluster_rn = readr::read_csv('intermediates/Metacluster Identities.csv') %>% select(-X5) %>% mutate(Family = Family %>% toupper(), Family = str_replace_all(Family, ' ', '')) %>% left_join(mc_suffix) %>% mutate(marker = str_c('Meta.Cluster_', Cluster, '_', suffix), voi3 = str_c(voi3_prefix, '_C', Cluster), Identity = make.unique(Identity))
 #Bipartite Graph of CST vs Immunome Results
 
 #Load packages (Probably don't even need half of them - I tried a lot of things before I settled on this relatively simple solution.)
@@ -263,6 +271,7 @@ library(ggplot2)
 library(network)
 library(GGally)
 library(RColorBrewer)
+library(tidyverse)
 
 #Define constants
 
@@ -272,6 +281,14 @@ rec_csts = c("REC_4", "REC_1", "REC_2", "REC_9", "REC_10", "REC_5", "REC_8", "RE
 nas_csts = c("NAS_4", "NAS_1", "NAS_2", "NAS_9", "NAS_10", "NAS_5", "NAS_8", "NAS_6", "NAS_3", "NAS_13", "NAS_7", "NAS_11", "NAS_12")
 #tests = c("logit", "surv", "binom", "alt_binom")
 # tests = c("logit", "alt_surv")
+
+to_plot = tibble(
+  response = c('REC_10', 'NAS_3', 'NAS_8', 'NAS_9'),
+  model_type = 'duration',
+  specification = 'full')
+  
+to_plot_response = semi_join(per_type_nest, to_plot) %>%  select(-adj_matrix) %>% unnest(cols = c(data)) %>% ungroup() %>% 
+  inner_join(to_plot) %>% filter(!is.na(zeroed_pval) & abs(zeroed_pval) > 0) 
 
 
 
@@ -297,13 +314,27 @@ for (test in seq_len(nrow(per_type_nest))){
   connected.net = network::get.inducedSubgraph(net.obj, which(network::has.edges(net.obj)))
   
   #Make a color gradient that will be used to color the edges
-  rbPal <- colorRampPalette(c('darkblue', 'cyan', 'white', 'yellow', 'red'))
+  rbPalFun0 <- colorRamp(c('darkblue', 'grey70',  'red'), space = 'Lab')
   
   #Map edge weights (signed log10 FDR adjusted p-vals) to colors in the gradient
-  ecols <- rbPal(10)[as.numeric(cut(network::get.edge.attribute(net.obj, "weights"), breaks = 10))]
+  weights = network::get.edge.attribute(net.obj, "weights")
+  rbPalFun = function(x){
+    sx = x*.5/max(abs(x)) + .5
+    #sx = (x-max(abs(weights))/(max(weights)-min(weights)))
+    rgb(rbPalFun0(sx)/255)
+  }
+  ecols <- rbPalFun(weights)
   
   print(ggnet2(connected.net, color = "color", shape = "shape", edge.color = ecols, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1,layout.par = list(niter = 1000))  + 
           ggtitle(paste0(per_type_nest[test,'model_type'], ':', per_type_nest[test,'specification'])))
+  
+  if(per_type_nest[test,'model_type'] == 'duration' && per_type_nest[test, 'specification'] == 'full'){
+    to_plot_v = which((connected.net %v% "vertex.names") %in% to_plot$response)
+    to_plot_neigh =  do.call(c, lapply(to_plot_v, network::get.neighborhood, x = connected.net))
+    #subnet = network::get.inducedSubgraph(net.obj,  to_plot_v, alters = setdiff(seq_along(net.obj %v% "vertex.names"), to_plot_v))
+    subnet = network::get.inducedSubgraph(connected.net,  union(to_plot_v, to_plot_neigh))
+      ecols_sub <- rbPalFun(subnet %eattr% "weights")
+  }
 
 }
 
@@ -314,13 +345,52 @@ for (test in seq_len(nrow(per_type_nest))){
 ```
 
 
+```{r  core_network, dev = c('png', 'pdf'), fig.width = 6, fig.height = 6}
+ print(ggnet2(subnet, color = "color", shape = "shape", edge.color = ecols_sub, label = TRUE, label.size = 3, fontface = "bold", edge.size = 1,layout.par = list(niter = 1000))  + 
+          ggtitle('duration:full (selected nodes)'))
+
+cleanup_coefs = . %>%
+  filter(str_detect(term, 'voi')) %>%
+  mutate(is_anova = !str_detect(term, '^voi$'),
+    voi2 = ifelse(is_anova, str_replace(term, 'voi', ''), voi_full),
+         tp = str_extract(voi, 'OneYear|Disch|Birth'),
+         voi3 = str_replace(voi2, '_?(OneYear(_)?|Disch(arge)?(_)?|Birth(_)?)', ''),
+         cut_fdr = cut(-log10(ifelse(is.na(fdr), 1, fdr)), breaks = c(0, 1, 2, Inf), include.lowest = TRUE)
+         ) %>%
+  left_join(metacluster_rn) %>% mutate(metacluster_nm = coalesce(Identity, voi3))
+
+to_plot_coefse_all = semi_join(all_fits, to_plot_response, by = c('model_type', 'specification', 'response')) %>% semi_join(to_plot_response, by = 'voi_full') %>% cleanup_coefs
+
+to_plot_coefse_sub = semi_join(all_fits, to_plot_response) %>% cleanup_coefs %>% mutate(metacluster_nm = factor(metacluster_nm, levels = unique(metacluster_nm[order(voi3)])))
+
+
+plt = ggplot(to_plot_coefse_all, aes(y = clamp(estimate, 2), ymin = estimate-1.96*std.error, ymax = estimate + std.error*1.96, x = voi3, color = tp))+ facet_grid(is_anova ~ response,  space = 'free_y', scales = 'free', ) + xlab('') + ylab('Log Fold Change') + geom_pointrange(position = position_dodge(width = .4)) + geom_hline(yintercept = 0, lty = 2) + theme_minimal()  + coord_flip(ylim = c(-2, 2)) + scale_color_discrete('Time point')
+
+plt + aes(alpha = cut_fdr) + scale_alpha_manual(values = c('[0,1]'=.3, '(1,2]'=.7, '(2,Inf]'=1))
+
+
+plt %+% to_plot_coefse_sub
+```
+
+
+```{r core_networks_mc, opts.label='core_networks', fig.width = 8, dev = c('png', 'pdf')}
+(plt  %+% to_plot_coefse_sub) + aes(x = metacluster_nm)
+```
+
+```{r flow_mfi}
+fsom_expr = readRDS('flowcytometry/intermediates/metacluster_mfi.rds')
+descaled = bind_rows(fsom_expr$descaled, .id = 'population') %>% pivot_longer(cols = c(-cell_clustering, -population)) %>% filter(!is.na(value))
+
+
+```
+
 # Targeted analysis of Alloiococcus abundance, Tphe5, and acute illness
 
 
 
 ```{r}
 library("readr")
-library("tidyverse")
+
 library(lme4)
 library(geepack)
 
