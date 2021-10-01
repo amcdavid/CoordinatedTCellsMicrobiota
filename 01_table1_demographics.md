@@ -1,7 +1,7 @@
 Demographics for table 1
 ================
 Andrew McDavid
-2020-06-29
+2021-09-30
 
 ## Load data
 
@@ -56,7 +56,7 @@ calc_stat = function(tab, var, value){
   tab = tab %>% group_by(ispreterm)
   varq = var
   # continuous, mean SD
-  if(missing(value)) res = tab %>% dplyr::summarize(mean = mean(!!varq), sd = sd(!!varq))
+  if(missing(value)) res = tab %>% dplyr::summarize(mean = mean(!!varq), sd = sd(!!varq),  min = min(!!varq), max = max(!!varq), iqr = IQR(!!varq))
   # binary number / proportion
   else res = tab %>% dplyr::summarize(n = sum(!!varq == value), prop = mean(!!varq==value))
   res
@@ -74,6 +74,32 @@ calc_stat(hospital_humilk, quo(`Any Human Milk Perinatal`), TRUE)
     ##   <lgl>     <int> <dbl>
     ## 1 FALSE        88 0.746
     ## 2 TRUE        135 0.906
+
+## Days to discharge
+
+``` r
+days_discharge = read_csv('data/subject_timeline.csv') %>% group_by(Subject) %>% filter(`Sequence Num` %in% c(1, 7)) %>% arrange(cga) %>% summarize(days_to_discharge = DOL[2] - DOL[1])
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   `Sequence Num` = col_double(),
+    ##   DOL = col_double(),
+    ##   cga = col_double(),
+    ##   Subject = col_character()
+    ## )
+
+``` r
+days_discharge %>% left_join(subject) %>% calc_stat(quo(days_to_discharge))
+```
+
+    ## Joining, by = "Subject"
+
+    ## # A tibble: 2 x 6
+    ##   ispreterm  mean     sd   min   max   iqr
+    ##   <lgl>     <dbl>  <dbl> <dbl> <dbl> <dbl>
+    ## 1 FALSE      2.31  0.676     0     4     1
+    ## 2 TRUE      56.9  48.9       3   286    65
 
 ## Milk after discharge
 
@@ -103,7 +129,7 @@ write_csv(milk_sum, path = 'intermediates/milk_subject.csv')
 These values were reported to the study by the infants’ caregiver in a
 quarterly survey
 
-### Months of \> 50% human milk
+### Months of &gt; 50% human milk
 
 ``` r
 milk_sub = left_join(milk_sum, subject)
@@ -115,14 +141,14 @@ milk_sub = left_join(milk_sum, subject)
 calc_stat(milk_sub, quo(milk_months))
 ```
 
-    ## # A tibble: 2 x 3
-    ##   ispreterm  mean    sd
-    ##   <lgl>     <dbl> <dbl>
-    ## 1 FALSE      5.35  4.53
-    ## 2 TRUE       3.02  3.50
+    ## # A tibble: 2 x 6
+    ##   ispreterm  mean    sd   min   max   iqr
+    ##   <lgl>     <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 FALSE      5.35  4.53     0    12   8.5
+    ## 2 TRUE       3.02  3.50     0    12   3.5
 
-Months that the child recieved \> 50% human milk (normalized to one year
-of follow up)
+Months that the child recieved &gt; 50% human milk (normalized to one
+year of follow up)
 
 ### Quarters of milk
 
@@ -130,14 +156,13 @@ of follow up)
 calc_stat(milk_sub, quo(any_milk_quarter))
 ```
 
-    ## # A tibble: 2 x 3
-    ##   ispreterm  mean    sd
-    ##   <lgl>     <dbl> <dbl>
-    ## 1 FALSE      1.86  1.68
-    ## 2 TRUE       1.04  1.36
+    ## # A tibble: 2 x 6
+    ##   ispreterm  mean    sd   min   max   iqr
+    ##   <lgl>     <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 FALSE      1.86  1.68     0     4     4
+    ## 2 TRUE       1.04  1.36     0     4     2
 
-Number of 90-day periods in which any milk was
-recieved.
+Number of 90-day periods in which any milk was recieved.
 
 ``` r
 #latex(summary( ispreterm ~ milk_months + any_milk_quarter, data = milk_sum, method = 'reverse', test = TRUE, prmsd = TRUE, continuous = 3))
@@ -147,7 +172,7 @@ ggplot(milk_sub, aes(x = preterm_weeks, y = milk_months)) + geom_point() + geom_
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](01_table1_demographics_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](01_table1_demographics_files/figure-gfm/unnamed-chunk-19-1.png)<!-- -->
 
 ``` r
 ggplot(milk_sub, aes(x = preterm_weeks, y = any_milk_quarter)) + geom_point() + geom_smooth()
@@ -155,10 +180,9 @@ ggplot(milk_sub, aes(x = preterm_weeks, y = any_milk_quarter)) + geom_point() + 
 
     ## `geom_smooth()` using method = 'loess' and formula 'y ~ x'
 
-![](01_table1_demographics_files/figure-gfm/unnamed-chunk-6-2.png)<!-- -->
+![](01_table1_demographics_files/figure-gfm/unnamed-chunk-19-2.png)<!-- -->
 
-Dose-response between milk received and gestational
-age.
+Dose-response between milk received and gestational age.
 
 ## Antibiotics
 
@@ -172,23 +196,22 @@ nabx_polish = left_join(nabx_polish, subject)
 calc_stat(filter(nabx_polish, !discharge), quo(`Number of systemic antibiotic`)) 
 ```
 
-    ## # A tibble: 2 x 3
-    ##   ispreterm  mean    sd
-    ##   <lgl>     <dbl> <dbl>
-    ## 1 FALSE       0     0  
-    ## 2 TRUE       12.9  16.5
+    ## # A tibble: 2 x 6
+    ##   ispreterm  mean    sd   min   max   iqr
+    ##   <lgl>     <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 FALSE       0     0       0     0     0
+    ## 2 TRUE       12.9  16.5     0    91    12
 
-Days of antibiotics (IV, in
-patient)
+Days of antibiotics (IV, in patient)
 
 ``` r
 calc_stat(filter(nabx_polish, discharge), quo(`Number of systemic antibiotic`)) 
 ```
 
-    ## # A tibble: 2 x 3
-    ##   ispreterm  mean    sd
-    ##   <lgl>     <dbl> <dbl>
-    ## 1 FALSE     0.559  1.06
-    ## 2 TRUE      1.06   2.23
+    ## # A tibble: 2 x 6
+    ##   ispreterm  mean    sd   min   max   iqr
+    ##   <lgl>     <dbl> <dbl> <dbl> <dbl> <dbl>
+    ## 1 FALSE     0.559  1.06     0     7     1
+    ## 2 TRUE      1.06   2.23     0    14     1
 
 Courses of antibiotics reported by care giver (likely oral).

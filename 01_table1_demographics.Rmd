@@ -25,7 +25,7 @@ calc_stat = function(tab, var, value){
   tab = tab %>% group_by(ispreterm)
   varq = var
   # continuous, mean SD
-  if(missing(value)) res = tab %>% dplyr::summarize(mean = mean(!!varq), sd = sd(!!varq))
+  if(missing(value)) res = tab %>% dplyr::summarize(mean = mean(!!varq), sd = sd(!!varq),  min = min(!!varq), max = max(!!varq), iqr = IQR(!!varq))
   # binary number / proportion
   else res = tab %>% dplyr::summarize(n = sum(!!varq == value), prop = mean(!!varq==value))
   res
@@ -38,6 +38,14 @@ calc_stat = function(tab, var, value){
 calc_stat(hospital_humilk, quo(`Any Human Milk Perinatal`), TRUE)
 
 ```
+
+## Days to discharge
+
+```{r}
+days_discharge = read_csv('data/subject_timeline.csv') %>% group_by(Subject) %>% filter(`Sequence Num` %in% c(1, 7)) %>% arrange(cga) %>% summarize(days_to_discharge = DOL[2] - DOL[1])
+days_discharge %>% left_join(subject) %>% calc_stat(quo(days_to_discharge))
+```
+
 
 ## Milk after discharge
 
