@@ -6,110 +6,14 @@ IST/CST Results
 
 library("readr")
 library("tidyverse")
-```
-
-    ## Warning: package 'tidyverse' was built under R version 3.5.2
-
-    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-
-    ## ✓ ggplot2 3.3.0     ✓ dplyr   0.8.5
-    ## ✓ tibble  2.1.3     ✓ stringr 1.4.0
-    ## ✓ tidyr   1.0.2     ✓ forcats 0.5.0
-    ## ✓ purrr   0.3.3
-
-    ## Warning: package 'ggplot2' was built under R version 3.5.2
-
-    ## Warning: package 'tibble' was built under R version 3.5.2
-
-    ## Warning: package 'tidyr' was built under R version 3.5.2
-
-    ## Warning: package 'purrr' was built under R version 3.5.2
-
-    ## Warning: package 'dplyr' was built under R version 3.5.2
-
-    ## Warning: package 'stringr' was built under R version 3.5.2
-
-    ## Warning: package 'forcats' was built under R version 3.5.2
-
-    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
 library("RColorBrewer")
 library("pheatmap")
-```
-
-    ## Warning: package 'pheatmap' was built under R version 3.5.2
-
-``` r
 library("viridis")
-```
-
-    ## Loading required package: viridisLite
-
-``` r
 library("ggplot2")
 library("igraph")
-```
-
-    ## Warning: package 'igraph' was built under R version 3.5.2
-
-    ## 
-    ## Attaching package: 'igraph'
-
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     as_data_frame, groups, union
-
-    ## The following objects are masked from 'package:purrr':
-    ## 
-    ##     compose, simplify
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     crossing
-
-    ## The following object is masked from 'package:tibble':
-    ## 
-    ##     as_data_frame
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     decompose, spectrum
-
-    ## The following object is masked from 'package:base':
-    ## 
-    ##     union
-
-``` r
 library("slam")
-```
-
-    ## Warning: package 'slam' was built under R version 3.5.2
-
-``` r
 library("scales")
-```
 
-    ## Warning: package 'scales' was built under R version 3.5.2
-
-    ## 
-    ## Attaching package: 'scales'
-
-    ## The following object is masked from 'package:viridis':
-    ## 
-    ##     viridis_pal
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     discard
-
-    ## The following object is masked from 'package:readr':
-    ## 
-    ##     col_factor
-
-``` r
 #Name of IST/cluster column in metadata
 tphe.cc <- "TPHE.IST"
 ics.cc <- "ICS.IST"
@@ -737,6 +641,279 @@ ggplot(nas, aes(y=CGA, x=Renamed_CST, color=gaBirth)) + scale_color_gradient2(mi
 
 ![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-8-2.png)<!-- -->
 
+``` r
+communities = bind_rows(
+  list(ics = ics, tphe = tphe), .id = 'community'
+) %>% rename(Renamed_CST = IST) %>%
+  bind_rows(bind_rows(list(nas = nas, rec = rec), .id = 'community')) %>% 
+  mutate(Subject = factor(Subject), Renamed_CST = factor(Renamed_CST))
+```
+
+    ## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
+
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
+
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
+
+``` r
+hospital_humilk = read_csv('data/milk_hospital.csv') %>% rename(perinatal_milk = `Any Human Milk Perinatal`)
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   `Any Human Milk Perinatal` = col_logical()
+    ## )
+
+``` r
+nabx_polish = read_csv('data/antibiotic_exposure.csv')
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   discharge = col_logical(),
+    ##   group = col_character(),
+    ##   `Number of systemic antibiotic` = col_double()
+    ## )
+
+``` r
+covariates = read_csv("data/subject_covariates.csv")
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Gender = col_character(),
+    ##   Race = col_character(),
+    ##   `Birth Season` = col_character(),
+    ##   preterm_weeks = col_double(),
+    ##   auc14 = col_double(),
+    ##   PRD = col_character(),
+    ##   preg_antibiotics = col_character(),
+    ##   mode_delivery = col_character(),
+    ##   cchorio = col_character(),
+    ##   preg_membrane_18hr = col_character(),
+    ##   birth_wt_gms = col_double(),
+    ##   `cmv test` = col_character(),
+    ##   Subject = col_character()
+    ## )
+
+``` r
+timeline = read_csv("data/subject_timeline.csv") %>% filter()
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   `Sequence Num` = col_double(),
+    ##   DOL = col_double(),
+    ##   cga = col_double(),
+    ##   Subject = col_character()
+    ## )
+
+``` r
+nabx_time = nabx_polish %>% select(-group) %>% rename(n_antibiotics = `Number of systemic antibiotic`) %>% spread(discharge, n_antibiotics) %>% rename(n_antibiotics_discharge = 'TRUE', n_antibiotics_pre = 'FALSE')
+
+discharge_humilk = read_csv( 'intermediates/milk_subject.csv')
+```
+
+    ## Parsed with column specification:
+    ## cols(
+    ##   Subject = col_character(),
+    ##   months_surveyed = col_double(),
+    ##   milk_months = col_double(),
+    ##   any_milk_quarter = col_double()
+    ## )
+
+``` r
+covariates =  purrr::reduce(list(covariates, hospital_humilk, nabx_time, discharge_humilk), left_join)
+```
+
+    ## Joining, by = "Subject"
+
+    ## Joining, by = "Subject"
+    ## Joining, by = "Subject"
+
+``` r
+covariates$n_antibiotics_pre = ifelse(covariates$preterm_weeks <=0, NA, covariates$n_antibiotics_pre)
+
+
+has_cst = communities %>%
+  group_by(Subject, Renamed_CST, .drop = FALSE) %>%
+  summarize(has_cst = n()>0) %>% ungroup()
+
+was_sampled = communities %>% group_by(community, Subject, .drop = FALSE) %>% 
+  summarize(was_sampled = n() > 0) %>% 
+  filter(was_sampled) %>% 
+  ungroup()  %>%
+  inner_join(communities %>% group_by(community, Renamed_CST) %>% summarize())
+```
+
+    ## Joining, by = "community"
+
+``` r
+nrow(has_cst)
+```
+
+    ## [1] 7585
+
+``` r
+has_cst = has_cst %>% semi_join(was_sampled)
+```
+
+    ## Joining, by = c("Subject", "Renamed_CST")
+
+``` r
+nrow(has_cst)
+```
+
+    ## [1] 6444
+
+``` r
+has_cst = has_cst %>% left_join(covariates, by = 'Subject') %>% 
+  mutate(mode_delivery = fct_recode(mode_delivery, vaginal = c('Vaginal Vertex'), other = 'Vaginal Breech', other= 'Caesarean Section'),
+         n_antibiotics_pre = ifelse(preterm_weeks<=0, 0, n_antibiotics_pre))
+```
+
+    ## Warning: Column `Subject` joining factor and character vector, coercing into character vector
+
+``` r
+cst_assoc = has_cst %>% group_by(Renamed_CST) %>% do({
+    data = .
+    full = glm(has_cst ~ preterm_weeks + mode_delivery + scale(birth_wt_gms) + scale(auc14) + preg_antibiotics + milk_months + perinatal_milk + n_antibiotics_pre + n_antibiotics_discharge, family = 'binomial', data = data)
+    drop_term = update(full, . ~ . - preterm_weeks)
+    full_aov = anova(drop_term, full, test = 'Chisq')
+    term_only = update(full, . ~ preterm_weeks)
+    drop_termonly = update(full, . ~ 1)
+    term_only_aov = anova(term_only, drop_termonly, test = 'Chisq')
+    tibble(full = list(full), drop_term = list(full_aov), term_only = list(term_only), drop_termonly = list(term_only_aov))
+})
+```
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+    ## Warning: glm.fit: algorithm did not converge
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+    ## Warning: glm.fit: algorithm did not converge
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
+
+``` r
+cst_assoc = pivot_longer(cst_assoc, -Renamed_CST, values_to = 'model') %>% 
+  rowwise() %>% mutate(result = list(suppressWarnings(broom::tidy(model))))
+cst_coef = unnest(cst_assoc %>% select(-model), cols = c(result))
+cst_coef = cst_coef %>% group_by(is_intercept = term == "(Intercept)", name, is_term = term == 'preterm_weeks') %>% 
+  mutate(fdr = p.adjust(p.value, method = 'fdr')) %>% ungroup()
+```
+
+## Associations between term and EVER CST
+
+``` r
+term_adj_results = filter(cst_coef,name == 'drop_term') %>% filter(!is.na(p.value)) %>% 
+  select(Renamed_CST, p.value, fdr) %>% arrange(p.value)
+
+term_noadj_results = filter(cst_coef,name == 'drop_termonly') %>% filter(!is.na(p.value)) %>% 
+  select(Renamed_CST, p.value, fdr) 
+knitr::kable(left_join(term_adj_results, term_noadj_results, by = "Renamed_CST", suffix = c('_controlled', '_simple')))
+```
+
+| Renamed\_CST | p.value\_controlled | fdr\_controlled | p.value\_simple | fdr\_simple |
+|:-------------|--------------------:|----------------:|----------------:|------------:|
+| REC\_11      |           0.0005169 |       0.0211912 |       0.3841019 |   0.5080058 |
+| REC\_13      |           0.0055127 |       0.1130098 |       0.5854525 |   0.6858157 |
+| NAS\_1       |           0.0097843 |       0.1337185 |       0.0000000 |   0.0000000 |
+| ICS\_3       |           0.0146095 |       0.1497474 |       0.0000000 |   0.0000000 |
+| NAS\_8       |           0.0207843 |       0.1704313 |       0.0002782 |   0.0009504 |
+| NAS\_2       |           0.0360914 |       0.1830087 |       0.0000000 |   0.0000000 |
+| REC\_6       |           0.0364280 |       0.1830087 |       0.0151703 |   0.0327359 |
+| TPHE\_2      |           0.0369244 |       0.1830087 |       0.0000003 |   0.0000013 |
+| REC\_3       |           0.0465117 |       0.1830087 |       0.0000000 |   0.0000001 |
+| TPHE\_5      |           0.0495731 |       0.1830087 |       0.1978148 |   0.3119387 |
+| ICS\_2       |           0.0514535 |       0.1830087 |       0.0386065 |   0.0753745 |
+| ICS\_1       |           0.0535635 |       0.1830087 |       0.0038746 |   0.0117319 |
+| NAS\_11      |           0.0790296 |       0.2492472 |       0.0605285 |   0.1078986 |
+| ICS\_7       |           0.0985262 |       0.2885410 |       0.4931584 |   0.6127119 |
+| REC\_5       |           0.1185858 |       0.3186147 |       0.6805234 |   0.7154221 |
+| REC\_1       |           0.1243374 |       0.3186147 |       0.0106492 |   0.0256834 |
+| NAS\_9       |           0.1494822 |       0.3605159 |       0.3166683 |   0.4477034 |
+| TPHE\_4      |           0.2114238 |       0.4815765 |       0.0000029 |   0.0000133 |
+| ICS\_8       |           0.2720756 |       0.5618162 |       0.2505320 |   0.3668504 |
+| REC\_7       |           0.2740567 |       0.5618162 |       0.6126618 |   0.6868382 |
+| ICS\_5       |           0.3255686 |       0.6356339 |       0.0080025 |   0.0205065 |
+| NAS\_12      |           0.3516331 |       0.6468893 |       0.0001106 |   0.0004535 |
+| TPHE\_6      |           0.3628891 |       0.6468893 |       0.4576067 |   0.5863086 |
+| REC\_4       |           0.3911241 |       0.6469094 |       0.0433714 |   0.0808286 |
+| NAS\_4       |           0.4101315 |       0.6469094 |       0.3667133 |   0.5011748 |
+| NAS\_13      |           0.4102352 |       0.6469094 |       0.5233694 |   0.6311219 |
+| ICS\_4       |           0.4442992 |       0.6746765 |       0.0000002 |   0.0000011 |
+| ICS\_6       |           0.4891254 |       0.7162194 |       0.7765904 |   0.7765904 |
+| REC\_10      |           0.5070235 |       0.7168263 |       0.0121089 |   0.0275814 |
+| NAS\_10      |           0.5600719 |       0.7554856 |       0.7155748 |   0.7334642 |
+| NAS\_6       |           0.5712208 |       0.7554856 |       0.1855594 |   0.3043174 |
+| TPHE\_7      |           0.6214058 |       0.7961762 |       0.6198296 |   0.6868382 |
+| NAS\_7       |           0.6627537 |       0.8234213 |       0.0049588 |   0.0135540 |
+| TPHE\_1      |           0.7486164 |       0.9006041 |       0.0000000 |   0.0000000 |
+| REC\_12      |           0.7688084 |       0.9006041 |       0.2327137 |   0.3533800 |
+| REC\_8       |           0.8457613 |       0.9582787 |       0.0002631 |   0.0009504 |
+| NAS\_5       |           0.8695595 |       0.9582787 |       0.6744430 |   0.7154221 |
+| NAS\_3       |           0.9075440 |       0.9582787 |       0.1483642 |   0.2534555 |
+| REC\_2       |           0.9115334 |       0.9582787 |       0.0000000 |   0.0000000 |
+| REC\_9       |           0.9506361 |       0.9744020 |       0.0040060 |   0.0117319 |
+| TPHE\_3      |           0.9905694 |       0.9905694 |       0.0314239 |   0.0644191 |
+
+Controlling for preterm\_weeks + mode\_delivery + scale(birth\_wt\_gms)
++ scale(auc14) + preg\_antibiotics + milk\_months + perinatal\_milk +
+n\_antibiotics\_pre + n\_antibiotics\_discharge
+
+## Other associations between EVER CST (top 20)
+
+``` r
+other_assoc = filter(cst_coef,name == 'full', !is_intercept) %>% 
+  select(Renamed_CST, term, estimate, std.error, fdr, p.value) %>% arrange(p.value) 
+other_assoc %>% slice(1:20) %>% knitr::kable()
+```
+
+| Renamed\_CST | term                      |   estimate | std.error |       fdr |   p.value |
+|:-------------|:--------------------------|-----------:|----------:|----------:|----------:|
+| NAS\_4       | preg\_antibioticsYes      | -1.8602139 | 0.4804656 | 0.0286206 | 0.0001081 |
+| TPHE\_2      | preg\_antibioticsYes      | -2.0715261 | 0.5519200 | 0.0286206 | 0.0001745 |
+| REC\_11      | preterm\_weeks            |  0.4262421 | 0.1310133 | 0.0467492 | 0.0011402 |
+| NAS\_4       | scale(auc14)              | -1.2719729 | 0.4043432 | 0.1811077 | 0.0016565 |
+| ICS\_7       | n\_antibiotics\_discharge |  0.5313692 | 0.1736543 | 0.1815413 | 0.0022139 |
+| REC\_6       | mode\_deliveryvaginal     |  1.1991511 | 0.4114048 | 0.2032382 | 0.0035595 |
+| ICS\_2       | scale(birth\_wt\_gms)     | -2.2312997 | 0.7901970 | 0.2032382 | 0.0047469 |
+| NAS\_9       | preg\_antibioticsYes      | -1.1992710 | 0.4309669 | 0.2032382 | 0.0053901 |
+| TPHE\_5      | preg\_antibioticsYes      |  1.5007428 | 0.5428849 | 0.2032382 | 0.0057030 |
+| REC\_1       | perinatal\_milkTRUE       | -1.9493134 | 0.7131852 | 0.2032382 | 0.0062713 |
+| REC\_13      | scale(birth\_wt\_gms)     |  1.6446209 | 0.6106350 | 0.2032382 | 0.0070749 |
+| REC\_11      | perinatal\_milkTRUE       | -1.6919789 | 0.6313174 | 0.2032382 | 0.0073605 |
+| REC\_5       | mode\_deliveryvaginal     | -1.2373067 | 0.4622541 | 0.2032382 | 0.0074355 |
+| REC\_13      | preterm\_weeks            |  0.3271683 | 0.1233737 | 0.1481942 | 0.0080052 |
+| NAS\_1       | preterm\_weeks            |  0.5238912 | 0.2056328 | 0.1481942 | 0.0108435 |
+| TPHE\_1      | mode\_deliveryvaginal     | -1.1112531 | 0.4421790 | 0.2828143 | 0.0119665 |
+| REC\_11      | preg\_antibioticsYes      | -1.1818975 | 0.4708658 | 0.2828143 | 0.0120713 |
+| REC\_1       | mode\_deliveryvaginal     |  1.1770991 | 0.4754450 | 0.2907043 | 0.0132944 |
+| NAS\_8       | n\_antibiotics\_pre       |  0.0744229 | 0.0312557 | 0.3294952 | 0.0172612 |
+| TPHE\_4      | mode\_deliveryvaginal     |  1.3895171 | 0.5919405 | 0.3294952 | 0.0189053 |
+
+``` r
+write_csv(other_assoc, 'intermediates/cst_assoc.csv')
+```
+
+Top 20 associations listed above, others [are
+here](intermediates/cst_assoc.csv).
+
 # Trajectories
 
 ``` r
@@ -824,7 +1001,7 @@ df <- merge(rec, pc1, by = "SampleID")
 ggplot(data = df, aes(x = PC1, group = BirthCohort, fill = BirthCohort)) + geom_density(adjust=1.5, position="fill")
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-9-1.png)<!-- -->
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
 ``` r
 nas <- read_tsv(file.path(pth, "nas_basic.txt"))
@@ -866,324 +1043,4 @@ df <- merge(nas, pc1, by = "SampleID")
 ggplot(data = df, aes(x = PC1, group = BirthCohort, fill = BirthCohort)) + geom_density(adjust=1.5, position="fill")
 ```
 
-![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-9-2.png)<!-- -->
-
-\#Supplementary Figure 5 gCST 3 Time to Occurrence Based on Tphe IST at
-Discharge
-
-This works exactly the same as the survival analysis script in
-`02_network_modeling`, except you can specify that it run for only a
-subset of CSTs and immune variables, and for all of those that are
-significant a plot is generated. Optionally, you can save the fitted
-models and filtered input data for the chosen CST-immune subset.
-
-See 02\_network\_modeling “time to occurrence”/survival analysis script
-for additional comments and description.
-
-``` r
-#Start time
-start.time <- Sys.time()
-
-library(survival)
-library(icenReg)
-```
-
-    ## Warning: package 'icenReg' was built under R version 3.5.2
-
-    ## Loading required package: Rcpp
-
-    ## Warning: package 'Rcpp' was built under R version 3.5.2
-
-    ## Loading required package: coda
-
-    ## Warning: package 'coda' was built under R version 3.5.2
-
-``` r
-library(survminer)
-```
-
-    ## Warning: package 'survminer' was built under R version 3.5.2
-
-    ## Loading required package: ggpubr
-
-    ## Warning: package 'ggpubr' was built under R version 3.5.2
-
-    ## Loading required package: magrittr
-
-    ## 
-    ## Attaching package: 'magrittr'
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     set_names
-
-    ## The following object is masked from 'package:tidyr':
-    ## 
-    ##     extract
-
-``` r
-library(dplyr)
-library(data.table)
-```
-
-    ## Warning: package 'data.table' was built under R version 3.5.2
-
-    ## data.table 1.12.8 using 4 threads (see ?getDTthreads).  Latest news: r-datatable.com
-
-    ## 
-    ## Attaching package: 'data.table'
-
-    ## The following object is masked from 'package:slam':
-    ## 
-    ##     rollup
-
-    ## The following objects are masked from 'package:dplyr':
-    ## 
-    ##     between, first, last
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     transpose
-
-``` r
-library(readr)
-
-type <- "alt_surv"
-
-sites = c("REC")
-
-#Included for fig making
-sigCSTs <- c("REC_3")
-
-#Included for fig making
-sigVars <- c("TPHE_IST_Disch")
-
-#Included for fig making
-fits.alt_surv <- list()
-
-#Included for fig making
-table.alt_surv <- list()
-
-for (site in sites) {
-  
-  mapping <- read_tsv(file.path(refined, sprintf("%s_Surv_Mapping.txt", site)))
-  
-  raw_table <- read_tsv(file.path(refined, sprintf("%s_Surv_Input.txt", site)))
-  
-  mapping_length <- ncol(mapping)
-  
-  table_length <- ncol(raw_table)
-  
-  for (cst_i in 3:table_length) {
-    
-    tmp.time <- Sys.time()
-    
-    cst <- colnames(raw_table[,cst_i])
-    
-    #Included for fig making 
-    if (!(cst %in% sigCSTs)) { next ; }
-    
-    #Included for fig making
-    fits.alt_surv[[cst]] <- list()
-    
-    #Included for fig making
-    table.alt_surv[[cst]] <- list()
-    
-    cst_in <- data.frame(raw_table[, 1:2], raw_table[, cst_i])
-    
-    cst_in <- cst_in[complete.cases(cst_in[,]),]
-    
-    var_names <- list()
-    voi_names <- list()
-    var_coeffs <- list()
-    var_exp_coeffs <- list()
-    variable_pvals <- list()
-    k <- 1
-    
-    for (var_i in 4:mapping_length) {
-      
-      var <- colnames(mapping[,var_i])
-      
-      #Included for fig making  
-      if (!(var %in% sigVars)) { next ; }
-      
-      mapping_in <- data.frame(mapping[, 1:3], mapping[, var_i])
-      
-      fac = FALSE
-      
-      working_table <- merge(mapping_in, cst_in, by = "Subject")
-      
-      working_table <- working_table[complete.cases(working_table[,]), ]
-      
-      if (typeof(working_table[[var]]) == "character") {
-        
-        fac = TRUE
-        
-        tmp_table <- as.data.frame(table(working_table[[var]]))
-        
-        rare_cats <- list()
-        n <- 1
-        
-        for (cat_i in 1:nrow(tmp_table)) {
-          
-          if (tmp_table[[2]][cat_i] < 10) {
-            
-            rare_cats[[n]] <- levels(tmp_table[[1]])[cat_i]
-            n <- n + 1
-            
-          }
-          
-        }
-        
-        working_table <- working_table[!(working_table[[var]] %in% rare_cats), ]
-        
-      }
-      
-      if ((nrow(working_table) < 20) || ((fac) && (nrow(table(working_table[[var]])) < 2))) {
-        
-        next
-        
-      }
-      
-      working_table$cst_obs <- working_table[[cst]]
-      
-      if (fac) {
-        
-        working_table$voi <- factor(working_table[[var]])
-        
-      } else {
-        
-        working_table$voi <- c(scale(working_table[[var]], center = TRUE, scale = TRUE))
-        
-      }
-      
-      working_table$GAB <- ((working_table$gaBirth)/37) - 1
-      
-      cst_surv <- Surv(working_table$PrevSampleDOL, working_table$cst_obs, type = "interval2")
-      
-      #Included for fig making
-      fits.alt_surv[[cst]][[var]] <- ic_par(cst_surv ~ MOD + GAB + voi, data = working_table, model = "aft", dist = "loglogistic")
-      
-      #Included for fig making
-      table.alt_surv[[cst]][[var]] <- working_table
-      
-      #Included for fig making
-      next
-      
-      #Included for fig making
-      if(!(dir.exists(fig_path <- file.path(figure, "cst_occurence_figs", type))))
-      dir.create(fig_path)
-      if (fac) {
-        
-        fac_lvls <- levels(as.data.frame(table(working_table[[var]]))[[1]])
-        df.new <- data.frame(voi = fac_lvls, GAB = c(-.2, -.2), MOD = c("Caesarean_Section", "Caesarean_Section"))
-        rownames(df.new) <- fac_lvls
-      } else {
-        df.new <- data.frame(voi = c(1, -1), GAB = c(-.2, -.2), MOD = c("Caesarean_Section", "Caesarean_Section"))
-        rownames(df.new) <- c('High', 'Low')
-      }
-       pdf(file.path(fig_path, sprintf("%s_%s_plot.pdf", cst, var)))
-        plot(fits.alt_surv[[cst]][[var]], df.new, xlab = "Day of Life")
-        dev.off()
-        
-      
-      #Included for fig making
-      next
-      
-      fit <- ic_par(cst_surv ~ MOD + GAB + voi, data = working_table, model = "aft", dist = "loglogistic")
-      
-      fit_summary <- summary(fit)
-      
-      for (p in 5:nrow(fit_summary$summaryParameters)) {
-        
-        var_names[[k]] <- var
-        voi_names[[k]] <- rownames(fit_summary$summaryParameters)[p]
-        var_coeffs[[k]] <- fit_summary$summaryParameters[p, 1]
-        var_exp_coeffs[[k]] <- fit_summary$summaryParameters[p, 2]
-        variable_pvals[[k]] <- fit_summary$summaryParameters[p, 5]
-        k <- k + 1
-        
-      }
-      
-      if(!(dir.exists(place <- file.path(refined, type))))
-      dir.create(place)
-      
-      cat("Current Variable: ", file = file.path(place, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat(var, file = file.path(place, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n', file = file.path(place, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      capture.output(summary(fit), file = file.path(place, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-      cat('\n###\n###\n###\n\n', file = file.path(place, sprintf("%s_results/%s_fit_log.txt", type, cst)), append = TRUE)
-        
-    }
-    
-    #Included for fig making
-    next
-    
-    adj_variable_pvals <- p.adjust(variable_pvals, method = "fdr")
-    results <- cbind(var_names, voi_names, var_coeffs, var_exp_coeffs, variable_pvals, adj_variable_pvals)
-    
-    write.csv(results, file.path(place, sprintf("%s_results/%s_model_pvals.csv", type, cst)))
-    
-    cat("\nTime taken to complete last CST: ")
-    cat(difftime(Sys.time(), tmp.time, units = "mins"))
-    
-  }
-  
-}
-```
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   .default = col_double(),
-    ##   Subject = col_character(),
-    ##   MOD = col_character(),
-    ##   TPHE_IST_Birth = col_character(),
-    ##   TPHE_IST_Disch = col_character(),
-    ##   TPHE_IST_1YR = col_character(),
-    ##   ICS_IST_Birth = col_character(),
-    ##   ICS_IST_Disch = col_character(),
-    ##   ICS_IST_1YR = col_character()
-    ## )
-
-    ## See spec(...) for full column specifications.
-
-    ## Parsed with column specification:
-    ## cols(
-    ##   Subject = col_character(),
-    ##   PrevSampleDOL = col_double(),
-    ##   REC_2 = col_double(),
-    ##   REC_3 = col_double(),
-    ##   REC_9 = col_double(),
-    ##   REC_1 = col_double(),
-    ##   REC_6 = col_double(),
-    ##   REC_8 = col_double(),
-    ##   REC_11 = col_double(),
-    ##   REC_7 = col_double(),
-    ##   REC_4 = col_double(),
-    ##   REC_5 = col_double(),
-    ##   REC_12 = col_double(),
-    ##   REC_13 = col_double(),
-    ##   REC_10 = col_double()
-    ## )
-
-``` r
-#Included for fig making
-#save(fits.alt_surv, file = "selected_fitted_alt_survival_models.rda")
-#save(table.alt_surv, file = "selected_fitted_alt_surv_dfs.rda")
-
-#Print total runtime
-cat("\nTotal runtime:")
-```
-
-    ## 
-    ## Total runtime:
-
-``` r
-cat(difftime(Sys.time(), start.time, units = "hours"))
-```
-
-    ## 0.0004568417
-
-``` r
-cat("\n\n\n")
-```
+![](02_ist_cst_results_files/figure-gfm/unnamed-chunk-10-2.png)<!-- -->
