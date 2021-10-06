@@ -1520,11 +1520,6 @@ sign_max = function(x) {
 
 
 library(ggplot2)
-```
-
-    ## Warning: package 'ggplot2' was built under R version 3.5.2
-
-``` r
 all_fits = bind_rows(fit_scenario_result, .id = 'scenario') %>% left_join(to_fit %>% mutate(scenario = as.character(seq_along(site))))
 ```
 
@@ -1643,54 +1638,10 @@ metacluster_rn = readr::read_csv('intermediates/Metacluster Identities.csv') %>%
 #Load packages (Probably don't even need half of them - I tried a lot of things before I settled on this relatively simple solution.)
 library(ggplot2)
 library(network)
-```
-
-    ## network: Classes for Relational Data
-    ## Version 1.16.1 created on 2020-10-06.
-    ## copyright (c) 2005, Carter T. Butts, University of California-Irvine
-    ##                     Mark S. Handcock, University of California -- Los Angeles
-    ##                     David R. Hunter, Penn State University
-    ##                     Martina Morris, University of Washington
-    ##                     Skye Bender-deMoll, University of Washington
-    ##  For citation information, type citation("network").
-    ##  Type help("network-package") to get started.
-
-``` r
 library(GGally)
-```
-
-    ## 
-    ## Attaching package: 'GGally'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     nasa
-
-``` r
 library(RColorBrewer)
 library(tidyverse)
-```
 
-    ## Warning: package 'tidyverse' was built under R version 3.5.2
-
-    ## ── Attaching packages ────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-
-    ## ✓ tibble  2.1.3     ✓ purrr   0.3.3
-    ## ✓ tidyr   1.0.2     ✓ forcats 0.5.0
-
-    ## Warning: package 'tibble' was built under R version 3.5.2
-
-    ## Warning: package 'tidyr' was built under R version 3.5.2
-
-    ## Warning: package 'purrr' was built under R version 3.5.2
-
-    ## Warning: package 'forcats' was built under R version 3.5.2
-
-    ## ── Conflicts ───────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
 #Define constants
 
 set.seed(11)
@@ -1827,29 +1778,11 @@ descaled = bind_rows(fsom_expr$descaled, .id = 'population') %>% pivot_longer(co
 # Targeted analysis of Alloiococcus abundance, Tphe5, and acute illness
 
 ``` r
-library("readr")
-
+library(readr)
+library(forcats)
 library(lme4)
-```
-
-    ## Warning: package 'lme4' was built under R version 3.5.2
-
-    ## Loading required package: Matrix
-
-    ## 
-    ## Attaching package: 'Matrix'
-
-    ## The following objects are masked from 'package:tidyr':
-    ## 
-    ##     expand, pack, unpack
-
-``` r
 library(geepack)
-```
 
-    ## Warning: package 'geepack' was built under R version 3.5.2
-
-``` r
 #Read in mapping file with metadata including Alloiococcus abundance, Tphe5 at birth or discharge, and acute illness
 md.nas <- read_delim(file.path(refined, "NAS_Focused_Mapping.txt"), "\t", escape_double = FALSE, trim_ws = TRUE, guess_max = 3600)
 ```
@@ -1886,51 +1819,68 @@ md.post <- md.nas[which(md.nas$PostInitialDischarge == "Yes"), ]
 md.post$Subject <- factor(md.post$Subject)
 md.post$GAB <- c(scale(md.post$gaBirth, center = TRUE, scale = TRUE))
 md.post$nDOL <- c(scale(md.post$DOL, center = TRUE, scale = TRUE))
-md.post$MOD <- factor(md.post$MOD)
+md.post$MOD <- factor(md.post$MOD) %>% fct_collapse(not_vaginal_vertex = c("Vaginal_Breech", "Caesarean_Section"))
 md.post$IllnessVisit <- factor(md.post$IllnessVisit)
 md.post$TPHE_5 <- factor(md.post$TPHE_5) #This is a binary variable with an affirmative value if the subject exhibited TPHE 5 at either birth or discharge
+md.post$allo_counts <- round(md.post$Reads*md.post$Alloiococcus) #Convert Alloiococcus relative abundance to counts
+md.post = left_join(md.post, milk, by = 'Subject') %>%
+  left_join(nabx_polish, by = 'Subject')
+```
 
-md.post$allo_freq <- round(md.post$Reads*md.post$Alloiococcus) #Convert Alloiococcus relative abundance to counts
+    ## Warning: Column `Subject` joining factor and character vector, coercing into character vector
+
+``` r
+md.post$Subject = factor(md.post$Subject)
 
 #Test Alloiococcus and TPHE_5 as predictors of acute illness, both by themselves and jointly, controlling for confounders.
-summary(glmer(IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
+summary(glmer(IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + milk_months + milk_perinatal + abx_hospital + abx_discharge + (1|Subject), data = md.post, family = binomial))
 ```
+
+    ## Warning in checkConv(attr(opt, "derivs"), opt$par, ctrl = control$checkConv, : Model failed to converge with max|grad| = 0.00244811 (tol = 0.001, component 1)
 
     ## Generalized linear mixed model fit by maximum likelihood (Laplace Approximation) ['glmerMod']
     ##  Family: binomial  ( logit )
-    ## Formula: IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + (1 | Subject)
+    ## Formula: IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + milk_months +      milk_perinatal + abx_hospital + abx_discharge + (1 | Subject)
     ##    Data: md.post
     ## 
     ##      AIC      BIC   logLik deviance df.resid 
-    ##    695.7    731.6   -340.9    681.7     1229 
+    ##    694.2    745.4   -337.1    674.2     1223 
     ## 
     ## Scaled residuals: 
     ##     Min      1Q  Median      3Q     Max 
-    ## -0.9847 -0.3009 -0.2192 -0.1586  6.0123 
+    ## -1.0220 -0.3042 -0.2104 -0.1467  5.1711 
     ## 
     ## Random effects:
     ##  Groups  Name        Variance Std.Dev.
-    ##  Subject (Intercept) 0.9655   0.9826  
-    ## Number of obs: 1236, groups:  Subject, 141
+    ##  Subject (Intercept) 0.9373   0.9682  
+    ## Number of obs: 1233, groups:  Subject, 138
     ## 
     ## Fixed effects:
-    ##                   Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.62185    0.25210 -10.400  < 2e-16 ***
-    ## Alloiococcus      -3.52729    1.11728  -3.157 0.001594 ** 
-    ## nDOL               0.41943    0.11638   3.604 0.000313 ***
-    ## GAB                0.25975    0.15816   1.642 0.100532    
-    ## MODVaginal_Breech -0.78757    1.25550  -0.627 0.530463    
-    ## MODVaginal_Vertex  0.08336    0.30131   0.277 0.782053    
+    ##                      Estimate Std. Error z value Pr(>|z|)    
+    ## (Intercept)        -2.6548181  0.4551645  -5.833 5.46e-09 ***
+    ## Alloiococcus       -3.3873227  1.1290870  -3.000 0.002699 ** 
+    ## nDOL                0.4072452  0.1171981   3.475 0.000511 ***
+    ## GAB                 0.4028303  0.2314857   1.740 0.081825 .  
+    ## MODVaginal_Vertex   0.0007378  0.3141353   0.002 0.998126    
+    ## milk_months         0.0047055  0.0402688   0.117 0.906978    
+    ## milk_perinatalTRUE -0.0005381  0.4474865  -0.001 0.999041    
+    ## abx_hospital        0.0773155  0.2205256   0.351 0.725891    
+    ## abx_discharge       0.1676529  0.0734215   2.283 0.022405 *  
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Correlation of Fixed Effects:
-    ##             (Intr) Allccc nDOL   GAB    MODV_B
-    ## Alloiococcs -0.149                            
-    ## nDOL        -0.078 -0.055                     
-    ## GAB         -0.035  0.069  0.227              
-    ## MODVgnl_Brc -0.136 -0.008  0.009  0.027       
-    ## MODVgnl_Vrt -0.598 -0.020 -0.014 -0.154  0.109
+    ##             (Intr) Allccc nDOL   GAB    MODV_V mlk_mn m_TRUE abx_hs
+    ## Alloiococcs -0.147                                                 
+    ## nDOL        -0.036 -0.051                                          
+    ## GAB         -0.112 -0.006  0.149                                   
+    ## MODVgnl_Vrt -0.410  0.012 -0.014 -0.248                            
+    ## milk_months  0.373 -0.042 -0.003 -0.218 -0.114                     
+    ## mlk_prnTRUE -0.829  0.066 -0.008  0.158  0.109 -0.441              
+    ## abx_hospitl  0.181 -0.113 -0.003  0.621 -0.275  0.160 -0.109       
+    ## abx_dischrg -0.114  0.076 -0.031 -0.081  0.021 -0.111 -0.024 -0.419
+    ## convergence code: 0
+    ## Model failed to converge with max|grad| = 0.00244811 (tol = 0.001, component 1)
 
 ``` r
 summary(glmer(IllnessVisit ~ TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
@@ -1942,35 +1892,33 @@ summary(glmer(IllnessVisit ~ TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.
     ##    Data: md.post
     ## 
     ##      AIC      BIC   logLik deviance df.resid 
-    ##    709.0    744.8   -347.5    695.0     1229 
+    ##    707.7    738.4   -347.8    695.7     1230 
     ## 
     ## Scaled residuals: 
     ##     Min      1Q  Median      3Q     Max 
-    ## -0.9920 -0.3026 -0.2217 -0.1687  6.2358 
+    ## -0.9920 -0.3029 -0.2199 -0.1691  5.1554 
     ## 
     ## Random effects:
     ##  Groups  Name        Variance Std.Dev.
-    ##  Subject (Intercept) 0.9307   0.9647  
+    ##  Subject (Intercept) 0.9537   0.9766  
     ## Number of obs: 1236, groups:  Subject, 141
     ## 
     ## Fixed effects:
     ##                   Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)       -2.95798    0.26197 -11.291  < 2e-16 ***
-    ## TPHE_5Yes          0.54736    0.35835   1.527 0.126645    
-    ## nDOL               0.41220    0.11557   3.567 0.000362 ***
-    ## GAB                0.31411    0.15600   2.014 0.044056 *  
-    ## MODVaginal_Breech -0.93397    1.21827  -0.767 0.443297    
-    ## MODVaginal_Vertex  0.07927    0.29793   0.266 0.790185    
+    ## (Intercept)        -2.9961     0.2618 -11.446  < 2e-16 ***
+    ## TPHE_5Yes           0.5382     0.3599   1.495 0.134822    
+    ## nDOL                0.4127     0.1156   3.570 0.000357 ***
+    ## GAB                 0.3208     0.1571   2.042 0.041112 *  
+    ## MODVaginal_Vertex   0.1100     0.2980   0.369 0.712029    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Correlation of Fixed Effects:
-    ##             (Intr) TPHE_5 nDOL   GAB    MODV_B
-    ## TPHE_5Yes   -0.342                            
-    ## nDOL        -0.098  0.008                     
-    ## GAB         -0.009 -0.080  0.252              
-    ## MODVgnl_Brc -0.126 -0.029  0.005  0.039       
-    ## MODVgnl_Vrt -0.587  0.076 -0.016 -0.153  0.107
+    ##             (Intr) TPHE_5 nDOL   GAB   
+    ## TPHE_5Yes   -0.350                     
+    ## nDOL        -0.096  0.008              
+    ## GAB         -0.002 -0.078  0.250       
+    ## MODVgnl_Vrt -0.582  0.081 -0.017 -0.160
 
 ``` r
 summary(glmer(IllnessVisit ~ Alloiococcus + TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
@@ -1982,57 +1930,55 @@ summary(glmer(IllnessVisit ~ Alloiococcus + TPHE_5 + nDOL + GAB + MOD + (1|Subje
     ##    Data: md.post
     ## 
     ##      AIC      BIC   logLik deviance df.resid 
-    ##    696.8    737.7   -340.4    680.8     1228 
+    ##    695.2    731.1   -340.6    681.2     1229 
     ## 
     ## Scaled residuals: 
     ##     Min      1Q  Median      3Q     Max 
-    ## -1.0085 -0.3039 -0.2184 -0.1567  6.0978 
+    ## -1.0082 -0.3037 -0.2179 -0.1563  6.1545 
     ## 
     ## Random effects:
     ##  Groups  Name        Variance Std.Dev.
-    ##  Subject (Intercept) 0.9324   0.9656  
+    ##  Subject (Intercept) 0.9483   0.9738  
     ## Number of obs: 1236, groups:  Subject, 141
     ## 
     ## Fixed effects:
     ##                   Estimate Std. Error z value Pr(>|z|)    
-    ## (Intercept)        -2.6988     0.2666 -10.123  < 2e-16 ***
-    ## Alloiococcus       -3.4039     1.1158  -3.051 0.002284 ** 
-    ## TPHE_5Yes           0.3582     0.3609   0.993 0.320888    
-    ## nDOL                0.4203     0.1164   3.610 0.000307 ***
-    ## GAB                 0.2489     0.1573   1.582 0.113557    
-    ## MODVaginal_Breech  -0.8171     1.2431  -0.657 0.510984    
-    ## MODVaginal_Vertex   0.1034     0.2997   0.345 0.730081    
+    ## (Intercept)        -2.7285     0.2662 -10.251  < 2e-16 ***
+    ## Alloiococcus       -3.4215     1.1152  -3.068 0.002155 ** 
+    ## TPHE_5Yes           0.3503     0.3617   0.969 0.332768    
+    ## nDOL                0.4209     0.1165   3.613 0.000302 ***
+    ## GAB                 0.2532     0.1581   1.601 0.109345    
+    ## MODVaginal_Vertex   0.1292     0.2992   0.432 0.665951    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
     ## Correlation of Fixed Effects:
-    ##             (Intr) Allccc TPHE_5 nDOL   GAB    MODV_B
-    ## Alloiococcs -0.168                                   
-    ## TPHE_5Yes   -0.353  0.105                            
-    ## nDOL        -0.075 -0.052  0.005                     
-    ## GAB         -0.015  0.062 -0.064  0.228              
-    ## MODVgnl_Brc -0.119 -0.012 -0.027  0.008  0.030       
-    ## MODVgnl_Vrt -0.583 -0.014  0.075 -0.014 -0.155  0.108
+    ##             (Intr) Allccc TPHE_5 nDOL   GAB   
+    ## Alloiococcs -0.171                            
+    ## TPHE_5Yes   -0.360  0.104                     
+    ## nDOL        -0.073 -0.053  0.005              
+    ## GAB         -0.011  0.063 -0.062  0.227       
+    ## MODVgnl_Vrt -0.578 -0.012  0.080 -0.016 -0.160
 
 ``` r
 #Test TPHE_5 and acute illness as predictors of Alloiococcus abundance, both by themselves and jointly, controlling for confounders.
-summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_counts ~ DOL*gaBirth + MOD + TPHE_5, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
 ```
 
     ## 
     ## Call:
-    ## geeglm(formula = allo_freq ~ DOL * gaBirth + MOD + TPHE_5, family = poisson(link = "log"), 
-    ##     data = md.post, offset = log(Reads), id = Subject, corstr = "exchangeable")
+    ## geeglm(formula = allo_counts ~ DOL * gaBirth + MOD + TPHE_5, 
+    ##     family = poisson(link = "log"), data = md.post, offset = log(Reads), 
+    ##     id = Subject, corstr = "exchangeable")
     ## 
     ##  Coefficients:
     ##                     Estimate    Std.err   Wald Pr(>|W|)    
-    ## (Intercept)       -1.7865106  1.4120761  1.601   0.2058    
-    ## DOL                0.0060183  0.0040405  2.219   0.1364    
-    ## gaBirth           -0.0123747  0.0395382  0.098   0.7543    
-    ## MODVaginal_Breech  1.0138070  0.3999270  6.426   0.0112 *  
-    ## MODVaginal_Vertex  0.1036130  0.2249404  0.212   0.6451    
-    ## TPHE_5Yes         -1.9505040  0.3689272 27.952 1.24e-07 ***
-    ## DOL:gaBirth       -0.0001946  0.0001174  2.749   0.0973 .  
+    ## (Intercept)       -1.6244824  1.3974481  1.351    0.245    
+    ## DOL                0.0057265  0.0039998  2.050    0.152    
+    ## gaBirth           -0.0152834  0.0390769  0.153    0.696    
+    ## MODVaginal_Vertex  0.0419077  0.2224136  0.036    0.851    
+    ## TPHE_5Yes         -1.9010925  0.4187440 20.611 5.63e-06 ***
+    ## DOL:gaBirth       -0.0001860  0.0001159  2.577    0.108    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -2040,33 +1986,35 @@ summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5, id = Subject, corstr = "e
     ## Estimated Scale Parameters:
     ## 
     ##             Estimate Std.err
-    ## (Intercept)    15666    2282
+    ## (Intercept)    16341    2495
     ##   Link = identity 
     ## 
     ## Estimated Correlation Parameters:
     ##       Estimate Std.err
-    ## alpha   0.2465 0.04085
+    ## alpha   0.2476 0.04131
     ## Number of clusters:   141  Maximum cluster size: 16
 
 ``` r
-summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_counts ~ DOL*gaBirth + MOD + IllnessVisit +  milk_perinatal + abx_hospital + abx_discharge, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
 ```
 
     ## 
     ## Call:
-    ## geeglm(formula = allo_freq ~ DOL * gaBirth + MOD + IllnessVisit, 
-    ##     family = poisson(link = "log"), data = md.post, offset = log(Reads), 
-    ##     id = Subject, corstr = "exchangeable")
+    ## geeglm(formula = allo_counts ~ DOL * gaBirth + MOD + IllnessVisit + 
+    ##     milk_perinatal + abx_hospital + abx_discharge, family = poisson(link = "log"), 
+    ##     data = md.post, offset = log(Reads), id = Subject, corstr = "exchangeable")
     ## 
     ##  Coefficients:
-    ##                    Estimate   Std.err  Wald Pr(>|W|)    
-    ## (Intercept)       -1.380401  1.424449  0.94    0.333    
-    ## DOL                0.004885  0.003962  1.52    0.218    
-    ## gaBirth           -0.030411  0.039890  0.58    0.446    
-    ## MODVaginal_Breech  0.838724  0.482997  3.02    0.082 .  
-    ## MODVaginal_Vertex  0.206798  0.244865  0.71    0.398    
-    ## IllnessVisitYes   -0.907277  0.215164 17.78  2.5e-05 ***
-    ## DOL:gaBirth       -0.000155  0.000115  1.79    0.181    
+    ##                     Estimate   Std.err  Wald Pr(>|W|)    
+    ## (Intercept)        -1.040359  1.548886  0.45     0.50    
+    ## DOL                 0.005195  0.003913  1.76     0.18    
+    ## gaBirth            -0.038254  0.041928  0.83     0.36    
+    ## MODVaginal_Vertex   0.212481  0.243345  0.76     0.38    
+    ## IllnessVisitYes    -0.908978  0.217865 17.41    3e-05 ***
+    ## milk_perinatalTRUE -0.068177  0.321642  0.04     0.83    
+    ## abx_hospital       -0.028751  0.109879  0.07     0.79    
+    ## abx_discharge      -0.072797  0.055285  1.73     0.19    
+    ## DOL:gaBirth        -0.000163  0.000114  2.03     0.15    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -2074,34 +2022,33 @@ summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + IllnessVisit, id = Subject, corst
     ## Estimated Scale Parameters:
     ## 
     ##             Estimate Std.err
-    ## (Intercept)    16563    2520
+    ## (Intercept)    16355    2446
     ##   Link = identity 
     ## 
     ## Estimated Correlation Parameters:
     ##       Estimate Std.err
-    ## alpha    0.287  0.0488
+    ## alpha    0.289  0.0476
     ## Number of clusters:   141  Maximum cluster size: 16
 
 ``` r
-summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_counts ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
 ```
 
     ## 
     ## Call:
-    ## geeglm(formula = allo_freq ~ DOL * gaBirth + MOD + TPHE_5 + IllnessVisit, 
-    ##     family = poisson(link = "log"), data = md.post, offset = log(Reads), 
-    ##     id = Subject, corstr = "exchangeable")
+    ## geeglm(formula = allo_counts ~ DOL * gaBirth + MOD + TPHE_5 + 
+    ##     IllnessVisit, family = poisson(link = "log"), data = md.post, 
+    ##     offset = log(Reads), id = Subject, corstr = "exchangeable")
     ## 
     ##  Coefficients:
     ##                    Estimate   Std.err  Wald Pr(>|W|)    
-    ## (Intercept)       -1.729464  1.378299  1.57    0.210    
-    ## DOL                0.005705  0.003906  2.13    0.144    
-    ## gaBirth           -0.014884  0.038727  0.15    0.701    
-    ## MODVaginal_Breech  1.005486  0.393484  6.53    0.011 *  
-    ## MODVaginal_Vertex  0.173316  0.226981  0.58    0.445    
-    ## TPHE_5Yes         -1.908447  0.410353 21.63  3.3e-06 ***
-    ## IllnessVisitYes   -0.905316  0.215667 17.62  2.7e-05 ***
-    ## DOL:gaBirth       -0.000180  0.000114  2.49    0.115    
+    ## (Intercept)       -1.574327  1.366381  1.33     0.25    
+    ## DOL                0.005428  0.003871  1.97     0.16    
+    ## gaBirth           -0.017638  0.038323  0.21     0.65    
+    ## MODVaginal_Vertex  0.112059  0.224191  0.25     0.62    
+    ## TPHE_5Yes         -1.856101  0.450134 17.00  3.7e-05 ***
+    ## IllnessVisitYes   -0.906544  0.214226 17.91  2.3e-05 ***
+    ## DOL:gaBirth       -0.000171  0.000113  2.32     0.13    
     ## ---
     ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
     ## 
@@ -2109,10 +2056,10 @@ summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subje
     ## Estimated Scale Parameters:
     ## 
     ##             Estimate Std.err
-    ## (Intercept)    15115    2158
+    ## (Intercept)    15732    2360
     ##   Link = identity 
     ## 
     ## Estimated Correlation Parameters:
     ##       Estimate Std.err
-    ## alpha    0.254  0.0427
+    ## alpha    0.254  0.0431
     ## Number of clusters:   141  Maximum cluster size: 16

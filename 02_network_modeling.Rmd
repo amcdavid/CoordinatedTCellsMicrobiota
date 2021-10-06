@@ -8,6 +8,12 @@ knitr::opts_chunk$set(echo = TRUE, cache = TRUE, autodep = TRUE)
 refined = 'intermediates'
 private = 'private'
 data = 'data'
+library(readr)
+library(dplyr)
+library(stringr)
+library(broom)
+library(survival)
+library(icenReg)
 ```
 
 These analyses were used to generate the network plots in figure 6, as well as 
@@ -17,15 +23,6 @@ These analyses were used to generate the network plots in figure 6, as well as
 Iterates through every pairwise combination of CST and immunological parameter (either IST or metacluster abundance at one of the three timepoints) and tests for a significant associations between the immune parameter in adjusted and unadjusted models.
 
 ```{r, echo = FALSE, include = FALSE}
-library(readr)
-library(dplyr)
-library(stringr)
-library(broom)
-library(survival)
-library(icenReg)
-
-refined = 'intermediates'
-
 
 # Take a big ol' table
 # names of response columns and predictor columns
@@ -389,8 +386,8 @@ descaled = bind_rows(fsom_expr$descaled, .id = 'population') %>% pivot_longer(co
 
 
 ```{r}
-library("readr")
-
+library(readr)
+library(forcats)
 library(lme4)
 library(geepack)
 
@@ -408,20 +405,22 @@ md.post <- md.nas[which(md.nas$PostInitialDischarge == "Yes"), ]
 md.post$Subject <- factor(md.post$Subject)
 md.post$GAB <- c(scale(md.post$gaBirth, center = TRUE, scale = TRUE))
 md.post$nDOL <- c(scale(md.post$DOL, center = TRUE, scale = TRUE))
-md.post$MOD <- factor(md.post$MOD)
+md.post$MOD <- factor(md.post$MOD) %>% fct_collapse(not_vaginal_vertex = c("Vaginal_Breech", "Caesarean_Section"))
 md.post$IllnessVisit <- factor(md.post$IllnessVisit)
 md.post$TPHE_5 <- factor(md.post$TPHE_5) #This is a binary variable with an affirmative value if the subject exhibited TPHE 5 at either birth or discharge
-
-md.post$allo_freq <- round(md.post$Reads*md.post$Alloiococcus) #Convert Alloiococcus relative abundance to counts
+md.post$allo_counts <- round(md.post$Reads*md.post$Alloiococcus) #Convert Alloiococcus relative abundance to counts
+md.post = left_join(md.post, milk, by = 'Subject') %>%
+  left_join(nabx_polish, by = 'Subject')
+md.post$Subject = factor(md.post$Subject)
 
 #Test Alloiococcus and TPHE_5 as predictors of acute illness, both by themselves and jointly, controlling for confounders.
-summary(glmer(IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
+summary(glmer(IllnessVisit ~ Alloiococcus + nDOL + GAB + MOD + milk_months + milk_perinatal + abx_hospital + abx_discharge + (1|Subject), data = md.post, family = binomial))
 summary(glmer(IllnessVisit ~ TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
 summary(glmer(IllnessVisit ~ Alloiococcus + TPHE_5 + nDOL + GAB + MOD + (1|Subject), data = md.post, family = binomial))
 
 #Test TPHE_5 and acute illness as predictors of Alloiococcus abundance, both by themselves and jointly, controlling for confounders.
-summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
-summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
-summary(geeglm(allo_freq ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_counts ~ DOL*gaBirth + MOD + TPHE_5, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_counts ~ DOL*gaBirth + MOD + IllnessVisit +  milk_perinatal + abx_hospital + abx_discharge, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
+summary(geeglm(allo_counts ~ DOL*gaBirth + MOD + TPHE_5 + IllnessVisit, id = Subject, corstr = "exchangeable", family = poisson(link = 'log'), data = md.post, offset = log(Reads)))
 
 ```
