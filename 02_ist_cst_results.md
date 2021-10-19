@@ -366,9 +366,11 @@ ics_tphe = bind_rows(ICS = ics, TPHE = tphe, .id = 'assay')
 
     ## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
 
-    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character
+    ## vector
 
-    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character
+    ## vector
 
 ``` r
 assays_avail = ics_tphe %>% group_by(Subject, Visit, BirthCohort) %>% summarize(assays = str_c(assay, collapse = '_')) %>% mutate(assays = factor(assays, levels = c('ICS', 'TPHE', 'ICS_TPHE')))
@@ -651,9 +653,11 @@ communities = bind_rows(
 
     ## Warning in bind_rows_(x, .id): Unequal factor levels: coercing to character
 
-    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character
+    ## vector
 
-    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character vector
+    ## Warning in bind_rows_(x, .id): binding character and factor vector, coercing into character
+    ## vector
 
 ``` r
 hospital_humilk = read_csv('data/milk_hospital.csv') %>% rename(perinatal_milk = `Any Human Milk Perinatal`)
@@ -736,8 +740,7 @@ covariates =  purrr::reduce(list(covariates, hospital_humilk, nabx_time, dischar
 ``` r
 covariates$n_antibiotics_pre = ifelse(covariates$preterm_weeks <=0, NA, covariates$n_antibiotics_pre)
 
-
-has_cst = communities %>%
+has_any_cst = communities %>%
   group_by(Subject, Renamed_CST, .drop = FALSE) %>%
   summarize(has_cst = n()>0) %>% ungroup()
 
@@ -751,19 +754,25 @@ was_sampled = communities %>% group_by(community, Subject, .drop = FALSE) %>%
     ## Joining, by = "community"
 
 ``` r
-nrow(has_cst)
+has_cst = communities %>% left_join(was_sampled, by = c('community', 'Subject'), suffix = c('', '_test')) %>%
+  group_by(Subject, Renamed_CST_test, .drop = FALSE) %>%
+  mutate(is_Renamed_CST = Renamed_CST_test == Renamed_CST) %>% ungroup()
+
+
+
+nrow(has_any_cst)
 ```
 
     ## [1] 7585
 
 ``` r
-has_cst = has_cst %>% semi_join(was_sampled)
+has_any_cst = has_any_cst %>% semi_join(was_sampled)
 ```
 
     ## Joining, by = c("Subject", "Renamed_CST")
 
 ``` r
-nrow(has_cst)
+nrow(has_any_cst)
 ```
 
     ## [1] 6444
@@ -771,145 +780,53 @@ nrow(has_cst)
 ``` r
 has_cst = has_cst %>% left_join(covariates, by = 'Subject') %>% 
   mutate(mode_delivery = fct_recode(mode_delivery, vaginal = c('Vaginal Vertex'), other = 'Vaginal Breech', other= 'Caesarean Section'),
-         n_antibiotics_pre = ifelse(preterm_weeks<=0, 0, n_antibiotics_pre))
+         n_antibiotics_pre = ifelse(preterm_weeks<=0, 0, n_antibiotics_pre))%>% mutate_at(.vars = vars(CGA, milk_months, n_antibiotics_pre, n_antibiotics_discharge), .fun = scale)
 ```
 
     ## Warning: Column `Subject` joining factor and character vector, coercing into character vector
 
 ``` r
-cst_assoc = has_cst %>% group_by(Renamed_CST) %>% do({
+cst_assoc = has_cst %>% group_by(Renamed_CST_test) %>% do({
     data = .
-    full = glm(has_cst ~ preterm_weeks + mode_delivery + scale(birth_wt_gms) + scale(auc14) + preg_antibiotics + milk_months + perinatal_milk + n_antibiotics_pre + n_antibiotics_discharge, family = 'binomial', data = data)
-    drop_term = update(full, . ~ . - preterm_weeks)
-    full_aov = anova(drop_term, full, test = 'Chisq')
-    term_only = update(full, . ~ preterm_weeks)
-    drop_termonly = update(full, . ~ 1)
-    term_only_aov = anova(term_only, drop_termonly, test = 'Chisq')
-    tibble(full = list(full), drop_term = list(full_aov), term_only = list(term_only), drop_termonly = list(term_only_aov))
+    full = lme4::glmer(is_Renamed_CST ~ preterm_weeks + mode_delivery +  preg_antibiotics + milk_months + perinatal_milk + n_antibiotics_pre + n_antibiotics_discharge + (1|Subject), family = 'binomial', data = data, nAGQ = 0L)
+    tibble(full = list(full))
 })
-```
 
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## Warning: glm.fit: algorithm did not converge
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## Warning: glm.fit: algorithm did not converge
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-    ## Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred
-
-``` r
-cst_assoc = pivot_longer(cst_assoc, -Renamed_CST, values_to = 'model') %>% 
+cst_assoc = pivot_longer(cst_assoc, -Renamed_CST_test, values_to = 'model') %>% 
   rowwise() %>% mutate(result = list(suppressWarnings(broom::tidy(model))))
 cst_coef = unnest(cst_assoc %>% select(-model), cols = c(result))
-cst_coef = cst_coef %>% group_by(is_intercept = term == "(Intercept)", name, is_term = term == 'preterm_weeks') %>% 
-  mutate(fdr = p.adjust(p.value, method = 'fdr')) %>% ungroup()
+
+knitr::kable(cst_coef %>% filter(term == "preterm_weeks") %>% arrange(p.value)) %>% head(n=20)
 ```
 
-## Associations between term and EVER CST
+    ##  [1] "Renamed_CST_test   name   term               estimate   std.error    statistic     p.value  group "
+    ##  [2] "-----------------  -----  --------------  -----------  ----------  -----------  ----------  ------"
+    ##  [3] "NAS_1              full   preterm_weeks     0.2105972   0.0199713   10.5449867   0.0000000  fixed "
+    ##  [4] "REC_3              full   preterm_weeks     0.1809408   0.0332158    5.4474380   0.0000001  fixed "
+    ##  [5] "NAS_12             full   preterm_weeks    -0.2223493   0.0417002   -5.3320943   0.0000001  fixed "
+    ##  [6] "REC_1              full   preterm_weeks     0.1098286   0.0228678    4.8027691   0.0000016  fixed "
+    ##  [7] "NAS_2              full   preterm_weeks     0.1626260   0.0424566    3.8304085   0.0001279  fixed "
+    ##  [8] "NAS_11             full   preterm_weeks    -0.1199607   0.0340538   -3.5226794   0.0004272  fixed "
+    ##  [9] "REC_2              full   preterm_weeks     0.0934577   0.0273740    3.4141066   0.0006399  fixed "
+    ## [10] "NAS_7              full   preterm_weeks    -0.1016867   0.0327140   -3.1083493   0.0018814  fixed "
+    ## [11] "ICS_3              full   preterm_weeks    -0.3370686   0.1128648   -2.9864816   0.0028221  fixed "
+    ## [12] "TPHE_1             full   preterm_weeks     0.1125248   0.0394637    2.8513507   0.0043534  fixed "
+    ## [13] "REC_4              full   preterm_weeks    -0.1178048   0.0420417   -2.8020951   0.0050772  fixed "
+    ## [14] "ICS_7              full   preterm_weeks     0.1524132   0.0778247    1.9584150   0.0501813  fixed "
+    ## [15] "REC_5              full   preterm_weeks    -0.0941903   0.0497873   -1.8918562   0.0585101  fixed "
+    ## [16] "ICS_1              full   preterm_weeks     0.0909074   0.0533774    1.7031057   0.0885483  fixed "
+    ## [17] "ICS_2              full   preterm_weeks     0.0711126   0.0440720    1.6135570   0.1066236  fixed "
+    ## [18] "NAS_10             full   preterm_weeks    -0.0818797   0.0530909   -1.5422555   0.1230115  fixed "
+    ## [19] "REC_8              full   preterm_weeks    -0.0767218   0.0539831   -1.4212176   0.1552535  fixed "
+    ## [20] "ICS_4              full   preterm_weeks    -0.1122317   0.0792152   -1.4167939   0.1565432  fixed "
 
 ``` r
-term_adj_results = filter(cst_coef,name == 'drop_term') %>% filter(!is.na(p.value)) %>% 
-  select(Renamed_CST, p.value, fdr) %>% arrange(p.value)
-
-term_noadj_results = filter(cst_coef,name == 'drop_termonly') %>% filter(!is.na(p.value)) %>% 
-  select(Renamed_CST, p.value, fdr) 
-knitr::kable(left_join(term_adj_results, term_noadj_results, by = "Renamed_CST", suffix = c('_controlled', '_simple')))
+write_csv(cst_coef, 'intermediates/cst_assoc.csv')
 ```
 
-| Renamed\_CST | p.value\_controlled | fdr\_controlled | p.value\_simple | fdr\_simple |
-|:-------------|--------------------:|----------------:|----------------:|------------:|
-| REC\_11      |           0.0005169 |       0.0211912 |       0.3841019 |   0.5080058 |
-| REC\_13      |           0.0055127 |       0.1130098 |       0.5854525 |   0.6858157 |
-| NAS\_1       |           0.0097843 |       0.1337185 |       0.0000000 |   0.0000000 |
-| ICS\_3       |           0.0146095 |       0.1497474 |       0.0000000 |   0.0000000 |
-| NAS\_8       |           0.0207843 |       0.1704313 |       0.0002782 |   0.0009504 |
-| NAS\_2       |           0.0360914 |       0.1830087 |       0.0000000 |   0.0000000 |
-| REC\_6       |           0.0364280 |       0.1830087 |       0.0151703 |   0.0327359 |
-| TPHE\_2      |           0.0369244 |       0.1830087 |       0.0000003 |   0.0000013 |
-| REC\_3       |           0.0465117 |       0.1830087 |       0.0000000 |   0.0000001 |
-| TPHE\_5      |           0.0495731 |       0.1830087 |       0.1978148 |   0.3119387 |
-| ICS\_2       |           0.0514535 |       0.1830087 |       0.0386065 |   0.0753745 |
-| ICS\_1       |           0.0535635 |       0.1830087 |       0.0038746 |   0.0117319 |
-| NAS\_11      |           0.0790296 |       0.2492472 |       0.0605285 |   0.1078986 |
-| ICS\_7       |           0.0985262 |       0.2885410 |       0.4931584 |   0.6127119 |
-| REC\_5       |           0.1185858 |       0.3186147 |       0.6805234 |   0.7154221 |
-| REC\_1       |           0.1243374 |       0.3186147 |       0.0106492 |   0.0256834 |
-| NAS\_9       |           0.1494822 |       0.3605159 |       0.3166683 |   0.4477034 |
-| TPHE\_4      |           0.2114238 |       0.4815765 |       0.0000029 |   0.0000133 |
-| ICS\_8       |           0.2720756 |       0.5618162 |       0.2505320 |   0.3668504 |
-| REC\_7       |           0.2740567 |       0.5618162 |       0.6126618 |   0.6868382 |
-| ICS\_5       |           0.3255686 |       0.6356339 |       0.0080025 |   0.0205065 |
-| NAS\_12      |           0.3516331 |       0.6468893 |       0.0001106 |   0.0004535 |
-| TPHE\_6      |           0.3628891 |       0.6468893 |       0.4576067 |   0.5863086 |
-| REC\_4       |           0.3911241 |       0.6469094 |       0.0433714 |   0.0808286 |
-| NAS\_4       |           0.4101315 |       0.6469094 |       0.3667133 |   0.5011748 |
-| NAS\_13      |           0.4102352 |       0.6469094 |       0.5233694 |   0.6311219 |
-| ICS\_4       |           0.4442992 |       0.6746765 |       0.0000002 |   0.0000011 |
-| ICS\_6       |           0.4891254 |       0.7162194 |       0.7765904 |   0.7765904 |
-| REC\_10      |           0.5070235 |       0.7168263 |       0.0121089 |   0.0275814 |
-| NAS\_10      |           0.5600719 |       0.7554856 |       0.7155748 |   0.7334642 |
-| NAS\_6       |           0.5712208 |       0.7554856 |       0.1855594 |   0.3043174 |
-| TPHE\_7      |           0.6214058 |       0.7961762 |       0.6198296 |   0.6868382 |
-| NAS\_7       |           0.6627537 |       0.8234213 |       0.0049588 |   0.0135540 |
-| TPHE\_1      |           0.7486164 |       0.9006041 |       0.0000000 |   0.0000000 |
-| REC\_12      |           0.7688084 |       0.9006041 |       0.2327137 |   0.3533800 |
-| REC\_8       |           0.8457613 |       0.9582787 |       0.0002631 |   0.0009504 |
-| NAS\_5       |           0.8695595 |       0.9582787 |       0.6744430 |   0.7154221 |
-| NAS\_3       |           0.9075440 |       0.9582787 |       0.1483642 |   0.2534555 |
-| REC\_2       |           0.9115334 |       0.9582787 |       0.0000000 |   0.0000000 |
-| REC\_9       |           0.9506361 |       0.9744020 |       0.0040060 |   0.0117319 |
-| TPHE\_3      |           0.9905694 |       0.9905694 |       0.0314239 |   0.0644191 |
-
-Controlling for preterm\_weeks + mode\_delivery + scale(birth\_wt\_gms)
-+ scale(auc14) + preg\_antibiotics + milk\_months + perinatal\_milk +
-n\_antibiotics\_pre + n\_antibiotics\_discharge
-
-## Other associations between EVER CST (top 20)
-
-``` r
-other_assoc = filter(cst_coef,name == 'full', !is_intercept) %>% 
-  select(Renamed_CST, term, estimate, std.error, fdr, p.value) %>% arrange(p.value) 
-other_assoc %>% slice(1:20) %>% knitr::kable()
-```
-
-| Renamed\_CST | term                      |   estimate | std.error |       fdr |   p.value |
-|:-------------|:--------------------------|-----------:|----------:|----------:|----------:|
-| NAS\_4       | preg\_antibioticsYes      | -1.8602139 | 0.4804656 | 0.0286206 | 0.0001081 |
-| TPHE\_2      | preg\_antibioticsYes      | -2.0715261 | 0.5519200 | 0.0286206 | 0.0001745 |
-| REC\_11      | preterm\_weeks            |  0.4262421 | 0.1310133 | 0.0467492 | 0.0011402 |
-| NAS\_4       | scale(auc14)              | -1.2719729 | 0.4043432 | 0.1811077 | 0.0016565 |
-| ICS\_7       | n\_antibiotics\_discharge |  0.5313692 | 0.1736543 | 0.1815413 | 0.0022139 |
-| REC\_6       | mode\_deliveryvaginal     |  1.1991511 | 0.4114048 | 0.2032382 | 0.0035595 |
-| ICS\_2       | scale(birth\_wt\_gms)     | -2.2312997 | 0.7901970 | 0.2032382 | 0.0047469 |
-| NAS\_9       | preg\_antibioticsYes      | -1.1992710 | 0.4309669 | 0.2032382 | 0.0053901 |
-| TPHE\_5      | preg\_antibioticsYes      |  1.5007428 | 0.5428849 | 0.2032382 | 0.0057030 |
-| REC\_1       | perinatal\_milkTRUE       | -1.9493134 | 0.7131852 | 0.2032382 | 0.0062713 |
-| REC\_13      | scale(birth\_wt\_gms)     |  1.6446209 | 0.6106350 | 0.2032382 | 0.0070749 |
-| REC\_11      | perinatal\_milkTRUE       | -1.6919789 | 0.6313174 | 0.2032382 | 0.0073605 |
-| REC\_5       | mode\_deliveryvaginal     | -1.2373067 | 0.4622541 | 0.2032382 | 0.0074355 |
-| REC\_13      | preterm\_weeks            |  0.3271683 | 0.1233737 | 0.1481942 | 0.0080052 |
-| NAS\_1       | preterm\_weeks            |  0.5238912 | 0.2056328 | 0.1481942 | 0.0108435 |
-| TPHE\_1      | mode\_deliveryvaginal     | -1.1112531 | 0.4421790 | 0.2828143 | 0.0119665 |
-| REC\_11      | preg\_antibioticsYes      | -1.1818975 | 0.4708658 | 0.2828143 | 0.0120713 |
-| REC\_1       | mode\_deliveryvaginal     |  1.1770991 | 0.4754450 | 0.2907043 | 0.0132944 |
-| NAS\_8       | n\_antibiotics\_pre       |  0.0744229 | 0.0312557 | 0.3294952 | 0.0172612 |
-| TPHE\_4      | mode\_deliveryvaginal     |  1.3895171 | 0.5919405 | 0.3294952 | 0.0189053 |
-
-``` r
-write_csv(other_assoc, 'intermediates/cst_assoc.csv')
-```
+Mixed model adjusting for preterm\_weeks + mode\_delivery +
+preg\_antibiotics + milk\_months + perinatal\_milk + n\_antibiotics\_pre
++ n\_antibiotics\_discharge + (1 \| Subject)
 
 Top 20 associations listed above, others [are
 here](intermediates/cst_assoc.csv).

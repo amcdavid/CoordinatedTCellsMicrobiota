@@ -317,8 +317,7 @@ discharge_humilk = read_csv( 'intermediates/milk_subject.csv')
 covariates =  purrr::reduce(list(covariates, hospital_humilk, nabx_time, discharge_humilk), left_join)
 covariates$n_antibiotics_pre = ifelse(covariates$preterm_weeks <=0, NA, covariates$n_antibiotics_pre)
 
-
-has_cst = communities %>%
+has_any_cst = communities %>%
   group_by(Subject, Renamed_CST, .drop = FALSE) %>%
   summarize(has_cst = n()>0) %>% ungroup()
 
@@ -328,55 +327,38 @@ was_sampled = communities %>% group_by(community, Subject, .drop = FALSE) %>%
   ungroup()  %>%
   inner_join(communities %>% group_by(community, Renamed_CST) %>% summarize())
 
-nrow(has_cst)
-has_cst = has_cst %>% semi_join(was_sampled)
-nrow(has_cst)
+has_cst = communities %>% left_join(was_sampled, by = c('community', 'Subject'), suffix = c('', '_test')) %>%
+  group_by(Subject, Renamed_CST_test, .drop = FALSE) %>%
+  mutate(is_Renamed_CST = Renamed_CST_test == Renamed_CST) %>% ungroup()
+
+
+
+nrow(has_any_cst)
+has_any_cst = has_any_cst %>% semi_join(was_sampled)
+nrow(has_any_cst)
   
 has_cst = has_cst %>% left_join(covariates, by = 'Subject') %>% 
   mutate(mode_delivery = fct_recode(mode_delivery, vaginal = c('Vaginal Vertex'), other = 'Vaginal Breech', other= 'Caesarean Section'),
-         n_antibiotics_pre = ifelse(preterm_weeks<=0, 0, n_antibiotics_pre))
+         n_antibiotics_pre = ifelse(preterm_weeks<=0, 0, n_antibiotics_pre))%>% mutate_at(.vars = vars(CGA, milk_months, n_antibiotics_pre, n_antibiotics_discharge), .fun = scale)
+```
 
 
-cst_assoc = has_cst %>% group_by(Renamed_CST) %>% do({
+```{r mm-cst-assoc}
+cst_assoc = has_cst %>% group_by(Renamed_CST_test) %>% do({
     data = .
-    full = glm(has_cst ~ preterm_weeks + mode_delivery + scale(birth_wt_gms) + scale(auc14) + preg_antibiotics + milk_months + perinatal_milk + n_antibiotics_pre + n_antibiotics_discharge + Gender, family = 'binomial', data = data)
-    drop_term = update(full, . ~ . - preterm_weeks)
-    full_aov = anova(drop_term, full, test = 'Chisq')
-    term_only = update(full, . ~ preterm_weeks)
-    drop_termonly = update(full, . ~ 1)
-    term_only_aov = anova(term_only, drop_termonly, test = 'Chisq')
-    tibble(full = list(full), drop_term = list(full_aov), term_only = list(term_only), drop_termonly = list(term_only_aov))
+    full = lme4::glmer(is_Renamed_CST ~ preterm_weeks + mode_delivery +  preg_antibiotics + milk_months + perinatal_milk + n_antibiotics_pre + n_antibiotics_discharge + (1|Subject), family = 'binomial', data = data, nAGQ = 0L)
+    tibble(full = list(full))
 })
 
-cst_assoc = pivot_longer(cst_assoc, -Renamed_CST, values_to = 'model') %>% 
+cst_assoc = pivot_longer(cst_assoc, -Renamed_CST_test, values_to = 'model') %>% 
   rowwise() %>% mutate(result = list(suppressWarnings(broom::tidy(model))))
 cst_coef = unnest(cst_assoc %>% select(-model), cols = c(result))
-cst_coef = cst_coef %>% group_by(is_intercept = term == "(Intercept)", name, is_term = term == 'preterm_weeks') %>% 
-  mutate(fdr = p.adjust(p.value, method = 'fdr')) %>% ungroup()
+
+knitr::kable(cst_coef %>% filter(term == "preterm_weeks") %>% arrange(p.value)) %>% head(n=20)
+write_csv(cst_coef, 'intermediates/cst_assoc.csv')
 ```
 
-## Associations between term and EVER CST
-
-```{r CST-term-adjust}
-term_adj_results = filter(cst_coef,name == 'drop_term') %>% filter(!is.na(p.value)) %>% 
-  select(Renamed_CST, p.value, fdr) %>% arrange(p.value)
-
-term_noadj_results = filter(cst_coef,name == 'drop_termonly') %>% filter(!is.na(p.value)) %>% 
-  select(Renamed_CST, p.value, fdr) 
-knitr::kable(left_join(term_adj_results, term_noadj_results, by = "Renamed_CST", suffix = c('_controlled', '_simple')))
-```
-
-Controlling for `r filter(cst_assoc, name == 'full') %>% slice(1) %>% pull(model) %>% .[[1]] %>% formula %>% as.character() %>% .[3]`
-
-
-## Other associations between EVER CST (top 20)
-
-```{r CST-term}
-other_assoc = filter(cst_coef,name == 'full', !is_intercept) %>% 
-  select(Renamed_CST, term, estimate, std.error, fdr, p.value) %>% arrange(p.value) 
-other_assoc %>% slice(1:20) %>% knitr::kable()
-write_csv(other_assoc, 'intermediates/cst_assoc.csv')
-```
+Mixed model adjusting for `r as.character(formula(cst_assoc$model[[1]]))[3]`
 
 Top 20 associations listed above, others [are here](intermediates/cst_assoc.csv).
 
