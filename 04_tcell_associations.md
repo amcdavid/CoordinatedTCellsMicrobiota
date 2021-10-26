@@ -1,7 +1,7 @@
 T cell / IST Associations
 ================
 Andrew McDavid
-2021-02-24
+2021-10-26
 
 # ANOVA on some clusters
 
@@ -96,7 +96,7 @@ traj_plot %+% (nl_pred %>% semi_join(filter(preterm_markers, marker %in% other_p
 
 Trajectories for top 6 markers with GAB differences at 37 weeks PMA.
 
------
+------------------------------------------------------------------------
 
 ## Non-monotone markers (Figure S1)
 
@@ -112,8 +112,7 @@ ggplot(nonmono_candidates  %>% filter(term != 'diff'), aes(x = Identitywrap, y =
 
 ![](04_tcell_associations_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-These markers have an inversion estimated for 25 week-GAB
-babies.
+These markers have an inversion estimated for 25 week-GAB babies.
 
 ``` r
 traj_plot %+% (nl_pred %>% semi_join(filter(nonmono_candidates, rank < Inf), by = 'marker')) + facet_wrap(~Identitywrap, scales = 'free_y')+ geom_jitter(data = marker_interest %>% semi_join(filter(nonmono_candidates, rank < Inf)), aes(y = a_sqrt(proportion), color = cohort), size = 1, alpha = .4) + theme(strip.text = element_text(size = 5))  + aes(x = cga_term + 37) + xlab("PMA (weeks)") + ylab("asin(sqrt(p))")
@@ -121,8 +120,7 @@ traj_plot %+% (nl_pred %>% semi_join(filter(nonmono_candidates, rank < Inf), by 
 
 ![](04_tcell_associations_files/figure-gfm/non_mono_all-1.png)<!-- -->
 
-Estimated trajectories and observed data for top 6 non-monotone
-markers.
+Estimated trajectories and observed data for top 6 non-monotone markers.
 
 ``` r
 fig5_marker_toplot = tibble(marker = c('Meta.Cluster_13_i4', 'Meta.Cluster_18_i4', 'Meta.Cluster_8_i8', 'Meta.Cluster_12_i8',
@@ -147,7 +145,7 @@ knitr::kable(flow_subj_counts %>% group_by(`Sequence Num`, both_tphe_ics) %>% su
 ```
 
 | Sequence Num | both\_tphe\_ics | n() |
-| -----------: | :-------------- | --: |
+|-------------:|:----------------|----:|
 |            1 | FALSE           |  12 |
 |            1 | TRUE            | 141 |
 |            7 | FALSE           |  18 |
@@ -264,8 +262,7 @@ tphe5_plt + aes(color = IST) + ylab('Log odds\nIST ever')
 
 ![](04_tcell_associations_files/figure-gfm/tphe5_6_assoc-1.png)<!-- -->
 
-parametric
-effects
+parametric effects
 
 ## TPHE5 vs TPHE6 associations
 
@@ -314,17 +311,17 @@ knitr::kable(head(all_assoc, n= 10), digits = 3)
 ```
 
 | IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
-| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
+|:--------|:------|:-----------------------------|---------:|----------:|----------:|--------:|---------:|----------:|-------:|--------------:|
 | TPHE\_6 | ever  | cmv\_pcrTRUE                 |    3.098 |     0.814 |     3.806 |   0.000 |    1.502 |     4.694 |    122 |         0.005 |
 | TPHE\_5 | ever  | preg\_antibioticsYes         |    2.061 |     0.675 |     3.055 |   0.002 |    0.739 |     3.383 |    122 |         0.083 |
-| TPHE\_2 | ever  | preg\_antibioticsYes         |  \-1.729 |     0.582 |   \-2.969 |   0.003 |  \-2.871 |   \-0.588 |    122 |         0.108 |
+| TPHE\_2 | ever  | preg\_antibioticsYes         |   -1.729 |     0.582 |    -2.969 |   0.003 |   -2.871 |    -0.588 |    122 |         0.108 |
 | TPHE\_5 | late  | preg\_antibioticsYes         |    2.043 |     0.689 |     2.965 |   0.003 |    0.693 |     3.393 |    121 |         0.108 |
-| TPHE\_2 | late  | preg\_antibioticsYes         |  \-1.723 |     0.582 |   \-2.962 |   0.003 |  \-2.864 |   \-0.583 |    121 |         0.108 |
+| TPHE\_2 | late  | preg\_antibioticsYes         |   -1.723 |     0.582 |    -2.962 |   0.003 |   -2.864 |    -0.583 |    121 |         0.108 |
 | TPHE\_7 | ever  | mode\_deliveryVaginal Vertex |    1.339 |     0.514 |     2.606 |   0.009 |    0.332 |     2.346 |    122 |         0.339 |
-| TPHE\_6 | early | mode\_deliveryVaginal Vertex |  \-3.415 |     1.321 |   \-2.586 |   0.010 |  \-6.003 |   \-0.826 |     91 |         0.350 |
+| TPHE\_6 | early | mode\_deliveryVaginal Vertex |   -3.415 |     1.321 |    -2.586 |   0.010 |   -6.003 |    -0.826 |     91 |         0.350 |
 | TPHE\_5 | ever  | cchorioYes                   |    2.931 |     1.210 |     2.424 |   0.015 |    0.561 |     5.302 |    122 |         0.569 |
-| TPHE\_7 | ever  | preg\_antibioticsYes         |  \-1.236 |     0.524 |   \-2.360 |   0.018 |  \-2.262 |   \-0.209 |    122 |         0.604 |
-| TPHE\_7 | early | cmv\_pcrTRUE                 |  \-2.704 |     1.205 |   \-2.244 |   0.025 |  \-5.067 |   \-0.342 |     91 |         0.894 |
+| TPHE\_7 | ever  | preg\_antibioticsYes         |   -1.236 |     0.524 |    -2.360 |   0.018 |   -2.262 |    -0.209 |    122 |         0.604 |
+| TPHE\_7 | early | cmv\_pcrTRUE                 |   -2.704 |     1.205 |    -2.244 |   0.025 |   -5.067 |    -0.342 |     91 |         0.894 |
 
 ``` r
 write_csv(all_assoc, 'intermediates/inflam_ics_assocs.csv')
@@ -342,17 +339,17 @@ knitr::kable(head(milk_assoc, n= 10), digits = 3)
 ```
 
 | IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
-| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
+|:--------|:------|:-----------------------------|---------:|----------:|----------:|--------:|---------:|----------:|-------:|--------------:|
 | TPHE\_4 | ever  | mode\_deliveryVaginal Vertex |    1.768 |     0.643 |     2.749 |   0.006 |    0.508 |     3.029 |    144 |         0.221 |
 | TPHE\_4 | late  | mode\_deliveryVaginal Vertex |    1.762 |     0.643 |     2.739 |   0.006 |    0.501 |     3.023 |    143 |         0.222 |
-| TPHE\_1 | late  | mode\_deliveryVaginal Vertex |  \-1.052 |     0.444 |   \-2.371 |   0.018 |  \-1.922 |   \-0.182 |    143 |         0.621 |
-| TPHE\_1 | ever  | mode\_deliveryVaginal Vertex |  \-1.005 |     0.439 |   \-2.287 |   0.022 |  \-1.866 |   \-0.144 |    144 |         0.754 |
+| TPHE\_1 | late  | mode\_deliveryVaginal Vertex |   -1.052 |     0.444 |    -2.371 |   0.018 |   -1.922 |    -0.182 |    143 |         0.621 |
+| TPHE\_1 | ever  | mode\_deliveryVaginal Vertex |   -1.005 |     0.439 |    -2.287 |   0.022 |   -1.866 |    -0.144 |    144 |         0.754 |
 | ICS\_7  | ever  | mode\_deliveryVaginal Breech |    3.078 |     1.385 |     2.222 |   0.026 |    0.362 |     5.793 |    145 |         0.974 |
 | TPHE\_7 | ever  | mode\_deliveryVaginal Vertex |    0.939 |     0.435 |     2.156 |   0.031 |    0.085 |     1.792 |    144 |         1.000 |
 | TPHE\_4 | ever  | mode\_deliveryVaginal Breech |    3.127 |     1.469 |     2.128 |   0.033 |    0.247 |     6.007 |    144 |         1.000 |
 | TPHE\_4 | late  | mode\_deliveryVaginal Breech |    3.114 |     1.471 |     2.118 |   0.034 |    0.232 |     5.996 |    143 |         1.000 |
-| TPHE\_6 | early | mode\_deliveryVaginal Vertex |  \-1.631 |     0.775 |   \-2.104 |   0.035 |  \-3.150 |   \-0.112 |    104 |         1.000 |
-| TPHE\_4 | ever  | GenderMale                   |  \-1.176 |     0.583 |   \-2.017 |   0.044 |  \-2.320 |   \-0.033 |    144 |         1.000 |
+| TPHE\_6 | early | mode\_deliveryVaginal Vertex |   -1.631 |     0.775 |    -2.104 |   0.035 |   -3.150 |    -0.112 |    104 |         1.000 |
+| TPHE\_4 | ever  | GenderMale                   |   -1.176 |     0.583 |    -2.017 |   0.044 |   -2.320 |    -0.033 |    144 |         1.000 |
 
 ``` r
 write_csv(milk_assoc, 'intermediates/milk_ics_assocs.csv')
@@ -370,17 +367,17 @@ knitr::kable(head(abx_assoc, n= 10), digits = 3)
 ```
 
 | IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
-| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
-| TPHE\_1 | late  | mode\_deliveryVaginal Vertex |  \-1.774 |     0.618 |   \-2.873 |   0.004 |  \-2.985 |   \-0.564 |     93 |         0.151 |
-| TPHE\_1 | ever  | mode\_deliveryVaginal Vertex |  \-1.661 |     0.608 |   \-2.730 |   0.006 |  \-2.853 |   \-0.469 |     94 |         0.228 |
+|:--------|:------|:-----------------------------|---------:|----------:|----------:|--------:|---------:|----------:|-------:|--------------:|
+| TPHE\_1 | late  | mode\_deliveryVaginal Vertex |   -1.774 |     0.618 |    -2.873 |   0.004 |   -2.985 |    -0.564 |     93 |         0.151 |
+| TPHE\_1 | ever  | mode\_deliveryVaginal Vertex |   -1.661 |     0.608 |    -2.730 |   0.006 |   -2.853 |    -0.469 |     94 |         0.228 |
 | TPHE\_1 | late  | GenderMale                   |    1.404 |     0.565 |     2.487 |   0.013 |    0.298 |     2.511 |     93 |         0.477 |
 | ICS\_7  | ever  | mode\_deliveryVaginal Breech |    3.276 |     1.410 |     2.323 |   0.020 |    0.512 |     6.040 |     92 |         0.746 |
 | TPHE\_1 | ever  | GenderMale                   |    1.275 |     0.551 |     2.316 |   0.021 |    0.196 |     2.355 |     94 |         0.740 |
-| ICS\_7  | ever  | GenderMale                   |  \-1.728 |     0.767 |   \-2.253 |   0.024 |  \-3.232 |   \-0.225 |     92 |         0.849 |
-| ICS\_7  | late  | GenderMale                   |  \-2.085 |     0.980 |   \-2.127 |   0.033 |  \-4.005 |   \-0.164 |     90 |         1.000 |
+| ICS\_7  | ever  | GenderMale                   |   -1.728 |     0.767 |    -2.253 |   0.024 |   -3.232 |    -0.225 |     92 |         0.849 |
+| ICS\_7  | late  | GenderMale                   |   -2.085 |     0.980 |    -2.127 |   0.033 |   -4.005 |    -0.164 |     90 |         1.000 |
 | TPHE\_5 | ever  | mode\_deliveryVaginal Breech |    2.771 |     1.371 |     2.021 |   0.043 |    0.083 |     5.458 |     94 |         1.000 |
 | TPHE\_5 | late  | mode\_deliveryVaginal Breech |    2.695 |     1.350 |     1.997 |   0.046 |    0.050 |     5.341 |     93 |         1.000 |
-| ICS\_5  | ever  | n\_antibiotics\_pre          |    0.034 |     0.018 |     1.887 |   0.059 |  \-0.001 |     0.070 |     92 |         1.000 |
+| ICS\_5  | ever  | n\_antibiotics\_pre          |    0.034 |     0.018 |     1.887 |   0.059 |   -0.001 |     0.070 |     92 |         1.000 |
 
 ``` r
 write_csv(abx_assoc, 'intermediates/abx_pre_df_ics_assocs.csv')
@@ -398,17 +395,17 @@ knitr::kable(head(abx_post_assoc, n = 10), digits = 3)
 ```
 
 | IST     | epoch | term                         | estimate | std.error | statistic | p.value | conf.low | conf.high | n\_obs | termwise\_fdr |
-| :------ | :---- | :--------------------------- | -------: | --------: | --------: | ------: | -------: | --------: | -----: | ------------: |
+|:--------|:------|:-----------------------------|---------:|----------:|----------:|--------:|---------:|----------:|-------:|--------------:|
 | ICS\_7  | late  | n\_antibiotics\_discharge    |    0.467 |     0.166 |     2.805 |   0.005 |    0.141 |     0.793 |    175 |         0.186 |
-| TPHE\_4 | ever  | GenderMale                   |  \-1.356 |     0.501 |   \-2.710 |   0.007 |  \-2.337 |   \-0.375 |    176 |         0.249 |
-| TPHE\_4 | late  | GenderMale                   |  \-1.353 |     0.501 |   \-2.701 |   0.007 |  \-2.334 |   \-0.371 |    175 |         0.249 |
+| TPHE\_4 | ever  | GenderMale                   |   -1.356 |     0.501 |    -2.710 |   0.007 |   -2.337 |    -0.375 |    176 |         0.249 |
+| TPHE\_4 | late  | GenderMale                   |   -1.353 |     0.501 |    -2.701 |   0.007 |   -2.334 |    -0.371 |    175 |         0.249 |
 | TPHE\_1 | late  | GenderMale                   |    1.158 |     0.435 |     2.662 |   0.008 |    0.305 |     2.011 |    175 |         0.272 |
 | TPHE\_4 | ever  | mode\_deliveryVaginal Vertex |    1.362 |     0.519 |     2.623 |   0.009 |    0.344 |     2.380 |    176 |         0.323 |
 | TPHE\_4 | late  | mode\_deliveryVaginal Vertex |    1.359 |     0.519 |     2.617 |   0.009 |    0.341 |     2.377 |    175 |         0.323 |
 | TPHE\_5 | late  | n\_antibiotics\_discharge    |    0.297 |     0.115 |     2.587 |   0.010 |    0.072 |     0.523 |    175 |         0.349 |
 | TPHE\_1 | ever  | GenderMale                   |    1.077 |     0.428 |     2.519 |   0.012 |    0.239 |     1.915 |    176 |         0.400 |
-| TPHE\_6 | early | mode\_deliveryVaginal Vertex |  \-1.957 |     0.828 |   \-2.362 |   0.018 |  \-3.580 |   \-0.333 |    104 |         0.636 |
-| ICS\_7  | late  | GenderMale                   |  \-1.932 |     0.824 |   \-2.345 |   0.019 |  \-3.546 |   \-0.317 |    175 |         0.628 |
+| TPHE\_6 | early | mode\_deliveryVaginal Vertex |   -1.957 |     0.828 |    -2.362 |   0.018 |   -3.580 |    -0.333 |    104 |         0.636 |
+| ICS\_7  | late  | GenderMale                   |   -1.932 |     0.824 |    -2.345 |   0.019 |   -3.546 |    -0.317 |    175 |         0.628 |
 
 ``` r
 write_csv(abx_post_assoc, 'intermediates/abx_post_df_ics_assocs.csv')
