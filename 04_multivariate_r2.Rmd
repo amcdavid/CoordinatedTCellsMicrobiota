@@ -25,15 +25,29 @@ timeline = read_csv('data/subject_timeline.csv')
 # Multivariate $R^2$ associations (figure 1)
 
 ```{r}
+loglik_mlm = function(object){
+   res = object$residuals
+  sig = cov(res)
+  p = object$rank
+  n = nrow(res)
+  sum(mvtnorm::dmvnorm(res, mean = rep(0, ncol(res)), sigma = sig, log = TRUE))
+}
+
 aic_mlm = function(object){
    res = object$residuals
     p = object$rank
-    N = length(res)
-    w = 1
-   val = 0.5 * (sum(log(w)) - N * (log(2 * pi) + 1 - log(N) + 
-        log(sum(w * res^2))))
-  -2*val + 2*p
+    N = nrow(res)
+  -2*loglik_mlm(object) + 2*p
 }
+
+
+bic_mlm = function(object){
+   res = object$residuals
+    p = object$rank
+    N = nrow(res)
+  -2*loglik_mlm(object) + p*log(nrow(res))
+}
+
 
 as_char_form = function(x) paste0(as.character(x)[c(2, 1, 3:length(x))], collapse = ' ')
 
@@ -57,9 +71,11 @@ estimate_mlm_r2 = function(lhs_data, rhs_data, formula_, null_form = . ~ 1, resp
   environment(formula_) = environment()
   full = lm(formula_, data = rhs_data)
   null = update(full, null_form)
+  empty = update(full, . ~ 1)
   adjr2 = 1 - (sum(full$residuals^2)/full$df.residual) /  (sum(null$residuals^2)/null$df.residual)
+  total_r2 = 1- (sum(full$residuals^2)/full$df.residual) /  (sum(empty$residuals^2)/empty$df.residual)
   anova_ = anova(full, null, test = 'Wilks', tol = 1e-6)
-  stats = tibble(adjr2 = adjr2, pval = anova_[2,'Pr(>F)'], response_label = response_label, predictor_label = predictor_label, n = min(nrow(rhs_data), nrow(lhs_data)), p_rhs = ncol(rhs_data), p_lhs = ncol(lhs_data), adjusted = adjusted, null_form = as_char_form(null_form), full_form = as_char_form(formula_), aic_full = aic_mlm(full))
+  stats = tibble(total_r2 = total_r2, adjr2 = adjr2, pval = anova_[2,'Pr(>F)'], response_label = response_label, predictor_label = predictor_label, n = min(nrow(rhs_data), nrow(lhs_data)), p_rhs = ncol(rhs_data), p_lhs = ncol(lhs_data), adjusted = adjusted, null_form = as_char_form(null_form), full_form = as_char_form(formula_), aic_full = aic_mlm(full), bic_full = bic_mlm(full))
   stats
 }
 
@@ -104,8 +120,8 @@ mb_tcell_closest %>% group_by(`Subject`) %>% summarize(n())
 
 
 ```{r}
-pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC', 'PMA'),
-      adjusted = c("no", "Term", "Term", "Term", "Term", "Term", 'PMA', 'PMA', 'PMA', 'no'))
+pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC', 'PMA', 'DOL'),
+      adjusted = c("no", "Term", "Term", "Term", "Term", "Term", 'PMA', 'PMA', 'PMA', 'no', 'PMA'))
 
 r2_res = list()
 for(i in seq_len(nrow(pred_table))){
@@ -176,7 +192,8 @@ for(i in seq_len(nrow(pred_table))){
 ```{r plot_mv_r2, fig.width = 6, fig.height = 4.5}
 r2_res = bind_rows(r2_res) 
 
-r2_res_graph = filter(r2_res, adjusted %in% c('no', 'Term', 'PMA'), !(adjusted == 'no' && predictor_label == "PMA")) %>% 
+r2_res_graph = filter(r2_res, adjusted %in% c('no', 'Term', 'PMA'), !(adjusted == 'no' && predictor_label == "PMA"),
+                      !(adjusted == 'PMA' && predictor_label == 'DOL')) %>% 
   mutate(predictor_label2 = factor(predictor_label, levels = rev(c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC'))),
          response_label = factor(response_label, levels = c('T cell', 'NAS', 'REC')), 
          pma_adjusted = factor(ifelse(adjusted == 'PMA', 'PMA', 'no'), levels = c('PMA', 'no')),
@@ -195,3 +212,19 @@ r2_res %>% dplyr::select(predictor_label, response_label, everything()) %>% muta
 ```{r, results = 'asis'}
 dplyr::filter(r2_res, predictor_label %in% c('Term', 'DOL', 'PMA')) %>% select(predictor_label, response_label, aic_full, adjusted) %>% tidyr::spread(predictor_label, aic_full) %>% knitr::kable()
 ```
+
+### BIC  (Smaller is better)
+
+```{r, results = 'asis'}
+bic_r2 = dplyr::filter(r2_res, predictor_label %in% c('DOL', 'PMA'), adjusted %in% c('Term', 'PMA')) %>% 
+  dplyr::select(predictor_label, response_label, bic_full, adjusted, adjr2, total_r2) %>% 
+  dplyr::group_by(response_label) %>% 
+  dplyr::mutate(log_norm = matrixStats::logSumExp(bic_full)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(`log10(p) vs worst model` = (bic_full-log_norm)*log10(exp(1)))
+
+knitr::kable(bic_r2)
+readr::write_csv(bic_r2, 'intermediates/bic_supp_table.csv')
+```
+
+## 

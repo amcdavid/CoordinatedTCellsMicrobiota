@@ -1,25 +1,28 @@
-predictor_label,response_label,adjr2,pval,n,p_rhs,p_lhs,adjusted,null_form,full_form,aic_full
-Term,T cell,0.022,1.7025160125349927e-28,385,1,27,no,. ~ 1,lhs_data_comp ~ ispreterm,28849.39956796767
-Term,NAS,0.021,2.634051484756398e-72,2661,1,39,no,. ~ 1,lhs_data_comp ~ ispreterm,297054.0203124417
-Term,REC,0.008,1.4918391346900493e-96,2972,1,83,no,. ~ 1,lhs_data_comp ~ ispreterm,711911.1761557407
-DOL,T cell,0.166,3.8163237761447643e-100,385,2,27,Term,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,27011.521737950865
-DOL,NAS,0.055,8.334651916059346e-228,2661,2,39,Term,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,291297.07890718075
-DOL,REC,0.028,5.36455126227007e-231,2972,2,83,Term,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,704856.5511523824
-PMA,T cell,0.179,7.612435642492903e-123,385,2,27,Term,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,26853.060992377064
-PMA,NAS,0.066,1.8197879096348487e-301,2661,2,39,Term,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,290113.09954619675
-PMA,REC,0.031,7.754144272120712e-275,2972,2,83,Term,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,704257.2676057267
-T cell,NAS,0.079,2.577430653806212e-9,222,29,44,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,22958.81975416865
-T cell,REC,0.066,7.643845299314168e-22,248,29,67,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,44938.84749994411
-NAS,T cell,0.137,1.4597983423273224e-15,222,45,28,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,15025.94310778554
-NAS,REC,0.032,3.093082297141045e-132,2601,40,83,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,609570.7668364045
-REC,T cell,0.116,1.8566957302056443e-7,248,68,28,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,16642.849304284184
-REC,NAS,0.074,2.9663839317319556e-124,2601,84,39,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,279749.3168321483
-T cell,NAS,0.041,3.7738963092460428e-6,222,30,44,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,22860.280645140017
-T cell,REC,0.028,3.356073758809613e-16,248,30,67,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,44782.53345806398
-NAS,T cell,0.061,7.781281323509253e-11,222,46,28,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,14325.417132493465
-NAS,REC,0.014,1.521682181298943e-67,2601,41,83,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,607327.8778773578
-REC,T cell,0.013,0.0029327307181780653,248,69,28,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,16243.121226072872
-REC,NAS,0.034,1.091800067226754e-56,2601,85,39,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,277297.65823191736
-PMA,T cell,0.158,NA,385,2,27,no,. ~ ispreterm,lhs_data_comp ~ cga,27133.105133682686
-PMA,NAS,0.062,NA,2661,2,39,no,. ~ ispreterm,lhs_data_comp ~ cga,290562.8995152133
-PMA,REC,0.028,NA,2972,2,83,no,. ~ ispreterm,lhs_data_comp ~ cga,705020.4496024265
+predictor_label,response_label,total_r2,adjr2,pval,n,p_rhs,p_lhs,adjusted,null_form,full_form,aic_full,bic_full
+Term,T cell,0.022380366946063157,0.022,1.7025160125349927e-28,385,1,27,no,. ~ 1,lhs_data_comp ~ ispreterm,11465.764289937159,11473.670776605733
+Term,NAS,0.02066305176237193,0.021,2.634051484756398e-72,2661,1,39,no,. ~ 1,lhs_data_comp ~ ispreterm,213630.41750678493,213642.19042132687
+Term,REC,0.008022709539168948,0.008,1.4918391346900493e-96,2972,1,83,no,. ~ 1,lhs_data_comp ~ ispreterm,600603.29608167906,600615.2900624907
+DOL,T cell,0.18439426306742301,0.166,3.8163237761447643e-100,385,2,27,Term,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,10888.474942607338,10900.3346726102
+DOL,NAS,0.07453230295127466,0.055,8.334651916059346e-228,2661,2,39,Term,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,212418.6618069045,212436.32117871745
+DOL,REC,0.03600968248654979,0.028,5.36455126227007e-231,2972,2,83,Term,. ~ ispreterm,lhs_data_comp ~ log2DOL + ispreterm,599222.2688495797,599240.2598207972
+PMA,T cell,0.19720384424437087,0.179,7.612435642492903e-123,385,2,27,Term,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,10773.915612150888,10785.77534215375
+PMA,NAS,0.0853053077509619,0.066,1.8197879096348487e-301,2661,2,39,Term,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,212067.18735460655,212084.8467264195
+PMA,REC,0.03837728340211888,0.031,7.754144272120712e-275,2972,2,83,Term,. ~ ispreterm,lhs_data_comp ~ cga + ispreterm,599005.2797944517,599023.2707656692
+T cell,NAS,0.13807906991340935,0.079,2.577430653806212e-9,222,29,44,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,14141.405250488624,14243.485571944793
+T cell,REC,0.0736765504397211,0.066,7.643845299314168e-22,248,29,67,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,15099.89902908774,15205.301891472689
+NAS,T cell,0.16765007419779598,0.137,1.4597983423273224e-15,222,45,28,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,4748.22775874445,4904.750918310575
+NAS,REC,0.04090433326719045,0.032,3.093082297141045e-132,2601,40,83,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,514927.62592272117,515168.03562460456
+REC,T cell,0.15119360464331233,0.116,1.8566957302056443e-7,248,68,28,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,5531.873898273123,5770.787053012342
+REC,NAS,0.09339318438149358,0.074,2.9663839317319556e-124,2601,84,39,Term,. ~ ispreterm,lhs_data_comp ~ . + ispreterm,203905.7194422658,204404.12979982895
+T cell,NAS,0.1426438453689115,0.041,3.7738963092460428e-6,222,30,44,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,14068.623964429877,14174.106963267917
+T cell,REC,0.07836523402540196,0.028,3.356073758809613e-16,248,30,67,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,14995.380223048678,15104.296514179792
+NAS,T cell,0.25547525399308313,0.061,7.781281323509253e-11,222,46,28,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,4449.6753821058155,4609.601219053813
+NAS,REC,0.05057543663192188,0.014,1.521682181298943e-67,2601,41,83,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,514303.945520315,514550.21887346386
+REC,T cell,0.19615462245362802,0.013,0.0029327307181780653,248,69,28,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,5314.354727514472,5556.781310999856
+REC,NAS,0.11527103981358011,0.034,1.091800067226754e-56,2601,85,39,PMA,. ~ ispreterm + cga,lhs_data_comp ~ . + ispreterm + cga,203242.2687353816,203746.5427442102
+PMA,T cell,0.17641835740279732,0.158,NA,385,2,27,no,. ~ ispreterm,lhs_data_comp ~ cga,10976.491432344501,10984.397919013076
+PMA,NAS,0.08155480505528068,0.062,NA,2661,2,39,no,. ~ ispreterm,lhs_data_comp ~ cga,212265.38082543822,212277.15373998016
+PMA,REC,0.03567803161604444,0.028,NA,2972,2,83,no,. ~ ispreterm,lhs_data_comp ~ cga,599526.0666186509,599538.0605994626
+DOL,T cell,0.2106498487967159,0.017,1.6670389141596438e-24,385,3,27,PMA,. ~ ispreterm + cga,lhs_data_comp ~ log2DOL + ispreterm + cga,10589.965422108871,10605.778395446023
+DOL,NAS,0.09127477347202928,0.007,4.8417816686665075e-23,2661,3,39,PMA,. ~ ispreterm + cga,lhs_data_comp ~ log2DOL + ispreterm + cga,211872.1678356377,211895.7136647216
+DOL,REC,0.042050496622327405,0.004,2.0276570349785725e-38,2972,3,83,PMA,. ~ ispreterm + cga,lhs_data_comp ~ log2DOL + ispreterm + cga,598630.1631233413,598654.1510849646

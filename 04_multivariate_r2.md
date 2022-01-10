@@ -1,4 +1,4 @@
-Multivariate \(R^2\) Calculations
+Multivariate *R*<sup>2</sup> Calculations
 ================
 Andrew McDavid
 07/06/2020
@@ -8,64 +8,10 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 knitr::opts_chunk$set(cache = TRUE, autodep = TRUE)
 knitr::opts_chunk$set(dev = c('png', 'pdf'))
 library(broom)
-```
-
-    ## Warning: package 'broom' was built under R version 3.5.2
-
-``` r
 library(tidyverse)
-```
-
-    ## Warning: package 'tidyverse' was built under R version 3.5.2
-
-    ## ── Attaching packages ──────────────────────────────────────────────────────────────────────────────── tidyverse 1.3.0 ──
-
-    ## ✓ ggplot2 3.3.0     ✓ purrr   0.3.3
-    ## ✓ tibble  2.1.3     ✓ dplyr   0.8.5
-    ## ✓ tidyr   1.0.2     ✓ stringr 1.4.0
-    ## ✓ readr   1.3.1     ✓ forcats 0.5.0
-
-    ## Warning: package 'ggplot2' was built under R version 3.5.2
-
-    ## Warning: package 'tibble' was built under R version 3.5.2
-
-    ## Warning: package 'tidyr' was built under R version 3.5.2
-
-    ## Warning: package 'purrr' was built under R version 3.5.2
-
-    ## Warning: package 'dplyr' was built under R version 3.5.2
-
-    ## Warning: package 'stringr' was built under R version 3.5.2
-
-    ## Warning: package 'forcats' was built under R version 3.5.2
-
-    ## ── Conflicts ─────────────────────────────────────────────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter() masks stats::filter()
-    ## x dplyr::lag()    masks stats::lag()
-
-``` r
 library(ggbeeswarm)
 library(car)
-```
 
-    ## Warning: package 'car' was built under R version 3.5.2
-
-    ## Loading required package: carData
-
-    ## Warning: package 'carData' was built under R version 3.5.2
-
-    ## 
-    ## Attaching package: 'car'
-
-    ## The following object is masked from 'package:dplyr':
-    ## 
-    ##     recode
-
-    ## The following object is masked from 'package:purrr':
-    ## 
-    ##     some
-
-``` r
 subject = read_csv('data/subject_covariates.csv') %>% transmute(ispreterm = preterm_weeks >= 0, Subject, preterm_weeks)
 ```
 
@@ -126,18 +72,32 @@ timeline = read_csv('data/subject_timeline.csv')
     ##   Subject = col_character()
     ## )
 
-# Multivariate \(R^2\) associations (figure 1)
+# Multivariate *R*<sup>2</sup> associations (figure 1)
 
 ``` r
+loglik_mlm = function(object){
+   res = object$residuals
+  sig = cov(res)
+  p = object$rank
+  n = nrow(res)
+  sum(mvtnorm::dmvnorm(res, mean = rep(0, ncol(res)), sigma = sig, log = TRUE))
+}
+
 aic_mlm = function(object){
    res = object$residuals
     p = object$rank
-    N = length(res)
-    w = 1
-   val = 0.5 * (sum(log(w)) - N * (log(2 * pi) + 1 - log(N) + 
-        log(sum(w * res^2))))
-  -2*val + 2*p
+    N = nrow(res)
+  -2*loglik_mlm(object) + 2*p
 }
+
+
+bic_mlm = function(object){
+   res = object$residuals
+    p = object$rank
+    N = nrow(res)
+  -2*loglik_mlm(object) + p*log(nrow(res))
+}
+
 
 as_char_form = function(x) paste0(as.character(x)[c(2, 1, 3:length(x))], collapse = ' ')
 
@@ -161,9 +121,11 @@ estimate_mlm_r2 = function(lhs_data, rhs_data, formula_, null_form = . ~ 1, resp
   environment(formula_) = environment()
   full = lm(formula_, data = rhs_data)
   null = update(full, null_form)
+  empty = update(full, . ~ 1)
   adjr2 = 1 - (sum(full$residuals^2)/full$df.residual) /  (sum(null$residuals^2)/null$df.residual)
+  total_r2 = 1- (sum(full$residuals^2)/full$df.residual) /  (sum(empty$residuals^2)/empty$df.residual)
   anova_ = anova(full, null, test = 'Wilks', tol = 1e-6)
-  stats = tibble(adjr2 = adjr2, pval = anova_[2,'Pr(>F)'], response_label = response_label, predictor_label = predictor_label, n = min(nrow(rhs_data), nrow(lhs_data)), p_rhs = ncol(rhs_data), p_lhs = ncol(lhs_data), adjusted = adjusted, null_form = as_char_form(null_form), full_form = as_char_form(formula_), aic_full = aic_mlm(full))
+  stats = tibble(total_r2 = total_r2, adjr2 = adjr2, pval = anova_[2,'Pr(>F)'], response_label = response_label, predictor_label = predictor_label, n = min(nrow(rhs_data), nrow(lhs_data)), p_rhs = ncol(rhs_data), p_lhs = ncol(lhs_data), adjusted = adjusted, null_form = as_char_form(null_form), full_form = as_char_form(formula_), aic_full = aic_mlm(full), bic_full = bic_mlm(full))
   stats
 }
 
@@ -188,8 +150,7 @@ all_feats_dol = all_feats %>% left_join(timeline[c('Subject',  'Sequence Num', '
 
 Get Visits 1, 7, 19 from timeline, and their DOL
 
-Merge onto MB
-timelines
+Merge onto MB timelines
 
 ``` r
 closest_1_7_19 = timeline %>% filter(`Sequence Num` %in% c(1, 7, 19)) %>% select(`Sequence Num`, `Subject`, DOL_t = DOL) %>%  left_join(all_mb %>% select(`Subject`, DOL_m = DOL), by = 'Subject') 
@@ -239,8 +200,8 @@ mb_tcell_closest %>% group_by(`Subject`) %>% summarize(n())
     ## # … with 137 more rows
 
 ``` r
-pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC', 'PMA'),
-      adjusted = c("no", "Term", "Term", "Term", "Term", "Term", 'PMA', 'PMA', 'PMA', 'no'))
+pred_table = tibble(covariates = c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC', 'T cell', 'NAS', 'REC', 'PMA', 'DOL'),
+      adjusted = c("no", "Term", "Term", "Term", "Term", "Term", 'PMA', 'PMA', 'PMA', 'no', 'PMA'))
 
 r2_res = list()
 for(i in seq_len(nrow(pred_table))){
@@ -309,7 +270,8 @@ for(i in seq_len(nrow(pred_table))){
 ``` r
 r2_res = bind_rows(r2_res) 
 
-r2_res_graph = filter(r2_res, adjusted %in% c('no', 'Term', 'PMA'), !(adjusted == 'no' && predictor_label == "PMA")) %>% 
+r2_res_graph = filter(r2_res, adjusted %in% c('no', 'Term', 'PMA'), !(adjusted == 'no' && predictor_label == "PMA"),
+                      !(adjusted == 'PMA' && predictor_label == 'DOL')) %>% 
   mutate(predictor_label2 = factor(predictor_label, levels = rev(c('Term', 'DOL', 'PMA', 'T cell', 'NAS', 'REC'))),
          response_label = factor(response_label, levels = c('T cell', 'NAS', 'REC')), 
          pma_adjusted = factor(ifelse(adjusted == 'PMA', 'PMA', 'no'), levels = c('PMA', 'no')),
@@ -333,11 +295,45 @@ r2_res %>% dplyr::select(predictor_label, response_label, everything()) %>% muta
 dplyr::filter(r2_res, predictor_label %in% c('Term', 'DOL', 'PMA')) %>% select(predictor_label, response_label, aic_full, adjusted) %>% tidyr::spread(predictor_label, aic_full) %>% knitr::kable()
 ```
 
-| response\_label | adjusted |       DOL |       PMA |     Term |
-| :-------------- | :------- | --------: | --------: | -------: |
-| NAS             | no       |        NA | 290562.90 | 297054.0 |
-| NAS             | Term     | 291297.08 | 290113.10 |       NA |
-| REC             | no       |        NA | 705020.45 | 711911.2 |
-| REC             | Term     | 704856.55 | 704257.27 |       NA |
-| T cell          | no       |        NA |  27133.11 |  28849.4 |
-| T cell          | Term     |  27011.52 |  26853.06 |       NA |
+| response\_label | adjusted |       DOL |       PMA |      Term |
+|:----------------|:---------|----------:|----------:|----------:|
+| NAS             | no       |        NA | 212265.38 | 213630.42 |
+| NAS             | PMA      | 211872.17 |        NA |        NA |
+| NAS             | Term     | 212418.66 | 212067.19 |        NA |
+| REC             | no       |        NA | 599526.07 | 600603.30 |
+| REC             | PMA      | 598630.16 |        NA |        NA |
+| REC             | Term     | 599222.27 | 599005.28 |        NA |
+| T cell          | no       |        NA |  10976.49 |  11465.76 |
+| T cell          | PMA      |  10589.97 |        NA |        NA |
+| T cell          | Term     |  10888.47 |  10773.92 |        NA |
+
+### BIC (Smaller is better)
+
+``` r
+bic_r2 = dplyr::filter(r2_res, predictor_label %in% c('DOL', 'PMA'), adjusted %in% c('Term', 'PMA')) %>% 
+  dplyr::select(predictor_label, response_label, bic_full, adjusted, adjr2, total_r2) %>% 
+  dplyr::group_by(response_label) %>% 
+  dplyr::mutate(log_norm = matrixStats::logSumExp(bic_full)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(`log10(p) vs worst model` = (bic_full-log_norm)*log10(exp(1)))
+
+knitr::kable(bic_r2)
+```
+
+| predictor\_label | response\_label | bic\_full | adjusted |     adjr2 | total\_r2 | log\_norm | log10(p) vs worst model |
+|:-----------------|:----------------|----------:|:---------|----------:|----------:|----------:|------------------------:|
+| DOL              | T cell          |  10900.33 | Term     | 0.1657228 | 0.1843943 |  10900.33 |                 0.00000 |
+| DOL              | NAS             | 212436.32 | Term     | 0.0550058 | 0.0745323 | 212436.32 |                 0.00000 |
+| DOL              | REC             | 599240.26 | Term     | 0.0282133 | 0.0360097 | 599240.26 |                 0.00000 |
+| PMA              | T cell          |  10785.78 | Term     | 0.1788257 | 0.1972038 |  10900.33 |               -49.75249 |
+| PMA              | NAS             | 212084.85 | Term     | 0.0660061 | 0.0853053 | 212436.32 |              -152.64342 |
+| PMA              | REC             | 599023.27 | Term     | 0.0306001 | 0.0383773 | 599240.26 |               -94.23715 |
+| DOL              | T cell          |  10605.78 | PMA      | 0.0167490 | 0.2106498 |  10900.33 |              -127.92417 |
+| DOL              | NAS             | 211895.71 | PMA      | 0.0065262 | 0.0912748 | 212436.32 |              -234.78286 |
+| DOL              | REC             | 598654.15 | PMA      | 0.0038198 | 0.0420505 | 599240.26 |              -254.54379 |
+
+``` r
+readr::write_csv(bic_r2, 'intermediates/bic_supp_table.csv')
+```
+
+## 
